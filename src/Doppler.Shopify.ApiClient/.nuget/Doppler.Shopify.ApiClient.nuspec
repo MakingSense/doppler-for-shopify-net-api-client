@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Doppler.Shopify.ApiClient</id>
+        <version>$version$</version>
+        <title>Doppler for Shopify API Client</title>
+        <authors>Making Sense LLC</authors>
+        <owners>Making Sense LLC</owners>
+        <iconUrl>https://www.fromdoppler.com/img/logo-push-notificaction.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Doppler for Shopify API Client is a library to consume the Shopify and the Doppler for Shopify APIs</description>
+        <copyright>Copyright 2018 Making Sense LLC, Inc. All rights reserved.</copyright>
+        <language>en-US</language>
+        <tags>Doppler, Shopify, API, Client</tags>
+    </metadata>
+    <files>
+        <file src="..\Doppler.Shopify.ApiClient\bin\Release\Merge\Doppler.Shopify.ApiClient.dll" target="lib\net40\Doppler.Shopify.ApiClient.dll" />
+        <file src="..\Doppler.Shopify.ApiClient\bin\Release\Merge\Doppler.Shopify.ApiClient.pdb" target="lib\net40\Doppler.Shopify.ApiClient.pdb" />
+    </files>
+</package>
