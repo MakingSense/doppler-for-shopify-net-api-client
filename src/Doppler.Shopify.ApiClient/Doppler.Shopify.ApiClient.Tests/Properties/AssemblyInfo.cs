@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MakingSense.DopplerForShopify.ApiClient")]
+[assembly: AssemblyTitle("Doppler.Shopify.ApiClient.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MakingSense.DopplerForShopify.ApiClient")]
+[assembly: AssemblyProduct("Doppler.Shopify.ApiClient.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c239f765-d97d-4bce-8738-dcc54e72b882")]
+[assembly: Guid("dd979892-5212-4689-b8b7-c8647f8a863c")]
 
 // Version information for an assembly consists of the following four values:
 //
