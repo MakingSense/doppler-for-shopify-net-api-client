@@ -51,7 +51,7 @@ namespace ShopifySharp
         /// <param name="fields">A comma-separated list of fields to return.</param>
         public virtual async Task<DraftOrder> GetAsync(long id, string fields = null)
         {
-            var req = PrepareRequest($"draft_orders/{id}.json");
+            var req = PrepareRequest(string.Format("draft_orders/{0}.json", id));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -88,7 +88,7 @@ namespace ShopifySharp
         /// <param name="order">The updated draft order.</param>
         public virtual async Task<DraftOrder> UpdateAsync(long id, DraftOrder order)
         {
-            var req = PrepareRequest($"draft_orders/{id}.json");
+            var req = PrepareRequest(string.Format("draft_orders/{0}.json", id));
             var content = new JsonContent(new 
             {
                 draft_order = order.ToDictionary()
@@ -103,7 +103,7 @@ namespace ShopifySharp
         /// <param name="id">The id of the item being deleted.</param>
         public virtual async Task DeleteAsync(long id)
         {
-            var req = PrepareRequest($"draft_orders/{id}.json");
+            var req = PrepareRequest(string.Format("draft_orders/{0}.json", id));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }
@@ -115,7 +115,7 @@ namespace ShopifySharp
         /// <param name="paymentPending">A bool indicating whether payment is pending or not. True if payment is pending, false if payment is not pending and order has been paid. Defaults to false (payment not pending).</param>
         public virtual async Task<DraftOrder> CompleteAsync(long id, bool paymentPending = false)
         {
-            var req = PrepareRequest($"draft_orders/{id}/complete.json");
+            var req = PrepareRequest(string.Format("draft_orders/{0}/complete.json", id));
             req.QueryParams.Add("payment_pending", paymentPending);
 
             return await ExecuteRequestAsync<DraftOrder>(req, HttpMethod.Put, rootElement: "draft_order");
@@ -127,9 +127,9 @@ namespace ShopifySharp
         /// <param name="id">The id of the item with the invoice.</param>
         public virtual async Task<DraftOrderInvoice> SendInvoiceAsync(long id, DraftOrderInvoice customInvoice = null)
         {
-            var req = PrepareRequest($"draft_orders/{id}/send_invoice.json");
+            var req = PrepareRequest(string.Format("draft_orders/{0}/send_invoice.json", id));
             // If the custom invoice is not null, use that as the body. Else use an empty dictionary object which will send the default invoice
-            var body = customInvoice?.ToDictionary() ?? new Dictionary<string, object>();
+            var body = customInvoice != null ? customInvoice.ToDictionary() : new Dictionary<string, object>();
             var content = new JsonContent(new 
             {
                 draft_order_invoice = body

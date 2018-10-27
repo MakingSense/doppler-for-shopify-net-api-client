@@ -27,7 +27,7 @@ namespace ShopifySharp
         /// <returns>The count of all fulfillments for the shop.</returns>
         public virtual async Task<int> CountAsync(long orderId, CountFilter filter = null)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments/count.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments/count.json", orderId));
 
             if (filter != null)
             {
@@ -45,7 +45,7 @@ namespace ShopifySharp
         /// <returns>The list of fulfillments matching the filter.</returns>
         public virtual async Task<IEnumerable<Fulfillment>> ListAsync(long orderId, ListFilter options = null)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments.json", orderId));
 
             if (options != null)
             {
@@ -64,7 +64,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Fulfillment"/>.</returns>
         public virtual async Task<Fulfillment> GetAsync(long orderId, long fulfillmentId, string fields = null)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments/{fulfillmentId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}.json", orderId, fulfillmentId));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -84,7 +84,7 @@ namespace ShopifySharp
         /// <returns>The new <see cref="Fulfillment"/>.</returns>
         public virtual async Task<Fulfillment> CreateAsync(long orderId, Fulfillment fulfillment, bool notifyCustomer)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments.json", orderId));
             var body = fulfillment.ToDictionary();
             body.Add("notify_customer", notifyCustomer);
 
@@ -105,7 +105,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Fulfillment"/>.</returns>
         public virtual async Task<Fulfillment> UpdateAsync(long orderId, long fulfillmentId, Fulfillment fulfillment, bool notifyCustomer=false)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments/{fulfillmentId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}.json", orderId, fulfillmentId));
 
             var body = fulfillment.ToDictionary();
             body.Add("notify_customer", notifyCustomer);
@@ -125,7 +125,7 @@ namespace ShopifySharp
         /// <param name="fulfillmentId">The fulfillment's id.</param>
         public virtual async Task<Fulfillment> CompleteAsync(long orderId, long fulfillmentId)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments/{fulfillmentId}/complete.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/complete.json", orderId, fulfillmentId));
 
             return await ExecuteRequestAsync<Fulfillment>(req, HttpMethod.Post, rootElement: "fulfillment");
         }
@@ -137,7 +137,7 @@ namespace ShopifySharp
         /// <param name="fulfillmentId">The fulfillment's id.</param>
         public virtual async Task<Fulfillment> CancelAsync(long orderId, long fulfillmentId)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments/{fulfillmentId}/cancel.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/cancel.json", orderId, fulfillmentId));
 
             return await ExecuteRequestAsync<Fulfillment>(req, HttpMethod.Post, rootElement: "fulfillment");
         }
@@ -150,7 +150,7 @@ namespace ShopifySharp
         /// <param name="fulfillmentId">The fulfillment's id.</param>
         public virtual async Task<Fulfillment> OpenAsync(long orderId, long fulfillmentId)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments/{fulfillmentId}/open.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/open.json", orderId, fulfillmentId));
 
             return await ExecuteRequestAsync<Fulfillment>(req, HttpMethod.Post, rootElement: "fulfillment");
         }

@@ -26,7 +26,7 @@ namespace ShopifySharp
         /// <returns></returns>
         public virtual async Task<IEnumerable<Address>> ListAsync(long customerId, ListFilter filter = null)
         {
-            var req = PrepareRequest($"customers/{customerId}/addresses.json");
+            var req = PrepareRequest(string.Format("customers/{0}/addresses.json", customerId));
 
             if (filter != null)
             {
@@ -45,7 +45,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Address"/>.</returns>
         public virtual async Task<Address> GetAsync(long customerId, long addressId, string fields = null)
         {
-            var req = PrepareRequest($"customers/{customerId}/addresses/{addressId}.json");
+            var req = PrepareRequest(string.Format("customers/{0}/addresses/{1}.json", customerId, addressId));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -64,7 +64,7 @@ namespace ShopifySharp
         /// <returns>The new <see cref="Address"/>.</returns>
         public virtual async Task<Address> CreateAsync(long customerId, Address address)
         {
-            var req = PrepareRequest($"customers/{customerId}/addresses.json");
+            var req = PrepareRequest(string.Format("customers/{0}/addresses.json", customerId));
             var addressBody = address.ToDictionary();
             var content = new JsonContent(new
             {
@@ -83,7 +83,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Customer"/>.</returns>
         public virtual async Task<Address> UpdateAsync(long customerId, long addressId, Address address)
         {
-            var req = PrepareRequest($"customers/{customerId}/addresses/{addressId}.json");
+            var req = PrepareRequest(string.Format("customers/{0}/addresses/{1}.json", customerId, addressId));
             var addressBody = address.ToDictionary();
 
             var content = new JsonContent(new
@@ -101,7 +101,7 @@ namespace ShopifySharp
         /// <param name="addressId">The address object's Id.</param>
         public virtual async Task DeleteAsync(long customerId, long addressId)
         {
-            var req = PrepareRequest($"customers/{customerId}/addresses/{addressId}.json");
+            var req = PrepareRequest(string.Format("customers/{0}/addresses/{1}.json", customerId, addressId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }
@@ -114,7 +114,7 @@ namespace ShopifySharp
         /// <returns></returns>
         public virtual async Task<Address> SetDefault(long customerId, long addressId)
         {
-            var req = PrepareRequest($"customers/{customerId}/addresses/{addressId}/default.json");
+            var req = PrepareRequest(string.Format("customers/{0}/addresses/{1}/default.json", customerId, addressId));
 
             return await ExecuteRequestAsync<Address>(req, HttpMethod.Put, rootElement: "customer_address");
 

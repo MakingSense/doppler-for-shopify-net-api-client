@@ -27,7 +27,7 @@ namespace ShopifySharp
         /// <returns>The count of all fulfillments for the shop.</returns>
         public virtual async Task<int> CountAsync(string status = null)
         {
-            var req = PrepareRequest($"gift_cards/count.json");
+            var req = PrepareRequest("gift_cards/count.json");
 
             if (status != null)
             {
@@ -61,7 +61,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="GiftCard"/>.</returns>
         public virtual async Task<GiftCard> GetAsync(long giftCardId)
         {
-            var req = PrepareRequest($"gift_cards/{giftCardId}.json");
+            var req = PrepareRequest(string.Format("gift_cards/{0}.json", giftCardId));
 
             return await ExecuteRequestAsync<GiftCard>(req, HttpMethod.Get, rootElement: "gift_card");
         }
@@ -92,7 +92,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="GiftCard"/>.</returns>
         public virtual async Task<GiftCard> UpdateAsync(long giftCardId, GiftCard giftCard)
         {
-            var req = PrepareRequest($"gift_cards/{giftCardId}.json");
+            var req = PrepareRequest(string.Format("gift_cards/{0}.json", giftCardId));
             var content = new JsonContent(new
             {
                 gift_card = giftCard
@@ -107,7 +107,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="GiftCard"/>.</returns>
         public virtual async Task<GiftCard> DisableAsync(long giftCardId)
         {
-            var req = PrepareRequest($"gift_cards/{giftCardId}/disable.json");
+            var req = PrepareRequest(string.Format("gift_cards/{0}/disable.json", giftCardId));
 
             return await ExecuteRequestAsync<GiftCard>(req, HttpMethod.Post, rootElement: "gift_card");
         }

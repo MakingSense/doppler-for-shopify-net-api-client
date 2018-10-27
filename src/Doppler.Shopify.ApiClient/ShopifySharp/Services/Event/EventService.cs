@@ -45,7 +45,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Event"/>.</returns>
         public virtual async Task<Event> GetAsync(long eventId, string fields = null)
         {
-            var req = PrepareRequest($"events/{eventId}.json");
+            var req = PrepareRequest(string.Format("events/{0}.json", eventId));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -69,7 +69,7 @@ namespace ShopifySharp
                 subjectType = subjectType + "s";
             }
 
-            var req = PrepareRequest($"{subjectType?.ToLower()}/{subjectId}/events.json");
+            var req = PrepareRequest(string.Format("{0}/{1}/events.json", subjectType != null ? subjectType.ToLower() : "", subjectId));
 
             //Add optional parameters to request
             if (options != null)

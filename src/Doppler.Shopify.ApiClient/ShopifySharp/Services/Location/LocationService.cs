@@ -23,7 +23,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Location"/>.</returns>
         public virtual async Task<Location> GetAsync(long id)
         {
-            var req = PrepareRequest($"locations/{id}.json");           
+            var req = PrepareRequest(string.Format("locations/{0}.json", id));           
 
             return await ExecuteRequestAsync<Location>(req, HttpMethod.Get, rootElement: "location");
         }
@@ -34,7 +34,7 @@ namespace ShopifySharp
         /// <returns>The list of <see cref="Location"/> objects.</returns>
         public virtual async Task<IEnumerable<Location>> ListAsync()
         {
-            var req = PrepareRequest($"locations.json");
+            var req = PrepareRequest(string.Format("locations.json");
 
             return await ExecuteRequestAsync<List<Location>>(req, HttpMethod.Get, rootElement: "locations");
         }

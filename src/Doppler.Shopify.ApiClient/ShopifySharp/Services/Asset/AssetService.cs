@@ -26,7 +26,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Asset"/>.</returns>
         public virtual async Task<Asset> GetAsync(long themeId, string key, string fields = null)
         {
-            var req = PrepareRequest($"themes/{themeId}/assets.json");
+            var req = PrepareRequest(string.Format("themes/{0}/assets.json", themeId));
 
             //Add the proper asset querystring
             req = SetAssetQuerystring(req, key, themeId);
@@ -48,7 +48,7 @@ namespace ShopifySharp
         /// <returns>The list of <see cref="Asset"/> objects.</returns>
         public virtual async Task<IEnumerable<Asset>> ListAsync(long themeId, string fields = null)
         {
-            var req = PrepareRequest($"themes/{themeId}/assets.json");
+            var req = PrepareRequest(string.Format("themes/{0}/assets.json", themeId));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -71,7 +71,7 @@ namespace ShopifySharp
         /// <returns>The created or updated asset.</returns>
         public virtual async Task<Asset> CreateOrUpdateAsync(long themeId, Asset asset)
         {
-            var req = PrepareRequest($"themes/{themeId}/assets.json");
+            var req = PrepareRequest(string.Format("themes/{0}/assets.json", themeId));
             var content = new JsonContent(new
             {
                 asset = asset
@@ -87,7 +87,7 @@ namespace ShopifySharp
         /// <param name="key">The key value of the asset, e.g. 'templates/index.liquid' or 'assets/bg-body.gif'.</param>
         public virtual async Task DeleteAsync(long themeId, string key)
         {
-            var req = PrepareRequest($"themes/{themeId}/assets.json");
+            var req = PrepareRequest(string.Format("themes/{0}/assets.json", themeId));
 
             req = SetAssetQuerystring(req, key, themeId);
 

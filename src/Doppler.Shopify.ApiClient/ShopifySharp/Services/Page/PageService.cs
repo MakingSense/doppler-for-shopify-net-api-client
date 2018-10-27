@@ -59,7 +59,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Page"/>.</returns>
         public virtual async Task<Page> GetAsync(long pageId, string fields = null)
         {
-            var req = PrepareRequest($"pages/{pageId}.json");
+            var req = PrepareRequest(string.Format("pages/{0}.json", pageId));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -104,7 +104,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Page"/>.</returns>
         public virtual async Task<Page> UpdateAsync(long pageId, Page page)
         {
-            var req = PrepareRequest($"pages/{pageId}.json");
+            var req = PrepareRequest(string.Format("pages/{0}.json", pageId));
             var content = new JsonContent(new
             {
                 page = page
@@ -119,7 +119,7 @@ namespace ShopifySharp
         /// <param name="pageId">The page object's Id.</param>
         public virtual async Task DeleteAsync(long pageId)
         {
-            var req = PrepareRequest($"pages/{pageId}.json");
+            var req = PrepareRequest(string.Format("pages/{0}.json", pageId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

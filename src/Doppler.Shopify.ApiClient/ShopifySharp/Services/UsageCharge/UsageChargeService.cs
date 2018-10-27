@@ -26,7 +26,7 @@ namespace ShopifySharp
         /// <returns>The new <see cref="UsageCharge"/>.</returns>
         public virtual async Task<UsageCharge> CreateAsync(long recurringChargeId, string description, decimal price)
         {
-            var req = PrepareRequest($"recurring_application_charges/{recurringChargeId}/usage_charges.json");
+            var req = PrepareRequest(string.Format("recurring_application_charges/{0}/usage_charges.json", recurringChargeId));
             var content = new JsonContent(new
             {
                 usage_charge = new
@@ -48,7 +48,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="UsageCharge"/>.</returns>
         public virtual async Task<UsageCharge> GetAsync(long recurringChargeId, long id, string fields = null)
         {
-            var req = PrepareRequest($"recurring_application_charges/{recurringChargeId}/usage_charges/{id}.json");
+            var req = PrepareRequest(string.Format("recurring_application_charges/{0}/usage_charges/{1}.json", recurringChargeId, id));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -66,7 +66,7 @@ namespace ShopifySharp
         /// <returns>The list of <see cref="UsageCharge"/> objects.</returns>
         public virtual async Task<IEnumerable<UsageCharge>> ListAsync(long recurringChargeId, string fields = null)
         {
-            var req = PrepareRequest($"recurring_application_charges/{recurringChargeId}/usage_charges.json");
+            var req = PrepareRequest(string.Format("recurring_application_charges/{0}/usage_charges.json", recurringChargeId));
 
             if (!string.IsNullOrEmpty(fields))
             {

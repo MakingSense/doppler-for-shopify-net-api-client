@@ -26,7 +26,7 @@ namespace ShopifySharp
         /// <returns>The list of fulfillment services matching the filter.</returns>
         public virtual async Task<IEnumerable<FulfillmentServiceEntity>> ListAsync(string scope = null)
         {
-            var req = PrepareRequest($"fulfillment_services.json");
+            var req = PrepareRequest("fulfillment_services.json");
 
             if (!string.IsNullOrEmpty(scope))
             {
@@ -44,7 +44,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Fulfillment"/>.</returns>
         public virtual async Task<FulfillmentServiceEntity> GetAsync(long fulfillmentServiceId, string fields = null)
         {
-            var req = PrepareRequest($"fulfillment_services/{fulfillmentServiceId}.json");
+            var req = PrepareRequest(string.Format("fulfillment_services/{0}.json", fulfillmentServiceId));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -62,7 +62,7 @@ namespace ShopifySharp
         /// <returns>The new <see cref="FulfillmentServiceEntity"/>.</returns>
         public virtual async Task<FulfillmentServiceEntity> CreateAsync(FulfillmentServiceEntity fulfillmentServiceEntity)
         {
-            var req = PrepareRequest($"fulfillment_services.json");
+            var req = PrepareRequest("fulfillment_services.json");
             var body = fulfillmentServiceEntity.ToDictionary();
 
             var content = new JsonContent(new
@@ -81,7 +81,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="FulfillmentServiceEntity"/>.</returns>
         public virtual async Task<FulfillmentServiceEntity> UpdateAsync(long fulfillmentServiceId, FulfillmentServiceEntity fulfillmentServiceEntity)
         {
-            var req = PrepareRequest($"fulfillment_services/{fulfillmentServiceId}.json");
+            var req = PrepareRequest(string.Format("fulfillment_services/{0}.json", fulfillmentServiceId));
             var body = fulfillmentServiceEntity.ToDictionary();
 
             var content = new JsonContent(new
@@ -98,7 +98,7 @@ namespace ShopifySharp
         /// <param name="fulfillmentServiceId">The fulfillment service object's Id.</param>
         public virtual async Task DeleteAsync(long fulfillmentServiceId)
         {
-            var req = PrepareRequest($"fulfillment_services/{fulfillmentServiceId}.json");
+            var req = PrepareRequest(string.Format("fulfillment_services/{0}.json", fulfillmentServiceId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

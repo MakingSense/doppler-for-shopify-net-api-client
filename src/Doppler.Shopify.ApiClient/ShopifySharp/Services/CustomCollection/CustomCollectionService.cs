@@ -78,7 +78,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="CustomCollection"/>.</returns>
         public virtual async Task<CustomCollection> GetAsync(long customCollectionId, string fields = null)
         {
-            var req = PrepareRequest($"custom_collections/{customCollectionId}.json");
+            var req = PrepareRequest(string.Format("custom_collections/{0}.json", customCollectionId));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -94,7 +94,7 @@ namespace ShopifySharp
         /// <param name="customCollectionId">The custom collection's Id.</param>
         public virtual async Task DeleteAsync(long customCollectionId)
         {
-            var req = PrepareRequest($"custom_collections/{customCollectionId}.json");
+            var req = PrepareRequest(string.Format("custom_collections/{0}.json", customCollectionId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }
@@ -107,7 +107,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="CustomCollection"/>.</returns>
         public virtual async Task<CustomCollection> UpdateAsync(long customCollectionId, CustomCollection customCollection)
         {
-            var req = PrepareRequest($"custom_collections/{customCollectionId}.json");
+            var req = PrepareRequest(string.Format("custom_collections/{0}.json", customCollectionId));
             var content = new JsonContent(new
             {
                 custom_collection = customCollection

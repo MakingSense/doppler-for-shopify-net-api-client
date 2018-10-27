@@ -28,7 +28,7 @@ namespace ShopifySharp
         /// <returns>The count of all customers for the shop.</returns>
         public virtual Task<int> CountAsync()
         {
-            var req = PrepareRequest($"{RootResource}/count.json");
+            var req = PrepareRequest(string.Format("{0}/count.json", RootResource));
 
             return ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
         }
@@ -39,7 +39,7 @@ namespace ShopifySharp
         /// <returns></returns>
         public virtual Task<List<CustomerSavedSearch>> ListAsync(ListFilter filter = null)
         {
-            var req = PrepareRequest($"{RootResource}.json");
+            var req = PrepareRequest(string.Format("{0}.json", RootResource));
 
             if (filter != null)
             {
@@ -57,7 +57,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Customer"/>.</returns>
         public virtual Task<CustomerSavedSearch> GetAsync(long customerSearchId, string fields = null)
         {
-            var req = PrepareRequest($"{RootResource}/{customerSearchId}.json");
+            var req = PrepareRequest(string.Format("{0}/{1}.json", RootResource, customerSearchId));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -76,7 +76,7 @@ namespace ShopifySharp
         /// <returns>A list of matching customers.</returns>
         public virtual Task<List<CustomerSavedSearch>> SearchAsync(string query, string sinceId = null, ListFilter filter = null)
         {
-            var req = PrepareRequest($"{RootResource}.json");
+            var req = PrepareRequest(string.Format("{0}.json", RootResource));
             req.QueryParams.Add("query", query);
 
             if (!string.IsNullOrEmpty(sinceId))
@@ -101,10 +101,10 @@ namespace ShopifySharp
         {
             if (string.IsNullOrWhiteSpace(customerSavedSearch.Name))
             {
-                throw new ArgumentException("Name property is required", nameof(customerSavedSearch));
+                throw new ArgumentException("Name property is required", "customerSavedSearch");
             }
             
-            var req = PrepareRequest($"{RootResource}.json");
+            var req = PrepareRequest(string.Format("{0}.json", RootResource));
             var body = customerSavedSearch.ToDictionary();
 
             var content = new JsonContent(new
@@ -122,7 +122,7 @@ namespace ShopifySharp
         /// <param name="customerSavedSearch">The <see cref="CustomerSavedSearch"/> to update.</param>
         public virtual Task<CustomerSavedSearch> UpdateAsync(long customerSavedSearchId, CustomerSavedSearch customerSavedSearch)
         {
-            var req = PrepareRequest($"{RootResource}/{customerSavedSearchId}.json");
+            var req = PrepareRequest(string.Format("{0}/{1}.json", RootResource, customerSavedSearchId));
             var body = customerSavedSearch.ToDictionary();
 
             var content = new JsonContent(new
@@ -139,7 +139,7 @@ namespace ShopifySharp
         /// <param name="customerSavedSearchId">The customer object's Id.</param>
         public virtual Task DeleteAsync(long customerSavedSearchId)
         {
-            var req = PrepareRequest($"{RootResource}/{customerSavedSearchId}.json");
+            var req = PrepareRequest(string.Format("{0}/{1}.json", RootResource, customerSavedSearchId));
 
             return ExecuteRequestAsync(req, HttpMethod.Delete);
         }
@@ -151,7 +151,7 @@ namespace ShopifySharp
         /// <returns></returns>
         public Task<List<Customer>> GetCustomersFromSavedSearch(long customerSavedSearchId, string query = null, ListFilter filter = null)
         {
-            var req = PrepareRequest($"{RootResource}/{customerSavedSearchId}/customers.json");
+            var req = PrepareRequest(string.Format("{0}/{1}/customers.json", RootResource, customerSavedSearchId));
 
             if (query != null)
             {

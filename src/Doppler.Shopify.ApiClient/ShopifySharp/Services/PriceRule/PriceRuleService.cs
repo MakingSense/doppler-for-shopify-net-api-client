@@ -55,7 +55,7 @@ namespace ShopifySharp
         /// <param name="fields">A comma-separated list of fields to return.</param>
         public virtual async Task<PriceRule> GetAsync(long id, string fields = null)
         {
-            var req = PrepareRequest($"price_rules/{id}.json");
+            var req = PrepareRequest(string.Format("price_rules/{0}.json", id));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -89,7 +89,7 @@ namespace ShopifySharp
         /// <param name="rule">The updated rule.</param>
         public virtual async Task<PriceRule> UpdateAsync(long id, PriceRule rule)
         {
-            var req = PrepareRequest($"price_rules/{id}.json");
+            var req = PrepareRequest(string.Format("price_rules/{0}.json", id));
             var content = new JsonContent(new
             {
                 price_rule = rule
@@ -104,7 +104,7 @@ namespace ShopifySharp
         /// <param name="id">The object's Id.</param>
         public virtual async Task DeleteAsync(long id)
         {
-            var req = PrepareRequest($"price_rules/{id}.json");
+            var req = PrepareRequest(string.Format("price_rules/{0}.json", id));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

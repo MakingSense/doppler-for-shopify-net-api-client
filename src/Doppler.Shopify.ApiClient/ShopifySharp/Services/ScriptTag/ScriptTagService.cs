@@ -61,7 +61,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="ScriptTag"/>.</returns>
         public virtual async Task<ScriptTag> GetAsync(long tagId, string fields = null)
         {
-            var req = PrepareRequest($"script_tags/{tagId}.json");
+            var req = PrepareRequest(string.Format("script_tags/{0}.json", tagId));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -95,7 +95,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="ScriptTag"/>.</returns>
         public virtual async Task<ScriptTag> UpdateAsync(long scriptTagId, ScriptTag tag)
         {
-            var req = PrepareRequest($"script_tags/{scriptTagId}.json");
+            var req = PrepareRequest(string.Format("script_tags/{0}.json", scriptTagId));
             var content = new JsonContent(new
             {
                 script_tag = tag
@@ -110,7 +110,7 @@ namespace ShopifySharp
         /// <param name="tagId">The tag's Id.</param>
         public virtual async Task DeleteAsync(long tagId)
         {
-            var req = PrepareRequest($"script_tags/{tagId}.json");
+            var req = PrepareRequest(string.Format("script_tags/{0}.json", tagId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

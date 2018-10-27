@@ -42,7 +42,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Theme"/>.</returns>
         public virtual async Task<Theme> GetAsync(long themeId, string fields = null)
         {
-            var req = PrepareRequest($"themes/{themeId}.json");
+            var req = PrepareRequest(string.Format("themes/{0}.json", themeId));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -102,7 +102,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Theme"/>.</returns>
         public virtual async Task<Theme> UpdateAsync(long themeId, Theme theme)
         {
-            var req = PrepareRequest($"themes/{themeId}.json");
+            var req = PrepareRequest(string.Format("themes/{0}.json", themeId));
             var content = new JsonContent(new
             {
                 theme = theme
@@ -117,7 +117,7 @@ namespace ShopifySharp
         /// <param name="themeId">The Theme object's Id.</param>
         public virtual async Task DeleteAsync(long themeId)
         {
-            var req = PrepareRequest($"themes/{themeId}.json");
+            var req = PrepareRequest(string.Format("themes/{0}.json", themeId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

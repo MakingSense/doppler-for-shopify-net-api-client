@@ -38,7 +38,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="User"/>.</returns>
         public virtual async Task<User> GetAsync(long userId)
         {
-            var req = PrepareRequest($"users/{userId}.json");
+            var req = PrepareRequest(string.Format("users/{0}.json", userId));
             
             return await ExecuteRequestAsync<User>(req, HttpMethod.Get, rootElement: "user");
         }

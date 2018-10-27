@@ -22,7 +22,7 @@ namespace ShopifySharp
         /// <returns></returns>
         public virtual async Task<IEnumerable<PriceRuleDiscountCode>> ListAsync(long priceRuleId)
         {
-            var req = PrepareRequest($"price_rules/{priceRuleId}/discount_codes.json");
+            var req = PrepareRequest(string.Format("price_rules/{0}/discount_codes.json", priceRuleId));
 
             return await ExecuteRequestAsync<List<PriceRuleDiscountCode>>(req, HttpMethod.Get, rootElement: "discount_codes");
         }
@@ -36,7 +36,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="PriceRuleDiscountCode"/>.</returns>
         public virtual async Task<PriceRuleDiscountCode> GetAsync(long priceRuleId, long discountId, string fields = null)
         {
-            var req = PrepareRequest($"price_rules/{priceRuleId}/discount_codes/{discountId}.json");
+            var req = PrepareRequest(string.Format("price_rules/{0}/discount_codes/{1}.json", priceRuleId, discountId));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -52,7 +52,7 @@ namespace ShopifySharp
         /// <param name="priceRuleId">Id of an existing price rule.</param>
         public virtual async Task<PriceRuleDiscountCode> CreateAsync(long priceRuleId, PriceRuleDiscountCode code)
         {
-            var req = PrepareRequest($"price_rules/{priceRuleId}/discount_codes.json");
+            var req = PrepareRequest(string.Format("price_rules/{0}/discount_codes.json", priceRuleId));
             var body = code.ToDictionary();
 
             var content = new JsonContent(new
@@ -70,7 +70,7 @@ namespace ShopifySharp
         /// <param name="code">The code being updated.</param>
         public virtual async Task<PriceRuleDiscountCode> UpdateAsync(long priceRuleId, PriceRuleDiscountCode code)
         {
-            var req = PrepareRequest($"price_rules/{priceRuleId}/discount_codes/{code.Id.Value}.json");
+            var req = PrepareRequest(string.Format("price_rules/{0}/discount_codes/{1}.json", priceRuleId, code.Id.Value));
             var content = new JsonContent(new
             {
                 discount_code = code
@@ -86,7 +86,7 @@ namespace ShopifySharp
         /// <param name="discountId">The discount object's Id.</param>
         public virtual async Task DeleteAsync(long priceRuleId, long discountCodeId)
         {
-            var req = PrepareRequest($"price_rules/{priceRuleId}/discount_codes/{discountCodeId}.json");
+            var req = PrepareRequest(string.Format("price_rules/{0}/discount_codes/{1}.json", priceRuleId, discountCodeId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

@@ -24,7 +24,7 @@ namespace ShopifySharp
         /// <param name="filterOptions">Options for filtering the result. Ids must be populated.</param>
         public virtual async Task<IEnumerable<InventoryItem>> ListAsync(ListFilter filterOptions)
         {
-            var req = PrepareRequest($"inventory_items.json");
+            var req = PrepareRequest("inventory_items.json");
 
             if (filterOptions != null)
             {
@@ -40,7 +40,7 @@ namespace ShopifySharp
         /// <param name="inventoryItemId">The id of the inventory item to retrieve.</param>
         public virtual async Task<InventoryItem> GetAsync(long inventoryItemId)
         {
-            var req = PrepareRequest($"inventory_items/{inventoryItemId}.json");
+            var req = PrepareRequest(string.Format("inventory_items/{0}.json", inventoryItemId));
 
             return await ExecuteRequestAsync<InventoryItem>(req, HttpMethod.Get, rootElement: "inventory_item");
         }
@@ -52,7 +52,7 @@ namespace ShopifySharp
         /// <param name="inventoryItemId">The id of the inventory item to retrieve.</param>
         public virtual async Task<InventoryItem> UpdateAsync( long inventoryItemId, InventoryItem inventoryItem )
         {
-            var req = PrepareRequest( $"inventory_items/{inventoryItemId}.json" );
+            var req = PrepareRequest(string.Format("inventory_items/{0}.json", inventoryItemId));
             var content = new JsonContent( new
             {
                 inventory_item = inventoryItem

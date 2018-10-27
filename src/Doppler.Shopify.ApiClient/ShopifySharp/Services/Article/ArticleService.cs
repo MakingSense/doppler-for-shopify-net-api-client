@@ -171,7 +171,7 @@ namespace ShopifySharp
         /// <param name="popular">A flag to indicate only to a certain number of the most popular tags.</param>
         public virtual async Task<IEnumerable<string>> ListTagsForBlogAsync(long blogId, int? popular = null, int? limit = null)
         {
-            var req = PrepareRequest($"blogs/{blogId}/articles/tags.json");
+            var req = PrepareRequest(string.Format("blogs/{0}/articles/tags.json", blogId));
 
             if (popular.HasValue)
             {

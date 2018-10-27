@@ -40,7 +40,7 @@ namespace ShopifySharp
         /// <param name="filterOptions">Options for filtering the result.</param>
         public virtual async Task<IEnumerable<SmartCollection>> ListAsync(SmartCollectionFilter filterOptions = null)
         {
-            var req = PrepareRequest($"smart_collections.json");
+            var req = PrepareRequest("smart_collections.json");
 
             if (filterOptions != null)
             {
@@ -56,7 +56,7 @@ namespace ShopifySharp
         /// <param name="collectionId">The id of the smart collection to retrieve.</param>
         public virtual async Task<SmartCollection> GetAsync(long collectionId)
         {
-            var req = PrepareRequest($"smart_collections/{collectionId}.json");
+            var req = PrepareRequest(string.Format("smart_collections/{0}.json", collectionId));
 
             return await ExecuteRequestAsync<SmartCollection>(req, HttpMethod.Get, rootElement: "smart_collection");
         }
@@ -67,7 +67,7 @@ namespace ShopifySharp
         /// <param name="collection">A new <see cref="SmartCollection"/>. Id should be set to null.</param>
         public virtual async Task<SmartCollection> CreateAsync(SmartCollection collection, bool published = true)
         {
-            var req = PrepareRequest($"smart_collections.json");
+            var req = PrepareRequest("smart_collections.json");
             var body = collection.ToDictionary();
 
             body.Add("published", published);
@@ -87,7 +87,7 @@ namespace ShopifySharp
         /// <param name="collection">The smart collection to update.</param>
         public virtual async Task<SmartCollection> UpdateAsync(long smartCollectionId, SmartCollection collection)
         {
-            var req = PrepareRequest($"smart_collections/{smartCollectionId}.json");
+            var req = PrepareRequest(string.Format("smart_collections/{0}.json", smartCollectionId));
             var content = new JsonContent(new
             {
                 smart_collection = collection
@@ -101,7 +101,7 @@ namespace ShopifySharp
         /// <param name="smartCollectionId">The collection's id.</param>
         public virtual async Task<SmartCollection> PublishAsync(long smartCollectionId)
         {
-            var req = PrepareRequest($"smart_collections/{smartCollectionId}.json");
+            var req = PrepareRequest(string.Format("smart_collections/{0}.json", smartCollectionId));
             var body = new Dictionary<string, object>()
             {
                 { "id", smartCollectionId },
@@ -121,7 +121,7 @@ namespace ShopifySharp
         /// <param name="smartCollectionId">The collection's id.</param>
         public virtual async Task<SmartCollection> UnpublishAsync(long smartCollectionId)
         {
-            var req = PrepareRequest($"smart_collections/{smartCollectionId}.json");
+            var req = PrepareRequest(string.Format("smart_collections/{0}.json", smartCollectionId));
             var body = new Dictionary<string, object>()
             {
                 { "id", smartCollectionId },
@@ -143,7 +143,7 @@ namespace ShopifySharp
         /// <param name="productIds">An array of product ids sorted in the order you want them to appear in.</param>
         public virtual async Task UpdateProductOrderAsync(long smartCollectionId, string sortOrder = null, params long[] productIds)
         {
-            var req = PrepareRequest($"smart_collections/{smartCollectionId}/order.json");
+            var req = PrepareRequest(string.Format("smart_collections/{0}/order.json", smartCollectionId));
             var content = new JsonContent(new
             {
                 sort_order = sortOrder,
@@ -158,7 +158,7 @@ namespace ShopifySharp
         /// <param name="collectionId">The smart collection's id.</param>
         public virtual async Task DeleteAsync(long collectionId)
         {
-            var req = PrepareRequest($"smart_collections/{collectionId}.json");
+            var req = PrepareRequest(string.Format("smart_collections/{0}.json", collectionId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

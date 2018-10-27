@@ -27,7 +27,7 @@ namespace ShopifySharp
         /// <returns>The list of fulfillment events for the given fulfillment.</returns>
         public virtual async Task<IEnumerable<FulfillmentEvent>> ListAsync(long orderId, long fulfillmentId)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments/{fulfillmentId}/events.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/events.json", orderId, fulfillmentId));
 
             return await ExecuteRequestAsync<List<FulfillmentEvent>>(req, HttpMethod.Get, rootElement: "fulfillment_events");
         }
@@ -41,7 +41,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="FulfillmentEvent"/>.</returns>
         public virtual async Task<FulfillmentEvent> GetAsync(long orderId, long fulfillmentId, long fulfillmentEventId)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments/{fulfillmentId}/events/{fulfillmentEventId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/events/{2}.json", orderId, fulfillmentId, fulfillmentEventId));
 
             return await ExecuteRequestAsync<FulfillmentEvent>(req, HttpMethod.Get, rootElement: "fulfillment_event");
         }
@@ -53,7 +53,7 @@ namespace ShopifySharp
         /// <returns>The new <see cref="FulfillmentEvent"/>.</returns>
         public virtual async Task<FulfillmentEvent> CreateAsync(long orderId, long fulfillmentId, FulfillmentEvent @event)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments/{fulfillmentId}/events.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/events.json", orderId, fulfillmentId));
 
             var content = new JsonContent(new
             {
@@ -71,7 +71,7 @@ namespace ShopifySharp
         /// <param name="fulfillmentEventId">The id of the fulfillment event to retrieve.</param>
         public virtual async Task DeleteAsync(long orderId, long fulfillmentId, long fulfillmentEventId)
         {
-            var req = PrepareRequest($"orders/{orderId}/fulfillments/{fulfillmentId}/events/{fulfillmentEventId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/events/{2}.json", orderId, fulfillmentId, fulfillmentEventId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

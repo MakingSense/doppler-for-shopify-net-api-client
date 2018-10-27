@@ -36,7 +36,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Discount"/>.</returns>
         public virtual async Task<Discount> GetAsync(long discountId, string fields = null)
         {
-            var req = PrepareRequest($"discounts/{discountId}.json");
+            var req = PrepareRequest(string.Format("discounts/{0}.json", discountId));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -73,7 +73,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Discount"/>.</returns>
         public virtual async Task<Discount> EnableAsync(long discountId)
         {
-            var req = PrepareRequest($"discounts/{discountId}/enable.json");
+            var req = PrepareRequest(string.Format("discounts/{0}/enable.json", discountId));
 
             return await ExecuteRequestAsync<Discount>(req, HttpMethod.Put, rootElement: "discount");
         }
@@ -85,7 +85,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Discount"/>.</returns>
         public virtual async Task<Discount> DisableAsync(long discountId)
         {
-            var req = PrepareRequest($"discounts/{discountId}/disable.json");
+            var req = PrepareRequest(string.Format("discounts/{0}/disable.json", discountId));
 
             return await ExecuteRequestAsync<Discount>(req, HttpMethod.Put, rootElement: "discount");
         }
@@ -96,7 +96,7 @@ namespace ShopifySharp
         /// <param name="discountId">The discount object's Id.</param>
         public virtual async Task DeleteAsync(long discountId)
         {
-            var req = PrepareRequest($"discounts/{discountId}.json");
+            var req = PrepareRequest(string.Format("discounts/{0}.json",discountId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

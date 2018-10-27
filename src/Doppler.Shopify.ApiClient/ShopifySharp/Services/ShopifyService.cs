@@ -18,7 +18,7 @@ namespace ShopifySharp
 
         private static JsonSerializer _Serializer = new JsonSerializer { DateParseHandling = DateParseHandling.DateTimeOffset };
 
-        private static HttpClient _Client { get; } = new HttpClient();
+        private static HttpClient _Client { get; private set; } 
 
         private IRequestExecutionPolicy _ExecutionPolicy;
 
@@ -33,6 +33,7 @@ namespace ShopifySharp
         /// <param name="shopAccessToken">An API access token for the shop.</param>
         protected ShopifyService(string myShopifyUrl, string shopAccessToken)
         {
+            _Client = new HttpClient();
             _ShopUri = BuildShopUri(myShopifyUrl, false);
             _AccessToken = shopAccessToken;
 

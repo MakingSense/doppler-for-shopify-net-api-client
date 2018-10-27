@@ -41,7 +41,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="RecurringCharge"/>.</returns>
         public virtual async Task<RecurringCharge> GetAsync(long id, string fields = null)
         {
-            var req = PrepareRequest($"recurring_application_charges/{id}.json");
+            var req = PrepareRequest(string.Format("recurring_application_charges/{0}.json", id));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -80,7 +80,7 @@ namespace ShopifySharp
         /// <param name="id">The id of the charge to activate.</param>
         public virtual async Task ActivateAsync(long id)
         {
-            var req = PrepareRequest($"recurring_application_charges/{id}/activate.json");
+            var req = PrepareRequest(string.Format("recurring_application_charges/{0}/activate.json", id));
 
             await ExecuteRequestAsync(req, HttpMethod.Post);
         }
@@ -91,7 +91,7 @@ namespace ShopifySharp
         /// <param name="id">The id of the charge to delete.</param>
         public virtual async Task DeleteAsync(long id)
         {
-            var req = PrepareRequest($"recurring_application_charges/{id}.json");
+            var req = PrepareRequest(string.Format("recurring_application_charges/{0}.json", id));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

@@ -54,7 +54,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Customer"/>.</returns>
         public virtual async Task<Customer> GetAsync(long customerId, string fields = null)
         {
-            var req = PrepareRequest($"customers/{customerId}.json");
+            var req = PrepareRequest(string.Format("customers/{0}.json", customerId));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -125,7 +125,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Customer"/>.</returns>
         public virtual async Task<Customer> UpdateAsync(long customerId, Customer customer, CustomerUpdateOptions options = null)
         {
-            var req = PrepareRequest($"customers/{customerId}.json");
+            var req = PrepareRequest(string.Format("customers/{0}.json", customerId));
             var body = customer.ToDictionary();
 
             if (options != null)
@@ -150,7 +150,7 @@ namespace ShopifySharp
         /// <param name="customerId">The customer object's Id.</param>
         public virtual async Task DeleteAsync(long customerId)
         {
-            var req = PrepareRequest($"customers/{customerId}.json");
+            var req = PrepareRequest(string.Format("customers/{0}.json", customerId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }
@@ -164,7 +164,7 @@ namespace ShopifySharp
         /// <returns></returns>
         public virtual async Task<CustomerInvite> SendInviteAsync(long customerId, CustomerInvite invite = null)
         {
-            var req = PrepareRequest($"customers/{customerId}/send_invite.json");
+            var req = PrepareRequest(string.Format("customers/{0}/send_invite.json", customerId));
 
             var content = new JsonContent(new
             {
@@ -184,7 +184,7 @@ namespace ShopifySharp
         /// <returns></returns>
         public virtual async Task<string> GetAccountActivationUrl(long customerid)
         {
-            var req = PrepareRequest($"customers/{customerid}/account_activation_url.json");
+            var req = PrepareRequest(string.Format("customers/{0}/account_activation_url.json", customerid));
 
             var response = await ExecuteRequestAsync(req, HttpMethod.Post);
 

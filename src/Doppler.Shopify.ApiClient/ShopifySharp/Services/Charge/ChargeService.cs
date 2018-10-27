@@ -38,7 +38,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Charge"/>.</returns>
         public virtual async Task<Charge> GetAsync(long id, string fields = null)
         {
-            var req = PrepareRequest($"application_charges/{id}.json");
+            var req = PrepareRequest(string.Format("application_charges/{0}.json", id));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -77,7 +77,7 @@ namespace ShopifySharp
         /// <param name="id">The id of the charge to activate.</param>
         public virtual async Task ActivateAsync(long id)
         {
-            var req = PrepareRequest($"application_charges/{id}/activate.json");
+            var req = PrepareRequest(string.Format("application_charges/{0}/activate.json", id));
 
             await ExecuteRequestAsync(req, HttpMethod.Post);
         }

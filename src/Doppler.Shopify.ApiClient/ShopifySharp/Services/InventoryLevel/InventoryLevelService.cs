@@ -24,7 +24,7 @@ namespace ShopifySharp
         /// <param name="filterOptions">Options for filtering the result. InventoryItemIds and/or LocationIds must be populated.</param>
         public virtual async Task<IEnumerable<InventoryLevel>> ListAsync(InventoryLevelFilter filterOptions)
         {
-            var req = PrepareRequest($"inventory_levels.json");
+            var req = PrepareRequest(string.Format("inventory_levels.json");
 
             if (filterOptions != null)
             {
@@ -41,7 +41,7 @@ namespace ShopifySharp
         /// <param name="locationId">The ID of the location that the inventory level belongs to.</param>
         public virtual async Task DeleteAsync(long inventoryItemId, long locationId)
         {
-            await ExecuteRequestAsync(PrepareRequest($"inventory_levels.json?inventory_item_id={inventoryItemId}&location_id={locationId}"), HttpMethod.Delete);
+            await ExecuteRequestAsync(PrepareRequest(string.Format("inventory_levels.json?inventory_item_id={0}&location_id={1}", inventoryItemId, locationId)), HttpMethod.Delete);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="InventoryLevel"/></returns>
         public virtual async Task<InventoryLevel> SetAsync(InventoryLevel updatedInventoryLevel, bool disconnectIfNecessary = false)
         {
-            var req = PrepareRequest($"inventory_levels/set.json");
+            var req = PrepareRequest(string.Format("inventory_levels/set.json");
             var body = updatedInventoryLevel.ToDictionary();
             body.Add("disconnect_if_necessary", disconnectIfNecessary);
             JsonContent content = new JsonContent(body);
@@ -68,7 +68,7 @@ namespace ShopifySharp
         /// <returns>The new <see cref="InventoryLevel"/>.</returns>
         public virtual async Task<InventoryLevel> ConnectAsync(long inventoryItemId, long locationId, bool relocateIfNecessary = false)
         {
-            var req = PrepareRequest($"inventory_levels/connect.json");
+            var req = PrepareRequest(string.Format("inventory_levels/connect.json");
             JsonContent content = new JsonContent(new
             {
                 location_id = locationId,

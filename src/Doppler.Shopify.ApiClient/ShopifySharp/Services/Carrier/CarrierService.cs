@@ -54,7 +54,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Carrier"/>.</returns>
         public virtual async Task<Carrier> GetAsync(long carrierId)
         {            
-            var req = PrepareRequest($"carrier_services/{carrierId}.json");
+            var req = PrepareRequest(string.Format("carrier_services/{0}.json", carrierId));
 
             return await ExecuteRequestAsync<Carrier>(req, HttpMethod.Get, rootElement: "carrier_service");           
         }
@@ -65,7 +65,7 @@ namespace ShopifySharp
         /// <param name="carrierId">The Carrier's Id.</param>
         public virtual async Task DeleteAsync(long carrierId)
         {
-            var req = PrepareRequest($"carrier_services/{carrierId}.json");
+            var req = PrepareRequest(string.Format("carrier_services/{0}.json", carrierId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }
@@ -78,7 +78,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Carrier"/>.</returns>
         public virtual async Task<Carrier> UpdateAsync(long carrierId, Carrier carrier)
         {
-            var req = PrepareRequest($"carrier_services/{carrierId}.json");
+            var req = PrepareRequest(string.Format("carrier_services/{0}.json", carrierId));
             var content = new JsonContent(new
             {
                 carrier_service = carrier

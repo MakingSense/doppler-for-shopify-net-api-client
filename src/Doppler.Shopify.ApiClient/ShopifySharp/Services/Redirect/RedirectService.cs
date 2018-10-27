@@ -67,7 +67,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Redirect"/>.</returns>
         public virtual async Task<Redirect> GetAsync(long redirectId, string fields = null)
         {
-            var req = PrepareRequest($"redirects/{redirectId}.json");
+            var req = PrepareRequest(string.Format("redirects/{0}.json", redirectId));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -103,7 +103,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Redirect"/>.</returns>
         public virtual async Task<Redirect> UpdateAsync(long redirectId, Redirect redirect)
         {
-            var req = PrepareRequest($"redirects/{redirectId}.json");
+            var req = PrepareRequest(string.Format("redirects/{0}.json", redirectId));
             var content = new JsonContent(new
             {
                 redirect = redirect
@@ -118,7 +118,7 @@ namespace ShopifySharp
         /// <param name="redirectId">The redirect object's Id.</param>
         public virtual async Task DeleteAsync(long redirectId)
         {
-            var req = PrepareRequest($"redirects/{redirectId}.json");
+            var req = PrepareRequest(string.Format("redirects/{0}.json", redirectId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

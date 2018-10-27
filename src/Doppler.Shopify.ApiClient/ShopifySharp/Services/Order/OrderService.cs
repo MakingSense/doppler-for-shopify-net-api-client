@@ -80,7 +80,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Order"/>.</returns>
         public virtual async Task<Order> GetAsync(long orderId, string fields = null)
         {
-            var req = PrepareRequest($"orders/{orderId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}.json", orderId));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -96,7 +96,7 @@ namespace ShopifySharp
         /// <param name="id">The order's id.</param>
         public virtual async Task<Order> CloseAsync(long id)
         {
-            var req = PrepareRequest($"orders/{id}/close.json");
+            var req = PrepareRequest(string.Format("orders/{0}/close.json", id));
 
             return await ExecuteRequestAsync<Order>(req, HttpMethod.Post, rootElement: "order");
         }
@@ -107,7 +107,7 @@ namespace ShopifySharp
         /// <param name="id">The order's id.</param>
         public virtual async Task<Order> OpenAsync(long id)
         {
-            var req = PrepareRequest($"orders/{id}/open.json");
+            var req = PrepareRequest(string.Format("orders/{0}/open.json", id));
 
             return await ExecuteRequestAsync<Order>(req, HttpMethod.Post, rootElement: "order");
         }
@@ -147,7 +147,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Order"/>.</returns>
         public virtual async Task<Order> UpdateAsync(long orderId, Order order)
         {
-            var req = PrepareRequest($"orders/{orderId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}.json", orderId));
             var content = new JsonContent(new
             {
                 order = order
@@ -162,7 +162,7 @@ namespace ShopifySharp
         /// <param name="orderId">The order object's Id.</param>
         public virtual async Task DeleteAsync(long orderId)
         {
-            var req = PrepareRequest($"orders/{orderId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}.json", orderId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }
@@ -174,7 +174,7 @@ namespace ShopifySharp
         /// <returns>The cancelled <see cref="Order"/>.</returns>
         public virtual async Task CancelAsync(long orderId, OrderCancelOptions options = null)
         {
-            var req = PrepareRequest($"orders/{orderId}/cancel.json");
+            var req = PrepareRequest(string.Format("orders/{0}/cancel.json", orderId));
             var content = new JsonContent(options ?? new OrderCancelOptions());
 
             await ExecuteRequestAsync(req, HttpMethod.Post, content);

@@ -87,7 +87,7 @@ namespace ShopifySharp
         /// <param name="metafields">Optional metafield data that can be returned by the <see cref="MetaFieldService"/>.</param>
         public virtual async Task<Blog> UpdateAsync(long blogId, Blog blog, IEnumerable<MetaField> metafields = null)
         {
-            var request = PrepareRequest($"blogs/{blogId}.json");
+            var request = PrepareRequest(string.Format("blogs/{0}.json", blogId));
             var body = blog.ToDictionary();
 
             if (metafields != null && metafields.Count() >= 1)
@@ -109,7 +109,7 @@ namespace ShopifySharp
         /// <param name="id">The id of the blog you want to retrieve.</param>
         public virtual async Task<Blog> GetAsync(long id)
         {
-            var request = PrepareRequest($"blogs/{id}.json");
+            var request = PrepareRequest(string.Format("blogs/{0}.json", id));
 
             return await ExecuteRequestAsync<Blog>(request, HttpMethod.Get, rootElement: "blog");
         }
@@ -120,7 +120,7 @@ namespace ShopifySharp
         /// <param name="id">The id of the blog you want to delete.</param>
         public virtual async Task DeleteAsync(long id)
         {
-            var request = PrepareRequest($"blogs/{id}.json");
+            var request = PrepareRequest(string.Format("blogs/{0}.json", id));
 
             await ExecuteRequestAsync(request, HttpMethod.Delete);
         }

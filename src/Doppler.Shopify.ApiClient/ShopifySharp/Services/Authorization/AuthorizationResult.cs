@@ -6,8 +6,8 @@ namespace ShopifySharp
 {
     public class AuthorizationResult
     {
-        public string AccessToken { get; }
-        public string[] GrantedScopes { get; }
+        public string AccessToken { get; private set; }
+        public string[] GrantedScopes { get; private set; }
 
         internal AuthorizationResult(string accessToken, string[] grantedScopes)
         {

@@ -62,7 +62,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Product"/>.</returns>
         public virtual async Task<Product> GetAsync(long productId, string fields = null)
         {
-            var req = PrepareRequest($"products/{productId}.json");
+            var req = PrepareRequest(string.Format("products/{0}.json", productId));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -107,7 +107,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="Product"/>.</returns>
         public virtual async Task<Product> UpdateAsync(long productId, Product product)
         {
-            var req = PrepareRequest($"products/{productId}.json");
+            var req = PrepareRequest(string.Format("products/{0}.json", productId));
             var content = new JsonContent(new
             {
                 product = product
@@ -122,7 +122,7 @@ namespace ShopifySharp
         /// <param name="productId">The product object's Id.</param>
         public virtual async Task DeleteAsync(long productId)
         {
-            var req = PrepareRequest($"products/{productId}.json");
+            var req = PrepareRequest(string.Format("products/{0}.json", productId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }
@@ -134,7 +134,7 @@ namespace ShopifySharp
         /// <returns>The published <see cref="Product"/></returns>
         public virtual async Task<Product> PublishAsync(long id)
         {
-            var req = PrepareRequest($"products/{id}.json");
+            var req = PrepareRequest(string.Format("products/{0}.json", id));
             var content = new JsonContent(new
             {
                 product = new
@@ -154,7 +154,7 @@ namespace ShopifySharp
         /// <returns>The unpublished <see cref="Product"/></returns>
         public virtual async Task<Product> UnpublishAsync(long id)
         {
-            var req = PrepareRequest($"products/{id}.json");
+            var req = PrepareRequest(string.Format("products/{0}.json", id));
             var content = new JsonContent(new
             {
                 product = new

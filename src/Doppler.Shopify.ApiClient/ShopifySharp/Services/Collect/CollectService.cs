@@ -62,7 +62,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Collect"/>.</returns>
         public virtual async Task<Collect> GetAsync(long collectId, string fields = null)
         {
-            var req = PrepareRequest($"collects/{collectId}.json");
+            var req = PrepareRequest(string.Format("collects/{0}.json", collectId));
 
             if (string.IsNullOrEmpty(fields) == false)
             {
@@ -95,7 +95,7 @@ namespace ShopifySharp
         /// <param name="collectId">The product object's Id.</param>
         public virtual async Task DeleteAsync(long collectId)
         {
-            var req = PrepareRequest($"collects/{collectId}.json");
+            var req = PrepareRequest(string.Format("collects/{0}.json", collectId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

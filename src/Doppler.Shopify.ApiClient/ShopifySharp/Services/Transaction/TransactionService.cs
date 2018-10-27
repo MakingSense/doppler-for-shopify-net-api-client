@@ -24,7 +24,7 @@ namespace ShopifySharp
         /// <returns>The count of all fulfillments for the shop.</returns>
         public virtual async Task<int> CountAsync(long orderId)
         {
-            var req = PrepareRequest($"orders/{orderId}/transactions/count.json");
+            var req = PrepareRequest(string.Format("orders/{0}/transactions/count.json", orderId));
 
             return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
         }
@@ -37,7 +37,7 @@ namespace ShopifySharp
         /// <returns>The list of transactions.</returns>
         public virtual async Task<IEnumerable<Transaction>> ListAsync(long orderId, long? sinceId = null)
         {
-            var req = PrepareRequest($"orders/{orderId}/transactions.json");
+            var req = PrepareRequest(string.Format("orders/{0}/transactions.json", orderId));
 
             if (sinceId.HasValue)
             {
@@ -56,7 +56,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="Transaction"/>.</returns>
         public virtual async Task<Transaction> GetAsync(long orderId, long transactionId, string fields = null)
         {
-            var req = PrepareRequest($"orders/{orderId}/transactions/{transactionId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}/transactions/{1}.json", orderId, transactionId));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -74,7 +74,7 @@ namespace ShopifySharp
         /// <returns>The new <see cref="Transaction"/>.</returns>
         public virtual async Task<Transaction> CreateAsync(long orderId, Transaction transaction)
         {
-            var req = PrepareRequest($"orders/{orderId}/transactions.json");
+            var req = PrepareRequest(string.Format("orders/{0}/transactions.json", orderId));
             var content = new JsonContent(new
             {
                 transaction = transaction

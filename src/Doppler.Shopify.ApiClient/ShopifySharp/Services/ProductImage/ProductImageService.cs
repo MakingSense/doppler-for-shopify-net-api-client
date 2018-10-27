@@ -27,7 +27,7 @@ namespace ShopifySharp
         /// <returns>The count of all ProductImages for the shop.</returns>
         public virtual async Task<int> CountAsync(long productId, PublishableCountFilter filter = null)
         {
-            var req = PrepareRequest($"products/{productId}/images/count.json");
+            var req = PrepareRequest(string.Format("products/{0}/images/count.json", productId));
 
             if (filter != null)
             {
@@ -53,7 +53,7 @@ namespace ShopifySharp
         /// </remarks>
         public virtual async Task<IEnumerable<ProductImage>> ListAsync(long productId, long? sinceId = null, string fields = null)
         {
-            var req = PrepareRequest($"products/{productId}/images.json");
+            var req = PrepareRequest(string.Format("products/{0}/images.json", productId));
 
             if (sinceId.HasValue)
             {
@@ -77,7 +77,7 @@ namespace ShopifySharp
         /// <returns>The <see cref="ProductImage"/>.</returns>
         public virtual async Task<ProductImage> GetAsync(long productId, long imageId, string fields = null)
         {
-            var req = PrepareRequest($"products/{productId}/images/{imageId}.json");
+            var req = PrepareRequest(string.Format("products/{0}/images/{1}.json", productId, imageId));
 
             if (!string.IsNullOrEmpty(fields))
             {
@@ -95,7 +95,7 @@ namespace ShopifySharp
         /// <returns>The new <see cref="ProductImage"/>.</returns>
         public virtual async Task<ProductImage> CreateAsync(long productId, ProductImage image)
         {
-            var req = PrepareRequest($"products/{productId}/images.json");
+            var req = PrepareRequest(string.Format("products/{0}/images.json", productId));
             var content = new JsonContent(new
             {
                 image = image
@@ -113,7 +113,7 @@ namespace ShopifySharp
         /// <returns>The updated <see cref="ProductImage"/>.</returns>
         public virtual async Task<ProductImage> UpdateAsync(long productId, long productImageId, ProductImage image)
         {
-            var req = PrepareRequest($"products/{productId}/images/{productImageId}.json");
+            var req = PrepareRequest(string.Format("products/{0}/images/{1}.json", productId, productImageId));
             var content = new JsonContent(new
             {
                 image = image
@@ -129,7 +129,7 @@ namespace ShopifySharp
         /// <param name="imageId">The ProductImage object's Id.</param>
         public virtual async Task DeleteAsync(long productId, long imageId)
         {
-            var req = PrepareRequest($"products/{productId}/images/{imageId}.json");
+            var req = PrepareRequest(string.Format("products/{0}/images/{1}.json", productId, imageId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

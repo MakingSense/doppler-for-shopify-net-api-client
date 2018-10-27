@@ -23,7 +23,7 @@ namespace ShopifySharp
         /// <param name="orderId">The order the risks belong to.</param>
         public virtual async Task<IEnumerable<OrderRisk>> ListAsync(long orderId)
         {
-            var req = PrepareRequest($"orders/{orderId}/risks.json");
+            var req = PrepareRequest(string.Format("orders/{0}/risks.json", orderId));
             
             return await ExecuteRequestAsync<List<OrderRisk>>(req, HttpMethod.Get, rootElement: "risks");
         }
@@ -35,7 +35,7 @@ namespace ShopifySharp
         /// <param name="riskId">The id of the risk to retrieve.</param>
         public virtual async Task<OrderRisk> GetAsync(long orderId, long riskId)
         {
-            var req = PrepareRequest($"orders/{orderId}/risks/{riskId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}/risks/{1}.json", orderId, riskId));
             
             return await ExecuteRequestAsync<OrderRisk>(req, HttpMethod.Get, rootElement: "risk");
         }
@@ -47,7 +47,7 @@ namespace ShopifySharp
         /// <param name="risk">A new <see cref="OrderRisk"/>. Id should be set to null.</param>
         public virtual async Task<OrderRisk> CreateAsync(long orderId, OrderRisk risk)
         {
-            var req = PrepareRequest($"orders/{orderId}/risks.json");
+            var req = PrepareRequest(string.Format("orders/{0}/risks.json", orderId));
             var content = new JsonContent(new
             {
                 risk = risk
@@ -64,7 +64,7 @@ namespace ShopifySharp
         /// <param name="risk">The risk to update.</param>
         public virtual async Task<OrderRisk> UpdateAsync(long orderId, long orderRiskId, OrderRisk risk)
         {
-            var req = PrepareRequest($"orders/{orderId}/risks/{orderRiskId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}/risks/{1}.json", orderId, orderRiskId));
             var content = new JsonContent(new
             {
                 risk = risk
@@ -80,7 +80,7 @@ namespace ShopifySharp
         /// <param name="riskId">The risk's id.</param>
         public virtual async Task DeleteAsync(long orderId, long riskId)
         {
-            var req = PrepareRequest($"orders/{orderId}/risks/{riskId}.json");
+            var req = PrepareRequest(string.Format("orders/{0}/risks/{1}.json", orderId, riskId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }

@@ -24,7 +24,7 @@ namespace ShopifySharp
         /// <param name="productId">The product that the variants belong to.</param>
         public virtual async Task<int> CountAsync(long productId)
         {
-            var req = PrepareRequest($"products/{productId}/variants/count.json");
+            var req = PrepareRequest(string.Format("products/{0}/variants/count.json", productId));
 
             return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
         }
@@ -36,7 +36,7 @@ namespace ShopifySharp
         /// <param name="filterOptions">Options for filtering the result.</param>
         public virtual async Task<IEnumerable<ProductVariant>> ListAsync(long productId, ListFilter filterOptions = null)
         {
-            var req = PrepareRequest($"products/{productId}/variants.json");
+            var req = PrepareRequest(string.Format("products/{0}/variants.json", productId));
 
             if (filterOptions != null)
             {
@@ -52,7 +52,7 @@ namespace ShopifySharp
         /// <param name="variantId">The id of the product variant to retrieve.</param>
         public virtual async Task<ProductVariant> GetAsync(long variantId)
         {
-            var req = PrepareRequest($"variants/{variantId}.json");
+            var req = PrepareRequest(string.Format("variants/{0}.json", variantId));
 
             return await ExecuteRequestAsync<ProductVariant>(req, HttpMethod.Get, rootElement: "variant");
         }
@@ -64,7 +64,7 @@ namespace ShopifySharp
         /// <param name="variant">A new <see cref="ProductVariant"/>. Id should be set to null.</param>
         public virtual async Task<ProductVariant> CreateAsync(long productId, ProductVariant variant)
         {
-            var req = PrepareRequest($"products/{productId}/variants.json");
+            var req = PrepareRequest(string.Format("products/{0}/variants.json", productId));
             var content = new JsonContent(new
             {
                 variant = variant
@@ -80,7 +80,7 @@ namespace ShopifySharp
         /// <param name="variant">The variant to update.</param>
         public virtual async Task<ProductVariant> UpdateAsync(long productVariantId, ProductVariant variant)
         {
-            var req = PrepareRequest($"variants/{productVariantId}.json");
+            var req = PrepareRequest(string.Format("variants/{0}.json", productVariantId));
             var content = new JsonContent(new
             {
                 variant = variant
@@ -96,7 +96,7 @@ namespace ShopifySharp
         /// <param name="variantId">The product variant's id.</param>
         public virtual async Task DeleteAsync(long productId, long variantId)
         {
-            var req = PrepareRequest($"products/{productId}/variants/{variantId}.json");
+            var req = PrepareRequest(string.Format("products/{0}/variants/{1}.json", productId, variantId));
 
             await ExecuteRequestAsync(req, HttpMethod.Delete);
         }
