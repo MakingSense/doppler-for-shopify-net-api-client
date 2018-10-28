@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace ShopifySharp.Filters
 {
     /// <summary>
-    /// Options for filtering <see cref="GiftCardService.ListAsync(GiftCardFilter)"/> results.
+    /// Options for filtering <see cref="GiftCardService.List(GiftCardFilter)"/> results.
     /// </summary>
     public class GiftCardFilter : ListFilter
     {

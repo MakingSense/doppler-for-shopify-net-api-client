@@ -22,12 +22,12 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="charge">The <see cref="Charge"/> to create.</param>
         /// <returns>The new <see cref="Charge"/>.</returns>
-        public virtual async Task<Charge> CreateAsync(Charge charge)
+        public virtual Charge Create(Charge charge)
         {
             var req = PrepareRequest("application_charges.json");
             var content = new JsonContent(new { application_charge = charge });
 
-            return await ExecuteRequestAsync<Charge>(req, HttpMethod.Post, content, "application_charge");
+            return ExecuteRequest<Charge>(req, HttpMethod.Post, content, "application_charge");
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace ShopifySharp
         /// <param name="id">The id of the charge to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Charge"/>.</returns>
-        public virtual async Task<Charge> GetAsync(long id, string fields = null)
+        public virtual Charge Get(long id, string fields = null)
         {
             var req = PrepareRequest(string.Format("application_charges/{0}.json", id));
 
@@ -45,7 +45,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Charge>(req, HttpMethod.Get, rootElement: "application_charge");
+            return ExecuteRequest<Charge>(req, HttpMethod.Get, rootElement: "application_charge");
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace ShopifySharp
         /// <param name="sinceId">Restricts results to any charge after the given id.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The list of <see cref="Charge"/> objects.</returns>
-        public virtual async Task<IEnumerable<Charge>> ListAsync(long? sinceId = null, string fields = null)
+        public virtual List<Charge> List(long? sinceId = null, string fields = null)
         {
             var req = PrepareRequest("application_charges.json");
 
@@ -68,18 +68,18 @@ namespace ShopifySharp
                 req.QueryParams.Add("since_id", sinceId);
             }
 
-            return await ExecuteRequestAsync<List<Charge>>(req, HttpMethod.Get, rootElement: "application_charges");
+            return ExecuteRequest<List<Charge>>(req, HttpMethod.Get, rootElement: "application_charges");
         }
 
         /// <summary>
         /// Activates a <see cref="Charge"/> that the shop owner has accepted.
         /// </summary>
         /// <param name="id">The id of the charge to activate.</param>
-        public virtual async Task ActivateAsync(long id)
+        public virtual void Activate(long id)
         {
             var req = PrepareRequest(string.Format("application_charges/{0}/activate.json", id));
 
-            await ExecuteRequestAsync(req, HttpMethod.Post);
+            ExecuteRequest(req, HttpMethod.Post);
         }
     }
 }

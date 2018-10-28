@@ -17,19 +17,18 @@ namespace ShopifySharp.Converters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             T parsed;
-
-            if (!Enum.TryParse(reader.Value?.ToString() ?? "", true, out parsed))
+            var readerValue = reader.Value != null ? reader.Value.ToString() : string.Empty;
+            if (!Enum.TryParse(readerValue, true, out parsed))
             {
                 // Some EnumMember values have an '_', '-' or '/' in their value and will fail the TryParse or IsDefined checks.
                 // Use reflection to pull all of the enums values, get their EnumMember value and check if there's a match.
 
                 var enumType = typeof(T);
-                var enumTypeInfo = enumType.GetTypeInfo();
                 var enumVals = Enum.GetValues(enumType);
 
                 foreach (var enumVal in enumVals)
                 {
-                    var valInfo = enumTypeInfo.DeclaredMembers;
+                    var valInfo = enumType.GetMembers();
                     var enumMember = valInfo.First().GetCustomAttributes(typeof(EnumMemberAttribute), false);
 
                     if (enumMember.Count() == 0)
@@ -37,7 +36,8 @@ namespace ShopifySharp.Converters
                         continue;
                     }
 
-                    if (((EnumMemberAttribute)enumMember.First()).Value?.ToString() == reader.Value?.ToString())
+                    var enumMemberValue = ((EnumMemberAttribute)enumMember.First()).Value;
+                    if(enumMemberValue != null && enumMemberValue.ToString() == readerValue)
                     {
                         return (T)enumVal;
                     }

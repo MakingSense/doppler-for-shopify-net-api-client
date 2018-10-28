@@ -24,11 +24,11 @@ namespace ShopifySharp
         /// Retrieve a list of all carrier services that are associated with the store.
         /// </summary>
         /// <returns>The list of <see cref="Carrier" that are associated with the store.</returns>
-        public virtual async Task<IEnumerable<Carrier>> ListAsync()
+        public virtual List<Carrier> List()
         {
             var req = PrepareRequest("carrier_services.json");
 
-            return await ExecuteRequestAsync<List<Carrier>>(req, HttpMethod.Get, rootElement: "carrier_services");
+            return ExecuteRequest<List<Carrier>>(req, HttpMethod.Get, rootElement: "carrier_services");
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="carrier">A new <see cref="Carrier"/>. Id should be set to null.</param>
         /// <returns>The new <see cref="Carrier"/>.</returns>
-        public virtual async Task<Carrier> CreateAsync(Carrier carrier)
+        public virtual Carrier Create(Carrier carrier)
         {
             var req = PrepareRequest("carrier_services.json");
             var content = new JsonContent(new
@@ -44,7 +44,7 @@ namespace ShopifySharp
                 carrier_service = carrier
             });
 
-            return await ExecuteRequestAsync<Carrier>(req, HttpMethod.Post, content, "carrier_service");
+            return ExecuteRequest<Carrier>(req, HttpMethod.Post, content, "carrier_service");
         }
 
         /// <summary>
@@ -52,22 +52,22 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="carrierId">The id of the Carrier to retrieve.</param>
         /// <returns>The <see cref="Carrier"/>.</returns>
-        public virtual async Task<Carrier> GetAsync(long carrierId)
+        public virtual Carrier Get(long carrierId)
         {            
             var req = PrepareRequest(string.Format("carrier_services/{0}.json", carrierId));
 
-            return await ExecuteRequestAsync<Carrier>(req, HttpMethod.Get, rootElement: "carrier_service");           
+            return ExecuteRequest<Carrier>(req, HttpMethod.Get, rootElement: "carrier_service");           
         }
 
         /// <summary>
         /// Deletes a Carruer with the given Id.
         /// </summary>
         /// <param name="carrierId">The Carrier's Id.</param>
-        public virtual async Task DeleteAsync(long carrierId)
+        public virtual void Delete(long carrierId)
         {
             var req = PrepareRequest(string.Format("carrier_services/{0}.json", carrierId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace ShopifySharp
         /// <param name="carrierId">Id of the Carrier being updated.</param>
         /// <param name="carrier">The <see cref="Carrier"/> to update.</param>
         /// <returns>The updated <see cref="Carrier"/>.</returns>
-        public virtual async Task<Carrier> UpdateAsync(long carrierId, Carrier carrier)
+        public virtual Carrier Update(long carrierId, Carrier carrier)
         {
             var req = PrepareRequest(string.Format("carrier_services/{0}.json", carrierId));
             var content = new JsonContent(new
@@ -84,7 +84,7 @@ namespace ShopifySharp
                 carrier_service = carrier
             });
 
-            return await ExecuteRequestAsync<Carrier>(req, HttpMethod.Put, content, "carrier_service");
+            return ExecuteRequest<Carrier>(req, HttpMethod.Put, content, "carrier_service");
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using ShopifySharp.Infrastructure;
+using System.Threading;
 
 namespace ShopifySharp
 {
@@ -32,7 +33,7 @@ namespace ShopifySharp
 
         private static ConcurrentDictionary<string, LeakyBucket> _shopAccessTokenToLeakyBucket = new ConcurrentDictionary<string, LeakyBucket>();
 
-        public async Task<T> Run<T>(CloneableRequestMessage baseRequest, ExecuteRequestAsync<T> executeRequestAsync)
+        public T Run<T>(CloneableRequestMessage baseRequest, ExecuteRequest<T> executeRequestAsync)
         {
             var accessToken = GetAccessToken(baseRequest);
             LeakyBucket bucket = null;
@@ -48,17 +49,17 @@ namespace ShopifySharp
 
                 if (accessToken != null)
                 {
-                    await bucket.GrantAsync();
+                    bucket.Grant();
                 }
 
                 try
                 {
-                    var fullResult = await executeRequestAsync(request);
+                    var fullResult = executeRequestAsync(request);
                     var bucketState = this.GetBucketState(fullResult.Response);
 
-                    if (bucketState != null)
+                    if (bucketState != null && bucket != null)
                     {
-                        bucket?.SetState(bucketState);
+                        bucket.SetState(bucketState);
                     }
 
                     return fullResult.Result;
@@ -71,7 +72,7 @@ namespace ShopifySharp
                     //-There may be timing and latency delays
                     //-Multiple programs may use the same access token
                     //-Multiple instances of the same program may use the same access token
-                    await Task.Delay(THROTTLE_DELAY);
+                    Thread.Sleep(THROTTLE_DELAY);
                 }
             }
         }
@@ -88,14 +89,16 @@ namespace ShopifySharp
         private LeakyBucketState GetBucketState(HttpResponseMessage response)
         {
             var headers = response.Headers.FirstOrDefault(kvp => kvp.Key == RESPONSE_HEADER_API_CALL_LIMIT);
-            var apiCallLimitHeaderValue = headers.Value?.FirstOrDefault();
+            var apiCallLimitHeaderValue = headers.Value != null ? headers.Value.FirstOrDefault() : null;
 
             if (apiCallLimitHeaderValue != null)
             {
+                int currentFillLevel;
+                int capacity;
                 var split = apiCallLimitHeaderValue.Split('/');
                 if (split.Length == 2 &&
-                    int.TryParse(split[0], out int currentFillLevel) &&
-                    int.TryParse(split[1], out int capacity))
+                    int.TryParse(split[0], out currentFillLevel) &&
+                    int.TryParse(split[1], out capacity))
                 {
                     return new LeakyBucketState(capacity, currentFillLevel);
                 }

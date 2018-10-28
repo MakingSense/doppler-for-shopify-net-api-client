@@ -23,7 +23,7 @@ namespace ShopifySharp
                 string propName = property.Name;
                 if (value == null) continue;
 
-                if (property.CustomAttributes.Any(x => x.AttributeType == typeof(JsonPropertyAttribute)))
+                if (property.GetCustomAttributes(true).Any(x => x.GetType() == typeof(JsonPropertyAttribute)))
                 {
                     //Get the JsonPropertyAttribute for this property, which will give us its JSON name
                     JsonPropertyAttribute attribute = property.GetCustomAttributes(typeof(JsonPropertyAttribute), false).Cast<JsonPropertyAttribute>().FirstOrDefault();
@@ -31,7 +31,7 @@ namespace ShopifySharp
                     propName = attribute != null ? attribute.PropertyName : property.Name;
                 }
 
-                if (value.GetType().GetTypeInfo().IsEnum)
+                if (value.GetType().IsEnum)
                 {
                     value = ((Enum)value).ToSerializedString();
                 }

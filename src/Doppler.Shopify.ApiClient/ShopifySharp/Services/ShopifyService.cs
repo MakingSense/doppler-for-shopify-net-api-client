@@ -18,7 +18,7 @@ namespace ShopifySharp
 
         private static JsonSerializer _Serializer = new JsonSerializer { DateParseHandling = DateParseHandling.DateTimeOffset };
 
-        private static HttpClient _Client { get; private set; } 
+        private static HttpClient _Client { get; set; } 
 
         private IRequestExecutionPolicy _ExecutionPolicy;
 
@@ -96,7 +96,7 @@ namespace ShopifySharp
             {
                 Scheme = "https:",
                 Port = 443,
-                Path = $"admin/{path}"
+                Path = string.Format("admin/{0}", path)
             };
 
             return new RequestUri(ub.Uri);
@@ -126,30 +126,31 @@ namespace ShopifySharp
         /// <remarks>
         /// This method will automatically dispose the <paramref name="baseClient"/> and <paramref name="content" /> when finished.
         /// </remarks>
-        protected async Task<JToken> ExecuteRequestAsync(RequestUri uri, HttpMethod method, HttpContent content = null)
+        protected JToken ExecuteRequest(RequestUri uri, HttpMethod method, HttpContent content = null)
         {
             using (var baseRequestMessage = PrepareRequestMessage(uri, method, content))
             {
-                var policyResult = await _ExecutionPolicy.Run(baseRequestMessage, async (requestMessage) =>
+                var policyResult =  _ExecutionPolicy.Run(baseRequestMessage, (requestMessage) =>
                 {
                     var request = _Client.SendAsync(requestMessage);
+                    request.Wait();
 
-                    using (var response = await request)
+                    using (var response = request.Result)
                     {
-                        var rawResult = await response.Content.ReadAsStringAsync();
-
+                        var rawResult = response.Content.ReadAsStringAsync();
+                        rawResult.Wait();
                         //Check for and throw exception when necessary.
-                        CheckResponseExceptions(response, rawResult);
+                        CheckResponseExceptions(response, rawResult.Result);
 
                         JToken jtoken = null;
 
                         // Don't parse the result when the request was Delete.
                         if (baseRequestMessage.Method != HttpMethod.Delete)
                         {
-                            jtoken = JToken.Parse(rawResult);
+                            jtoken = JToken.Parse(rawResult.Result);
                         }
 
-                        return new RequestResult<JToken>(response, jtoken, rawResult);
+                        return new RequestResult<JToken>(response, jtoken, rawResult.Result);
                     }
                 });
 
@@ -164,29 +165,29 @@ namespace ShopifySharp
         /// <remarks>
         /// This method will automatically dispose the <paramref name="baseRequestMessage" /> when finished.
         /// </remarks>
-        protected async Task<T> ExecuteRequestAsync<T>(RequestUri uri, HttpMethod method, HttpContent content = null, string rootElement = null) where T : new()
+        protected T ExecuteRequest<T>(RequestUri uri, HttpMethod method, HttpContent content = null, string rootElement = null) where T : new()
         {
             using (var baseRequestMessage = PrepareRequestMessage(uri, method, content))
             {
-                var policyResult = await _ExecutionPolicy.Run<T>(baseRequestMessage, async (requestMessage) =>
+                var policyResult = _ExecutionPolicy.Run<T>(baseRequestMessage, (requestMessage) =>
                 {
                     var request = _Client.SendAsync(requestMessage);
-
-                    using (var response = await request)
+                    request.Wait();
+                    using (var response = request.Result)
                     {
-                        var rawResult = await response.Content.ReadAsStringAsync();
-
+                        var rawResult = response.Content.ReadAsStringAsync();
+                        rawResult.Wait();
                         //Check for and throw exception when necessary.
-                        CheckResponseExceptions(response, rawResult);
+                        CheckResponseExceptions(response, rawResult.Result);
 
                         // This method may fail when the method was Delete, which is intendend.
                         // Delete methods should not be parsing the response JSON and should instead
-                        // be using the non-generic ExecuteRequestAsync.
-                        var reader = new JsonTextReader(new StringReader(rawResult));
+                        // be using the non-generic ExecuteRequest.
+                        var reader = new JsonTextReader(new StringReader(rawResult.Result));
                         var data = _Serializer.Deserialize<JObject>(reader).SelectToken(rootElement);
                         var result = data.ToObject<T>();
 
-                        return new RequestResult<T>(response, result, rawResult);
+                        return new RequestResult<T>(response, result, rawResult.Result);
                     }
                 });
 
@@ -209,14 +210,14 @@ namespace ShopifySharp
             }
 
             var requestIdHeader = response.Headers.FirstOrDefault(h => h.Key.Equals("X-Request-Id", StringComparison.OrdinalIgnoreCase));
-            string requestId = requestIdHeader.Value?.FirstOrDefault();
+            string requestId = requestIdHeader.Value != null ? requestIdHeader.Value.FirstOrDefault() : null;
             var code = response.StatusCode;
 
             // If the error was caused by reaching the API rate limit, throw a rate limit exception.
             if ((int)code == 429 /* Too many requests */)
             {
                 string listMessage = "Exceeded 2 calls per second for api client. Reduce request rates to resume uninterrupted service.";
-                string rateLimitMessage = $"Error: {listMessage}";
+                string rateLimitMessage = string.Format("Error: {0}", listMessage);
 
                 // Shopify used to return JSON for rate limit exceptions, but then made an unannounced change and started returing HTML. 
                 // This dictionary is an attempt at preserving what was previously returned.
@@ -229,14 +230,14 @@ namespace ShopifySharp
             }
 
             var errors = ParseErrorJson(rawResponse);
-            string message = $"Response did not indicate success. Status: {(int)code} {response.ReasonPhrase}.";
+            string message = string.Format("Response did not indicate success. Status: {0} {1}.", (int)code, response.ReasonPhrase);
 
             if (errors == null)
             {
                 errors = new Dictionary<string, IEnumerable<string>>()
                     {
                         {
-                            $"{(int)code} {response.ReasonPhrase}",
+                            string.Format("{0} {1}", (int)code, response.ReasonPhrase),
                             new string[] { message }
                         },
                     };
@@ -245,7 +246,7 @@ namespace ShopifySharp
             {
                 var firstError = errors.First();
 
-                message = $"{firstError.Key}: {string.Join(", ", firstError.Value)}";
+                message = string.Format("{0}: {1}", firstError.Key, string.Join(", ", firstError.Value));
             }
 
             throw new ShopifyException(code, errors, message, rawResponse, requestId);

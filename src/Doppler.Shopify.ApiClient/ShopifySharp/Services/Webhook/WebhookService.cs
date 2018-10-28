@@ -25,7 +25,7 @@ namespace ShopifySharp
         /// <param name="address">An optional filter for the address property. When used, this method will only count webhooks with the given address.</param>
         /// <param name="topic">An optional filter for the topic property. When used, this method will only count webhooks with the given topic. A full list of topics can be found at https://help.shopify.com/api/reference/webhook. </param>
         /// <returns>The count of all webhooks for the shop.</returns>
-        public virtual async Task<int> CountAsync(string address = null, string topic = null)
+        public virtual int Count(string address = null, string topic = null)
         {
             var req = PrepareRequest("webhooks/count.json");
 
@@ -39,7 +39,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("topic", topic);
             }
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="filter">Options for filtering the list.</param>
         /// <returns>The list of webhooks matching the filter.</returns>
-        public virtual async Task<IEnumerable<Webhook>> ListAsync(WebhookFilter filter = null)
+        public virtual List<Webhook> List(WebhookFilter filter = null)
         {
             var req = PrepareRequest("webhooks.json");
 
@@ -56,7 +56,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<Webhook>>(req, HttpMethod.Get, rootElement: "webhooks");
+            return ExecuteRequest<List<Webhook>>(req, HttpMethod.Get, rootElement: "webhooks");
         }
 
         /// <summary>
@@ -65,16 +65,16 @@ namespace ShopifySharp
         /// <param name="webhookId">The id of the webhook to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Webhook"/>.</returns>
-        public virtual async Task<Webhook> GetAsync(long webhookId, string fields = null)
+        public virtual Webhook Get(long webhookId, string fields = null)
         {
-            var req = PrepareRequest($"webhooks/{webhookId}.json");
+            var req = PrepareRequest(string.Format("webhooks/{0}.json", webhookId));
 
             if (!string.IsNullOrEmpty(fields))
             {
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Webhook>(req, HttpMethod.Get, rootElement: "webhook");
+            return ExecuteRequest<Webhook>(req, HttpMethod.Get, rootElement: "webhook");
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="webhook">A new <see cref="Webhook"/>. Id should be set to null.</param>
         /// <returns>The new <see cref="Webhook"/>.</returns>
-        public virtual async Task<Webhook> CreateAsync(Webhook webhook)
+        public virtual Webhook Create(Webhook webhook)
         {
             var req = PrepareRequest("webhooks.json");
             var content = new JsonContent(new
@@ -90,7 +90,7 @@ namespace ShopifySharp
                 webhook = webhook
             });
 
-            return await ExecuteRequestAsync<Webhook>(req, HttpMethod.Post, content, "webhook");
+            return ExecuteRequest<Webhook>(req, HttpMethod.Post, content, "webhook");
         }
 
         /// <summary>
@@ -99,26 +99,26 @@ namespace ShopifySharp
         /// <param name="webhookId">Id of the object being updated.</param>
         /// <param name="webhook">The <see cref="Webhook"/> to update.</param>
         /// <returns>The updated <see cref="Webhook"/>.</returns>
-        public virtual async Task<Webhook> UpdateAsync(long webhookId, Webhook webhook)
+        public virtual Webhook Update(long webhookId, Webhook webhook)
         {
-            var req = PrepareRequest($"webhooks/{webhookId}.json");
+            var req = PrepareRequest(string.Format("webhooks/{0}.json", webhookId));
             var content = new JsonContent(new
             {
                 webhook = webhook
             });
 
-            return await ExecuteRequestAsync<Webhook>(req, HttpMethod.Put, content, "webhook");
+            return ExecuteRequest<Webhook>(req, HttpMethod.Put, content, "webhook");
         }
 
         /// <summary>
         /// Deletes the webhook with the given Id.
         /// </summary>
         /// <param name="webhookId">The order object's Id.</param>
-        public virtual async Task DeleteAsync(long webhookId)
+        public virtual void Delete(long webhookId)
         {
-            var req = PrepareRequest($"webhooks/{webhookId}.json");
+            var req = PrepareRequest(string.Format("webhooks/{0}.json", webhookId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
     }
 }

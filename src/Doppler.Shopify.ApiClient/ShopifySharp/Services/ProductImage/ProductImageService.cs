@@ -25,7 +25,7 @@ namespace ShopifySharp
         /// <param name="productId">The id of the product that counted images belong to.</param>
         /// <param name="filter">An optional filter that restricts the results.</param>
         /// <returns>The count of all ProductImages for the shop.</returns>
-        public virtual async Task<int> CountAsync(long productId, PublishableCountFilter filter = null)
+        public virtual int Count(long productId, PublishableCountFilter filter = null)
         {
             var req = PrepareRequest(string.Format("products/{0}/images/count.json", productId));
 
@@ -34,7 +34,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace ShopifySharp
         /// <remarks>
         /// Unlike most list commands, this one only accepts the since_id and fields filters.
         /// </remarks>
-        public virtual async Task<IEnumerable<ProductImage>> ListAsync(long productId, long? sinceId = null, string fields = null)
+        public virtual List<ProductImage> List(long productId, long? sinceId = null, string fields = null)
         {
             var req = PrepareRequest(string.Format("products/{0}/images.json", productId));
 
@@ -65,7 +65,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<List<ProductImage>>(req, HttpMethod.Get, rootElement: "images");
+            return ExecuteRequest<List<ProductImage>>(req, HttpMethod.Get, rootElement: "images");
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace ShopifySharp
         /// <param name="imageId">The id of the ProductImage to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="ProductImage"/>.</returns>
-        public virtual async Task<ProductImage> GetAsync(long productId, long imageId, string fields = null)
+        public virtual ProductImage Get(long productId, long imageId, string fields = null)
         {
             var req = PrepareRequest(string.Format("products/{0}/images/{1}.json", productId, imageId));
 
@@ -84,7 +84,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<ProductImage>(req, HttpMethod.Get, rootElement: "image");
+            return ExecuteRequest<ProductImage>(req, HttpMethod.Get, rootElement: "image");
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace ShopifySharp
         /// <param name="productId">The id of the product that counted images belong to.</param>
         /// <param name="image">The new <see cref="ProductImage"/>.</param>
         /// <returns>The new <see cref="ProductImage"/>.</returns>
-        public virtual async Task<ProductImage> CreateAsync(long productId, ProductImage image)
+        public virtual ProductImage Create(long productId, ProductImage image)
         {
             var req = PrepareRequest(string.Format("products/{0}/images.json", productId));
             var content = new JsonContent(new
@@ -101,7 +101,7 @@ namespace ShopifySharp
                 image = image
             });
 
-            return await ExecuteRequestAsync<ProductImage>(req, HttpMethod.Post, content, "image");
+            return ExecuteRequest<ProductImage>(req, HttpMethod.Post, content, "image");
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace ShopifySharp
         /// <param name="productImageId">Id of the object being updated.</param>
         /// <param name="image">The <see cref="ProductImage"/> to update.</param>
         /// <returns>The updated <see cref="ProductImage"/>.</returns>
-        public virtual async Task<ProductImage> UpdateAsync(long productId, long productImageId, ProductImage image)
+        public virtual ProductImage Update(long productId, long productImageId, ProductImage image)
         {
             var req = PrepareRequest(string.Format("products/{0}/images/{1}.json", productId, productImageId));
             var content = new JsonContent(new
@@ -119,7 +119,7 @@ namespace ShopifySharp
                 image = image
             });
 
-            return await ExecuteRequestAsync<ProductImage>(req, HttpMethod.Put, content, "image");
+            return ExecuteRequest<ProductImage>(req, HttpMethod.Put, content, "image");
         }
 
         /// <summary>
@@ -127,11 +127,11 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="productId">The id of the product that counted images belong to.</param>
         /// <param name="imageId">The ProductImage object's Id.</param>
-        public virtual async Task DeleteAsync(long productId, long imageId)
+        public virtual void Delete(long productId, long imageId)
         {
             var req = PrepareRequest(string.Format("products/{0}/images/{1}.json", productId, imageId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
     }
 }

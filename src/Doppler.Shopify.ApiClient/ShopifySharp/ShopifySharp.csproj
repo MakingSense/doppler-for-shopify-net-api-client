@@ -164,6 +164,9 @@
     <Compile Include="Infrastructure\RequestUri.cs" />
     <Compile Include="Infrastructure\ShopifyException.cs" />
     <Compile Include="Infrastructure\ShopifyRateLimitException.cs" />
+    <Compile Include="Legacy\EnumMemberAttribute.cs" />
+    <Compile Include="Legacy\HashCodeCombiner.cs" />
+    <Compile Include="Legacy\StringValues.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccessScope\AccessScopeService.cs" />
     <Compile Include="Services\ApplicationCredit\ApplicationCreditService.cs" />

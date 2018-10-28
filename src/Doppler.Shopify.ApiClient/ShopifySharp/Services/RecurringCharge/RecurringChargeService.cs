@@ -22,7 +22,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="charge">The <see cref="RecurringCharge"/> to create.</param>
         /// <returns>The new <see cref="RecurringCharge"/>.</returns>
-        public virtual async Task<RecurringCharge> CreateAsync(RecurringCharge charge)
+        public virtual RecurringCharge Create(RecurringCharge charge)
         {
             var req = PrepareRequest("recurring_application_charges.json");
             var content = new JsonContent(new
@@ -30,7 +30,7 @@ namespace ShopifySharp
                 recurring_application_charge = charge
             });
 
-            return await ExecuteRequestAsync<RecurringCharge>(req, HttpMethod.Post, content, "recurring_application_charge");
+            return ExecuteRequest<RecurringCharge>(req, HttpMethod.Post, content, "recurring_application_charge");
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace ShopifySharp
         /// <param name="id">The id of the charge to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="RecurringCharge"/>.</returns>
-        public virtual async Task<RecurringCharge> GetAsync(long id, string fields = null)
+        public virtual RecurringCharge Get(long id, string fields = null)
         {
             var req = PrepareRequest(string.Format("recurring_application_charges/{0}.json", id));
 
@@ -48,7 +48,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<RecurringCharge>(req, HttpMethod.Get, rootElement: "recurring_application_charge");
+            return ExecuteRequest<RecurringCharge>(req, HttpMethod.Get, rootElement: "recurring_application_charge");
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace ShopifySharp
         /// <param name="sinceId">Restricts results to any charge after the given id.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The list of <see cref="RecurringCharge"/> objects.</returns>
-        public virtual async Task<IEnumerable<RecurringCharge>> ListAsync(long? sinceId = null, string fields = null)
+        public virtual List<RecurringCharge> List(long? sinceId = null, string fields = null)
         {
             var req = PrepareRequest("recurring_application_charges.json");
 
@@ -71,29 +71,29 @@ namespace ShopifySharp
                 req.QueryParams.Add("since_id", sinceId.Value);
             }
 
-            return await ExecuteRequestAsync<List<RecurringCharge>>(req, HttpMethod.Get, rootElement: "recurring_application_charges");
+            return ExecuteRequest<List<RecurringCharge>>(req, HttpMethod.Get, rootElement: "recurring_application_charges");
         }
 
         /// <summary>
         /// Activates a <see cref="RecurringCharge"/> that the shop owner has accepted.
         /// </summary>
         /// <param name="id">The id of the charge to activate.</param>
-        public virtual async Task ActivateAsync(long id)
+        public virtual void Activate(long id)
         {
             var req = PrepareRequest(string.Format("recurring_application_charges/{0}/activate.json", id));
 
-            await ExecuteRequestAsync(req, HttpMethod.Post);
+            ExecuteRequest(req, HttpMethod.Post);
         }
 
         /// <summary>
         /// Deletes a <see cref="RecurringCharge"/>.
         /// </summary>
         /// <param name="id">The id of the charge to delete.</param>
-        public virtual async Task DeleteAsync(long id)
+        public virtual void Delete(long id)
         {
             var req = PrepareRequest(string.Format("recurring_application_charges/{0}.json", id));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
     }
 }

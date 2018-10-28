@@ -21,11 +21,11 @@ namespace ShopifySharp
         /// Gets a list of up to 250 of the shop's discounts.
         /// </summary>
         /// <returns></returns>
-        public virtual async Task<IEnumerable<Discount>> ListAsync()
+        public virtual List<Discount> List()
         {
             var req = PrepareRequest("discounts.json");
 
-            return await ExecuteRequestAsync<List<Discount>>(req, HttpMethod.Get, rootElement: "discounts");
+            return ExecuteRequest<List<Discount>>(req, HttpMethod.Get, rootElement: "discounts");
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace ShopifySharp
         /// <param name="discountId">The id of the discount to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Discount"/>.</returns>
-        public virtual async Task<Discount> GetAsync(long discountId, string fields = null)
+        public virtual Discount Get(long discountId, string fields = null)
         {
             var req = PrepareRequest(string.Format("discounts/{0}.json", discountId));
 
@@ -43,7 +43,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Discount>(req, HttpMethod.Get, rootElement: "discount");
+            return ExecuteRequest<Discount>(req, HttpMethod.Get, rootElement: "discount");
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="discount">A new <see cref="Discount"/>. Id should be set to null.</param>
         /// <returns>The new <see cref="Discount"/>.</returns>
-        public virtual async Task<Discount> CreateAsync(Discount discount)
+        public virtual Discount Create(Discount discount)
         {
             var req = PrepareRequest("discounts.json");
 
@@ -63,7 +63,7 @@ namespace ShopifySharp
                 discount = discountBody
             });
 
-            return await ExecuteRequestAsync<Discount>(req, HttpMethod.Post, content, "discount");
+            return ExecuteRequest<Discount>(req, HttpMethod.Post, content, "discount");
         }
 
         /// <summary>
@@ -71,11 +71,11 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="discountId">The Id of the <see cref="Discount"/> to be enabled.</param>
         /// <returns>The updated <see cref="Discount"/>.</returns>
-        public virtual async Task<Discount> EnableAsync(long discountId)
+        public virtual Discount Enable(long discountId)
         {
             var req = PrepareRequest(string.Format("discounts/{0}/enable.json", discountId));
 
-            return await ExecuteRequestAsync<Discount>(req, HttpMethod.Put, rootElement: "discount");
+            return ExecuteRequest<Discount>(req, HttpMethod.Put, rootElement: "discount");
         }
 
         /// <summary>
@@ -83,22 +83,22 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="discountId">The Id of the <see cref="Discount"/> to be disabled.</param>
         /// <returns>The updated <see cref="Discount"/>.</returns>
-        public virtual async Task<Discount> DisableAsync(long discountId)
+        public virtual Discount Disable(long discountId)
         {
             var req = PrepareRequest(string.Format("discounts/{0}/disable.json", discountId));
 
-            return await ExecuteRequestAsync<Discount>(req, HttpMethod.Put, rootElement: "discount");
+            return ExecuteRequest<Discount>(req, HttpMethod.Put, rootElement: "discount");
         }
 
         /// <summary>
         /// Removes the discount with the specified Id.
         /// </summary>
         /// <param name="discountId">The discount object's Id.</param>
-        public virtual async Task DeleteAsync(long discountId)
+        public virtual void Delete(long discountId)
         {
             var req = PrepareRequest(string.Format("discounts/{0}.json",discountId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
     }
 }

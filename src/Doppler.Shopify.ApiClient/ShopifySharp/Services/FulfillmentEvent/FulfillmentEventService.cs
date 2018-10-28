@@ -25,11 +25,11 @@ namespace ShopifySharp
         /// <param name="orderId">The order id to which the fulfillment belongs to.</param>
         /// <param name="fulfillmentId">The fulfillment id to which the fulfillment events belong to.</param>
         /// <returns>The list of fulfillment events for the given fulfillment.</returns>
-        public virtual async Task<IEnumerable<FulfillmentEvent>> ListAsync(long orderId, long fulfillmentId)
+        public virtual List<FulfillmentEvent> List(long orderId, long fulfillmentId)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/events.json", orderId, fulfillmentId));
 
-            return await ExecuteRequestAsync<List<FulfillmentEvent>>(req, HttpMethod.Get, rootElement: "fulfillment_events");
+            return ExecuteRequest<List<FulfillmentEvent>>(req, HttpMethod.Get, rootElement: "fulfillment_events");
         }
 
         /// <summary>
@@ -39,11 +39,11 @@ namespace ShopifySharp
         /// <param name="fulfillmentId">The id of the fulfillment to which the event belongs to.</param>
         /// <param name="fulfillmentEventId">The id of the fulfillment event to retrieve.</param>
         /// <returns>The <see cref="FulfillmentEvent"/>.</returns>
-        public virtual async Task<FulfillmentEvent> GetAsync(long orderId, long fulfillmentId, long fulfillmentEventId)
+        public virtual FulfillmentEvent Get(long orderId, long fulfillmentId, long fulfillmentEventId)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/events/{2}.json", orderId, fulfillmentId, fulfillmentEventId));
 
-            return await ExecuteRequestAsync<FulfillmentEvent>(req, HttpMethod.Get, rootElement: "fulfillment_event");
+            return ExecuteRequest<FulfillmentEvent>(req, HttpMethod.Get, rootElement: "fulfillment_event");
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="event">A new <see cref="Fulfillment"/>. Id should be set to null.</param>
         /// <returns>The new <see cref="FulfillmentEvent"/>.</returns>
-        public virtual async Task<FulfillmentEvent> CreateAsync(long orderId, long fulfillmentId, FulfillmentEvent @event)
+        public virtual FulfillmentEvent Create(long orderId, long fulfillmentId, FulfillmentEvent @event)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/events.json", orderId, fulfillmentId));
 
@@ -60,7 +60,7 @@ namespace ShopifySharp
                 @event
             });
 
-            return await ExecuteRequestAsync<FulfillmentEvent>(req, HttpMethod.Post, content, "fulfillment_event");
+            return ExecuteRequest<FulfillmentEvent>(req, HttpMethod.Post, content, "fulfillment_event");
         }
 
         /// <summary>
@@ -69,11 +69,11 @@ namespace ShopifySharp
         /// <param name="orderId">The order id to which the fulfillment belongs to.</param>
         /// <param name="fulfillmentId">The id of the fulfillment to which the event belongs to.</param>
         /// <param name="fulfillmentEventId">The id of the fulfillment event to retrieve.</param>
-        public virtual async Task DeleteAsync(long orderId, long fulfillmentId, long fulfillmentEventId)
+        public virtual void Delete(long orderId, long fulfillmentId, long fulfillmentEventId)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/events/{2}.json", orderId, fulfillmentId, fulfillmentEventId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
     }
 }

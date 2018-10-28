@@ -25,7 +25,7 @@ namespace ShopifySharp
         /// <param name="orderId">The order id to which the fulfillments belong.</param>
         /// <param name="filter">Options for filtering the count.</param>
         /// <returns>The count of all fulfillments for the shop.</returns>
-        public virtual async Task<int> CountAsync(long orderId, CountFilter filter = null)
+        public virtual int Count(long orderId, CountFilter filter = null)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments/count.json", orderId));
 
@@ -34,7 +34,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace ShopifySharp
         /// <param name="orderId">The order id to which the fulfillments belong.</param>
         /// <param name="options">Options for filtering the list.</param>
         /// <returns>The list of fulfillments matching the filter.</returns>
-        public virtual async Task<IEnumerable<Fulfillment>> ListAsync(long orderId, ListFilter options = null)
+        public virtual List<Fulfillment> List(long orderId, ListFilter options = null)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments.json", orderId));
 
@@ -52,7 +52,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(options.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<Fulfillment>>(req, HttpMethod.Get, rootElement: "fulfillments");
+            return ExecuteRequest<List<Fulfillment>>(req, HttpMethod.Get, rootElement: "fulfillments");
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace ShopifySharp
         /// <param name="fulfillmentId">The id of the Fulfillment to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Fulfillment"/>.</returns>
-        public virtual async Task<Fulfillment> GetAsync(long orderId, long fulfillmentId, string fields = null)
+        public virtual Fulfillment Get(long orderId, long fulfillmentId, string fields = null)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}.json", orderId, fulfillmentId));
 
@@ -71,7 +71,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Fulfillment>(req, HttpMethod.Get, rootElement: "fulfillment");
+            return ExecuteRequest<Fulfillment>(req, HttpMethod.Get, rootElement: "fulfillment");
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace ShopifySharp
         /// <param name="notifyCustomer">Whether the customer should be notified that the fulfillment
         /// has been created.</param>
         /// <returns>The new <see cref="Fulfillment"/>.</returns>
-        public virtual async Task<Fulfillment> CreateAsync(long orderId, Fulfillment fulfillment, bool notifyCustomer)
+        public virtual Fulfillment Create(long orderId, Fulfillment fulfillment, bool notifyCustomer)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments.json", orderId));
             var body = fulfillment.ToDictionary();
@@ -93,7 +93,7 @@ namespace ShopifySharp
                 fulfillment = body
             });
 
-            return await ExecuteRequestAsync<Fulfillment>(req, HttpMethod.Post, content, "fulfillment");
+            return ExecuteRequest<Fulfillment>(req, HttpMethod.Post, content, "fulfillment");
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace ShopifySharp
         /// <param name="">Id of the object being updated.</param>
         /// <param name="fulfillment">The <see cref="Fulfillment"/> to update.</param>
         /// <returns>The updated <see cref="Fulfillment"/>.</returns>
-        public virtual async Task<Fulfillment> UpdateAsync(long orderId, long fulfillmentId, Fulfillment fulfillment, bool notifyCustomer=false)
+        public virtual Fulfillment Update(long orderId, long fulfillmentId, Fulfillment fulfillment, bool notifyCustomer=false)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}.json", orderId, fulfillmentId));
 
@@ -115,7 +115,7 @@ namespace ShopifySharp
                 fulfillment = body
             });
 
-            return await ExecuteRequestAsync<Fulfillment>(req, HttpMethod.Put, content, "fulfillment");
+            return ExecuteRequest<Fulfillment>(req, HttpMethod.Put, content, "fulfillment");
         }
 
         /// <summary>
@@ -123,11 +123,11 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="orderId">The order id to which the fulfillments belong.</param>
         /// <param name="fulfillmentId">The fulfillment's id.</param>
-        public virtual async Task<Fulfillment> CompleteAsync(long orderId, long fulfillmentId)
+        public virtual Fulfillment Complete(long orderId, long fulfillmentId)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/complete.json", orderId, fulfillmentId));
 
-            return await ExecuteRequestAsync<Fulfillment>(req, HttpMethod.Post, rootElement: "fulfillment");
+            return ExecuteRequest<Fulfillment>(req, HttpMethod.Post, rootElement: "fulfillment");
         }
 
         /// <summary>
@@ -135,11 +135,11 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="orderId">The order id to which the fulfillments belong.</param>
         /// <param name="fulfillmentId">The fulfillment's id.</param>
-        public virtual async Task<Fulfillment> CancelAsync(long orderId, long fulfillmentId)
+        public virtual Fulfillment Cancel(long orderId, long fulfillmentId)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/cancel.json", orderId, fulfillmentId));
 
-            return await ExecuteRequestAsync<Fulfillment>(req, HttpMethod.Post, rootElement: "fulfillment");
+            return ExecuteRequest<Fulfillment>(req, HttpMethod.Post, rootElement: "fulfillment");
         }
 
 
@@ -148,11 +148,11 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="orderId">The order id to which the fulfillments belong.</param>
         /// <param name="fulfillmentId">The fulfillment's id.</param>
-        public virtual async Task<Fulfillment> OpenAsync(long orderId, long fulfillmentId)
+        public virtual Fulfillment Open(long orderId, long fulfillmentId)
         {
             var req = PrepareRequest(string.Format("orders/{0}/fulfillments/{1}/open.json", orderId, fulfillmentId));
 
-            return await ExecuteRequestAsync<Fulfillment>(req, HttpMethod.Post, rootElement: "fulfillment");
+            return ExecuteRequest<Fulfillment>(req, HttpMethod.Post, rootElement: "fulfillment");
         }
 
     }

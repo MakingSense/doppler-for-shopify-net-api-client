@@ -24,7 +24,7 @@ namespace ShopifySharp
         /// <param name="key">The key value of the asset, e.g. 'templates/index.liquid' or 'assets/bg-body.gif'.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Asset"/>.</returns>
-        public virtual async Task<Asset> GetAsync(long themeId, string key, string fields = null)
+        public virtual Asset Get(long themeId, string key, string fields = null)
         {
             var req = PrepareRequest(string.Format("themes/{0}/assets.json", themeId));
 
@@ -36,7 +36,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Asset>(req, HttpMethod.Get, rootElement: "asset");
+            return ExecuteRequest<Asset>(req, HttpMethod.Get, rootElement: "asset");
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace ShopifySharp
         /// <param name="themeId">The id of the theme that the asset belongs to.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The list of <see cref="Asset"/> objects.</returns>
-        public virtual async Task<IEnumerable<Asset>> ListAsync(long themeId, string fields = null)
+        public virtual List<Asset> List(long themeId, string fields = null)
         {
             var req = PrepareRequest(string.Format("themes/{0}/assets.json", themeId));
 
@@ -55,7 +55,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<List<Asset>>(req, HttpMethod.Get, rootElement: "assets");
+            return ExecuteRequest<List<Asset>>(req, HttpMethod.Get, rootElement: "assets");
         }
 
         /// <summary>
@@ -64,12 +64,12 @@ namespace ShopifySharp
         /// it will be created. If not, it will be updated. Copy an asset by setting the
         /// <see cref="Asset.SourceKey"/> to the target's <see cref="Asset.Key"/> value.
         /// Note: This will not return the asset's <see cref="Asset.Value"/> property. You should
-        /// use <see cref="GetAsync(long, string, string)"/> to refresh the value after creating or updating.
+        /// use <see cref="Get(long, string, string)"/> to refresh the value after creating or updating.
         /// </summary>
         /// <param name="themeId">The id of the theme that the asset belongs to.</param>
         /// <param name="asset">The asset.</param>
         /// <returns>The created or updated asset.</returns>
-        public virtual async Task<Asset> CreateOrUpdateAsync(long themeId, Asset asset)
+        public virtual Asset CreateOrUpdate(long themeId, Asset asset)
         {
             var req = PrepareRequest(string.Format("themes/{0}/assets.json", themeId));
             var content = new JsonContent(new
@@ -77,7 +77,7 @@ namespace ShopifySharp
                 asset = asset
             });
 
-            return await ExecuteRequestAsync<Asset>(req, HttpMethod.Put, content, "asset");
+            return ExecuteRequest<Asset>(req, HttpMethod.Put, content, "asset");
         }
 
         /// <summary>
@@ -85,13 +85,13 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="themeId">The id of the theme that the asset belongs to.</param>
         /// <param name="key">The key value of the asset, e.g. 'templates/index.liquid' or 'assets/bg-body.gif'.</param>
-        public virtual async Task DeleteAsync(long themeId, string key)
+        public virtual void Delete(long themeId, string key)
         {
             var req = PrepareRequest(string.Format("themes/{0}/assets.json", themeId));
 
             req = SetAssetQuerystring(req, key, themeId);
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
 
         /// <summary>

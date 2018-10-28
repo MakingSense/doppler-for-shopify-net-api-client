@@ -24,7 +24,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="filter">Options for filtering the count.</param>
         /// <returns>The count of all orders for the shop.</returns>
-        public virtual async Task<int> CountAsync(CheckoutFilter filter = null)
+        public virtual int Count(CheckoutFilter filter = null)
         {
             var req = PrepareRequest("checkouts/count.json");
 
@@ -33,14 +33,14 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
         /// Gets a list of up to 250 of the shop's abandoned carts.
         /// </summary>
         /// <returns></returns>
-        public virtual async Task<IEnumerable<Checkout>> ListAsync(CheckoutFilter options = null)
+        public virtual List<Checkout> List(CheckoutFilter options = null)
         {
             var req = PrepareRequest("checkouts.json");
 
@@ -49,7 +49,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(options.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<Checkout>>(req, HttpMethod.Get, rootElement: "checkouts");
+            return ExecuteRequest<List<Checkout>>(req, HttpMethod.Get, rootElement: "checkouts");
         }
 
     }

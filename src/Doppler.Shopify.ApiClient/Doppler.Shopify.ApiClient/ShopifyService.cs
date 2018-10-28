@@ -7,6 +7,9 @@ namespace Doppler.Shopify.ApiClient
 {
     public class ShopifyService
     {
-
+        public ShopifyService(ShopifyServiceConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace ShopifySharp
         /// Gets a list of inventory items.
         /// </summary>
         /// <param name="filterOptions">Options for filtering the result. Ids must be populated.</param>
-        public virtual async Task<IEnumerable<InventoryItem>> ListAsync(ListFilter filterOptions)
+        public virtual List<InventoryItem> List(ListFilter filterOptions)
         {
             var req = PrepareRequest("inventory_items.json");
 
@@ -31,18 +31,18 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filterOptions.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<InventoryItem>>(req, HttpMethod.Get, rootElement: "inventory_items");
+            return ExecuteRequest<List<InventoryItem>>(req, HttpMethod.Get, rootElement: "inventory_items");
         }
 
         /// <summary>
         /// Retrieves the <see cref="InventoryItem"/> with the given id.
         /// </summary>
         /// <param name="inventoryItemId">The id of the inventory item to retrieve.</param>
-        public virtual async Task<InventoryItem> GetAsync(long inventoryItemId)
+        public virtual InventoryItem Get(long inventoryItemId)
         {
             var req = PrepareRequest(string.Format("inventory_items/{0}.json", inventoryItemId));
 
-            return await ExecuteRequestAsync<InventoryItem>(req, HttpMethod.Get, rootElement: "inventory_item");
+            return ExecuteRequest<InventoryItem>(req, HttpMethod.Get, rootElement: "inventory_item");
         }
 
 
@@ -50,7 +50,7 @@ namespace ShopifySharp
         /// Updates an existing <see cref="InventoryItem"/>.
         /// </summary>
         /// <param name="inventoryItemId">The id of the inventory item to retrieve.</param>
-        public virtual async Task<InventoryItem> UpdateAsync( long inventoryItemId, InventoryItem inventoryItem )
+        public virtual InventoryItem Update( long inventoryItemId, InventoryItem inventoryItem )
         {
             var req = PrepareRequest(string.Format("inventory_items/{0}.json", inventoryItemId));
             var content = new JsonContent( new
@@ -58,7 +58,7 @@ namespace ShopifySharp
                 inventory_item = inventoryItem
             } );
 
-            return await ExecuteRequestAsync<InventoryItem>( req, HttpMethod.Put, content, rootElement: "inventory_item" );
+            return ExecuteRequest<InventoryItem>( req, HttpMethod.Put, content, rootElement: "inventory_item" );
         }
 
     }

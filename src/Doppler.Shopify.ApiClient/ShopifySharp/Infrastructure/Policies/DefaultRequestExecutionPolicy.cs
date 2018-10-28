@@ -6,9 +6,9 @@ namespace ShopifySharp
 {
     public class DefaultRequestExecutionPolicy : IRequestExecutionPolicy
     {
-        public async Task<T> Run<T>(CloneableRequestMessage request, ExecuteRequestAsync<T> executeRequestAsync)
+        public T Run<T>(CloneableRequestMessage request, ExecuteRequest<T> executeRequest)
         {
-            var fullResult = await executeRequestAsync(request);
+            var fullResult = executeRequest(request);
 
             return fullResult.Result;
         }

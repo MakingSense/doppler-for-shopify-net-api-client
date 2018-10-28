@@ -22,7 +22,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The list of <see cref="ShippingZone"/> objects.</returns>
-        public virtual async Task<IEnumerable<ShippingZone>> ListAsync(string fields = null)
+        public virtual List<ShippingZone> List(string fields = null)
         {
             var req = PrepareRequest("shipping_zones.json");
 
@@ -31,7 +31,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<List<ShippingZone>>(req, HttpMethod.Get, rootElement: "shipping_zones");
+            return ExecuteRequest<List<ShippingZone>>(req, HttpMethod.Get, rootElement: "shipping_zones");
         }
     }
 }

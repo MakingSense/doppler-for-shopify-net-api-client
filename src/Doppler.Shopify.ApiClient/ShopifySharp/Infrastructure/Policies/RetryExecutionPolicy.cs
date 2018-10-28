@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using ShopifySharp.Infrastructure;
+using System.Threading;
 
 namespace ShopifySharp
 {
@@ -12,7 +13,7 @@ namespace ShopifySharp
     {
         private static readonly TimeSpan RETRY_DELAY = TimeSpan.FromMilliseconds(500);
 
-        public async Task<T> Run<T>(CloneableRequestMessage baseRequest, ExecuteRequestAsync<T> executeRequestAsync)
+        public T Run<T>(CloneableRequestMessage baseRequest, ExecuteRequest<T> executeRequest)
         {
             while (true)
             {
@@ -20,13 +21,13 @@ namespace ShopifySharp
 
                 try
                 {
-                    var fullResult = await executeRequestAsync(request);
+                    var fullResult = executeRequest(request);
 
                     return fullResult.Result;
                 }
                 catch (ShopifyRateLimitException)
                 {
-                    await Task.Delay(RETRY_DELAY);
+                    Thread.Sleep(RETRY_DELAY);
                 }
             }
         }

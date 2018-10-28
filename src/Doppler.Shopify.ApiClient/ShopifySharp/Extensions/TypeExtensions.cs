@@ -11,13 +11,11 @@ namespace ShopifySharp
         {
             // .NET Core did not add Type.GetProperties until 1.5, so we need a recursive function
             // to return a list of this properties DeclareProperties, and its base type's DeclaredProperties.
+            var props = type.GetProperties().ToList();
 
-            var info = type.GetTypeInfo();
-            var props = info.DeclaredProperties.ToList();
-
-            if (info.BaseType != null)
+            if (type.BaseType != null)
             {
-                props.AddRange(info.BaseType.GetAllDeclaredProperties());
+                props.AddRange(type.BaseType.GetAllDeclaredProperties());
             }
 
             return props;

@@ -5,7 +5,7 @@ using System.Reflection;
 namespace ShopifySharp.Filters
 {
     /// <summary>
-    /// Options for filtering <see cref="InventoryLevelService.ListAsync(InventoryLevelFilter)"/> results.
+    /// Options for filtering <see cref="InventoryLevelService.List(InventoryLevelFilter)"/> results.
     /// </summary>
     public class InventoryLevelFilter : ListFilter
     {

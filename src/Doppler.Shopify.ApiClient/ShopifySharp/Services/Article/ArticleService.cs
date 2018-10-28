@@ -23,7 +23,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="blogId">The blog that the articles belong to.</param>
         /// <param name="filter">Options for filtering the result.</param>
-        public virtual async Task<IEnumerable<Article>> ListAsync(long blogId, ArticleFilter filter = null)
+        public virtual List<Article> List(long blogId, ArticleFilter filter = null)
         {
             var req = PrepareRequest(string.Format("blogs/{0}/articles.json", blogId));
 
@@ -32,7 +32,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<Article>>(req, HttpMethod.Get, rootElement: "articles");
+            return ExecuteRequest<List<Article>>(req, HttpMethod.Get, rootElement: "articles");
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="blogId">The blog that the articles belong to.</param>
         /// <param name="filter">Options for filtering the result.</param>
-        public virtual async Task<int> CountAsync(long blogId, PublishableCountFilter filter = null)
+        public virtual int Count(long blogId, PublishableCountFilter filter = null)
         {
             var req = PrepareRequest(string.Format("blogs/{0}/articles/count.json", blogId));
 
@@ -49,7 +49,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace ShopifySharp
         /// <param name="blogId">The blog that the article belongs to.</param>
         /// <param name="articleId">The article's id.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
-        public virtual async Task<Article> GetAsync(long blogId, long articleId, string fields = null)
+        public virtual Article Get(long blogId, long articleId, string fields = null)
         {
             var req = PrepareRequest(string.Format("blogs/{0}/articles/{1}.json", blogId, articleId));
 
@@ -67,7 +67,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Article>(req, HttpMethod.Get, rootElement: "article");
+            return ExecuteRequest<Article>(req, HttpMethod.Get, rootElement: "article");
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace ShopifySharp
         /// <param name="blogId">The blog that the article will belong to.</param>
         /// <param name="article">The article being created. Id should be null.</param>
         /// <param name="metafields">Optional metafield data that can be returned by the <see cref="MetaFieldService"/>.</param>
-        public virtual async Task<Article> CreateAsync(long blogId, Article article, IEnumerable<MetaField> metafields = null)
+        public virtual Article Create(long blogId, Article article, IEnumerable<MetaField> metafields = null)
         {
             var req = PrepareRequest(string.Format("blogs/{0}/articles.json", blogId));
             var body = article.ToDictionary();
@@ -91,7 +91,7 @@ namespace ShopifySharp
                 article = body
             });
 
-            return await ExecuteRequestAsync<Article>(req, HttpMethod.Post, content, "article");
+            return ExecuteRequest<Article>(req, HttpMethod.Post, content, "article");
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace ShopifySharp
         /// <param name="articleId">Id of the object being updated.</param>
         /// <param name="article">The article being updated.</param>
         /// <param name="metafields">Optional metafield data that can be returned by the <see cref="MetaFieldService"/>.</param>
-        public virtual async Task<Article> UpdateAsync(long blogId, long articleId, Article article, IEnumerable<MetaField> metafields = null)
+        public virtual Article Update(long blogId, long articleId, Article article, IEnumerable<MetaField> metafields = null)
         {
             var req = PrepareRequest(string.Format("blogs/{0}/articles/{1}.json", blogId, articleId));
             var body = article.ToDictionary();
@@ -116,7 +116,7 @@ namespace ShopifySharp
                 article = body
             });
 
-            return await ExecuteRequestAsync<Article>(req, HttpMethod.Put, content, "article");
+            return ExecuteRequest<Article>(req, HttpMethod.Put, content, "article");
         }
 
         /// <summary>
@@ -124,21 +124,21 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="blogId">The blog that the article belongs to.</param>
         /// <param name="articleId">The article benig deleted.</param>
-        public virtual async Task DeleteAsync(long blogId, long articleId)
+        public virtual void Delete(long blogId, long articleId)
         {
             var req = PrepareRequest(string.Format("blogs/{0}/articles/{1}.json", blogId, articleId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
 
         /// <summary>
         /// Gets a list of all article authors.
         /// </summary>
-        public virtual async Task<IEnumerable<string>> ListAuthorsAsync()
+        public virtual List<string> ListAuthors()
         {
             var req = PrepareRequest("articles/authors.json");
 
-            return await ExecuteRequestAsync<List<string>>(req, HttpMethod.Get, rootElement: "authors");
+            return ExecuteRequest<List<string>>(req, HttpMethod.Get, rootElement: "authors");
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="limit">The number of tags to return</param>
         /// <param name="popular">A flag to indicate only to a certain number of the most popular tags.</param>
-        public virtual async Task<IEnumerable<string>> ListTagsAsync(int? popular = null, int? limit = null)
+        public virtual List<string> ListTags(int? popular = null, int? limit = null)
         {
             var req = PrepareRequest("articles/tags.json");
 
@@ -160,7 +160,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("limit", limit.Value);
             }
 
-            return await ExecuteRequestAsync<List<string>>(req, HttpMethod.Get, rootElement: "tags");
+            return ExecuteRequest<List<string>>(req, HttpMethod.Get, rootElement: "tags");
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace ShopifySharp
         /// <param name="blogId">The blog that the tags belong to.</param>
         /// <param name="limit">The number of tags to return</param>
         /// <param name="popular">A flag to indicate only to a certain number of the most popular tags.</param>
-        public virtual async Task<IEnumerable<string>> ListTagsForBlogAsync(long blogId, int? popular = null, int? limit = null)
+        public virtual List<string> ListTagsForBlog(long blogId, int? popular = null, int? limit = null)
         {
             var req = PrepareRequest(string.Format("blogs/{0}/articles/tags.json", blogId));
 
@@ -183,7 +183,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("limit", limit.Value);
             }
 
-            return await ExecuteRequestAsync<List<string>>(req, HttpMethod.Get, rootElement: "tags");
+            return ExecuteRequest<List<string>>(req, HttpMethod.Get, rootElement: "tags");
         }
     }
 }

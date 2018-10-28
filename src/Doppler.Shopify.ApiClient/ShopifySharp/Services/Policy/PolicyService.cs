@@ -16,11 +16,11 @@ namespace ShopifySharp
         /// <summary>
         /// Get the policies and their contents for a shop
         /// </summary>
-        public virtual async Task<IEnumerable<Policy>> ListAsync()
+        public virtual List<Policy> List()
         {
             var request = PrepareRequest("policies.json");
 
-            return await ExecuteRequestAsync<List<Policy>>(request, HttpMethod.Get, rootElement: "policies");
+            return ExecuteRequest<List<Policy>>(request, HttpMethod.Get, rootElement: "policies");
         }
     }
 }

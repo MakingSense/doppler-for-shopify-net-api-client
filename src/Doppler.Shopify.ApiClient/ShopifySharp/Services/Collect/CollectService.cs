@@ -26,7 +26,7 @@ namespace ShopifySharp
         /// Gets a count of all of the collects (product-collection mappings).
         /// </summary>
         /// <returns>The count of all collects for the shop.</returns>
-        public virtual async Task<int> CountAsync(CollectFilter filter = null)
+        public virtual int Count(CollectFilter filter = null)
         {
             var req = PrepareRequest("collects/count.json");
 
@@ -35,14 +35,14 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
         /// Gets a list of up to 250 of the shop's collects.
         /// </summary>
         /// <returns></returns>
-        public virtual async Task<IEnumerable<Collect>> ListAsync(CollectFilter options = null)
+        public virtual List<Collect> List(CollectFilter options = null)
         {
             var req = PrepareRequest("collects.json");
 
@@ -51,7 +51,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(options.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<Collect>>(req, HttpMethod.Get, rootElement: "collects");
+            return ExecuteRequest<List<Collect>>(req, HttpMethod.Get, rootElement: "collects");
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace ShopifySharp
         /// <param name="collectId">The id of the collect to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Collect"/>.</returns>
-        public virtual async Task<Collect> GetAsync(long collectId, string fields = null)
+        public virtual Collect Get(long collectId, string fields = null)
         {
             var req = PrepareRequest(string.Format("collects/{0}.json", collectId));
 
@@ -69,7 +69,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Collect>(req, HttpMethod.Get, rootElement: "collect");
+            return ExecuteRequest<Collect>(req, HttpMethod.Get, rootElement: "collect");
         }
 
 
@@ -78,7 +78,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="collect">A new <see cref="Collect"/>. Id should be set to null.</param>
         /// <returns>The new <see cref="Collect"/>.</returns>
-        public virtual async Task<Collect> CreateAsync(Collect collect)
+        public virtual Collect Create(Collect collect)
         {
             var req = PrepareRequest("collects.json");
             var content = new JsonContent(new
@@ -86,18 +86,18 @@ namespace ShopifySharp
                 collect = collect
             });
 
-            return await ExecuteRequestAsync<Collect>(req, HttpMethod.Post, content, "collect");
+            return ExecuteRequest<Collect>(req, HttpMethod.Post, content, "collect");
         }
 
         /// <summary>
         /// Deletes a collect with the given Id.
         /// </summary>
         /// <param name="collectId">The product object's Id.</param>
-        public virtual async Task DeleteAsync(long collectId)
+        public virtual void Delete(long collectId)
         {
             var req = PrepareRequest(string.Format("collects/{0}.json", collectId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
     }
 }

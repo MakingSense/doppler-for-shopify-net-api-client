@@ -22,7 +22,7 @@ namespace ShopifySharp
         /// Gets a count of all smart collections on the store.
         /// </summary>
         /// <param name="filterOptions">Options for filtering the count.</param>
-        public virtual async Task<int> CountAsync(SmartCollectionFilter filterOptions = null)
+        public virtual int Count(SmartCollectionFilter filterOptions = null)
         {
             var req = PrepareRequest("smart_collections/count.json");
 
@@ -31,14 +31,14 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filterOptions.ToParameters());
             }
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
         /// Gets a list of up to 250 smart collections.
         /// </summary>
         /// <param name="filterOptions">Options for filtering the result.</param>
-        public virtual async Task<IEnumerable<SmartCollection>> ListAsync(SmartCollectionFilter filterOptions = null)
+        public virtual List<SmartCollection> List(SmartCollectionFilter filterOptions = null)
         {
             var req = PrepareRequest("smart_collections.json");
 
@@ -47,25 +47,25 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filterOptions.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<SmartCollection>>(req, HttpMethod.Get, rootElement: "smart_collections");
+            return ExecuteRequest<List<SmartCollection>>(req, HttpMethod.Get, rootElement: "smart_collections");
         }
 
         /// <summary>
         /// Retrieves the <see cref="SmartCollection"/> with the given id.
         /// </summary>
         /// <param name="collectionId">The id of the smart collection to retrieve.</param>
-        public virtual async Task<SmartCollection> GetAsync(long collectionId)
+        public virtual SmartCollection Get(long collectionId)
         {
             var req = PrepareRequest(string.Format("smart_collections/{0}.json", collectionId));
 
-            return await ExecuteRequestAsync<SmartCollection>(req, HttpMethod.Get, rootElement: "smart_collection");
+            return ExecuteRequest<SmartCollection>(req, HttpMethod.Get, rootElement: "smart_collection");
         }
 
         /// <summary>
         /// Creates a new <see cref="SmartCollection"/>.
         /// </summary>
         /// <param name="collection">A new <see cref="SmartCollection"/>. Id should be set to null.</param>
-        public virtual async Task<SmartCollection> CreateAsync(SmartCollection collection, bool published = true)
+        public virtual SmartCollection Create(SmartCollection collection, bool published = true)
         {
             var req = PrepareRequest("smart_collections.json");
             var body = collection.ToDictionary();
@@ -77,7 +77,7 @@ namespace ShopifySharp
                 smart_collection = body
             });
 
-            return await ExecuteRequestAsync<SmartCollection>(req, HttpMethod.Post, content, "smart_collection");
+            return ExecuteRequest<SmartCollection>(req, HttpMethod.Post, content, "smart_collection");
         }
 
         /// <summary>
@@ -85,21 +85,21 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="smartCollectionId">Id of the object being updated.</param>
         /// <param name="collection">The smart collection to update.</param>
-        public virtual async Task<SmartCollection> UpdateAsync(long smartCollectionId, SmartCollection collection)
+        public virtual SmartCollection Update(long smartCollectionId, SmartCollection collection)
         {
             var req = PrepareRequest(string.Format("smart_collections/{0}.json", smartCollectionId));
             var content = new JsonContent(new
             {
                 smart_collection = collection
             });
-            return await ExecuteRequestAsync<SmartCollection>(req, HttpMethod.Put, content, "smart_collection");
+            return ExecuteRequest<SmartCollection>(req, HttpMethod.Put, content, "smart_collection");
         }
 
         /// <summary>
         /// Publishes an unpublished smart collection.
         /// </summary>
         /// <param name="smartCollectionId">The collection's id.</param>
-        public virtual async Task<SmartCollection> PublishAsync(long smartCollectionId)
+        public virtual SmartCollection Publish(long smartCollectionId)
         {
             var req = PrepareRequest(string.Format("smart_collections/{0}.json", smartCollectionId));
             var body = new Dictionary<string, object>()
@@ -112,14 +112,14 @@ namespace ShopifySharp
                 smart_collection = body
             });
 
-            return await ExecuteRequestAsync<SmartCollection>(req, HttpMethod.Put, content, "smart_collection");
+            return ExecuteRequest<SmartCollection>(req, HttpMethod.Put, content, "smart_collection");
         }
 
         /// <summary>
         /// Publishes an unpublished smart collection.
         /// </summary>
         /// <param name="smartCollectionId">The collection's id.</param>
-        public virtual async Task<SmartCollection> UnpublishAsync(long smartCollectionId)
+        public virtual SmartCollection Unpublish(long smartCollectionId)
         {
             var req = PrepareRequest(string.Format("smart_collections/{0}.json", smartCollectionId));
             var body = new Dictionary<string, object>()
@@ -132,7 +132,7 @@ namespace ShopifySharp
                 smart_collection = body
             });
 
-            return await ExecuteRequestAsync<SmartCollection>(req, HttpMethod.Put, content, "smart_collection");
+            return ExecuteRequest<SmartCollection>(req, HttpMethod.Put, content, "smart_collection");
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace ShopifySharp
         /// <param name="smartCollectionId">Id of the object being updated.</param>
         /// <param name="sortOrder">The order in which products in the smart collection appear. Note that specifying productIds parameter will have no effect unless the sort order is "manual"</param>
         /// <param name="productIds">An array of product ids sorted in the order you want them to appear in.</param>
-        public virtual async Task UpdateProductOrderAsync(long smartCollectionId, string sortOrder = null, params long[] productIds)
+        public virtual void UpdateProductOrder(long smartCollectionId, string sortOrder = null, params long[] productIds)
         {
             var req = PrepareRequest(string.Format("smart_collections/{0}/order.json", smartCollectionId));
             var content = new JsonContent(new
@@ -149,18 +149,18 @@ namespace ShopifySharp
                 sort_order = sortOrder,
                 products = productIds
             });
-            await ExecuteRequestAsync(req, HttpMethod.Put, content);
+            ExecuteRequest(req, HttpMethod.Put, content);
         }
 
         /// <summary>
         /// Deletes a smart collection with the given Id.
         /// </summary>
         /// <param name="collectionId">The smart collection's id.</param>
-        public virtual async Task DeleteAsync(long collectionId)
+        public virtual void Delete(long collectionId)
         {
             var req = PrepareRequest(string.Format("smart_collections/{0}.json", collectionId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
     }
 }

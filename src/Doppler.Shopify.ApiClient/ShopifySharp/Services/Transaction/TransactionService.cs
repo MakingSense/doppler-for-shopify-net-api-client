@@ -22,11 +22,11 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="orderId">The order id to which the fulfillments belong.</param>
         /// <returns>The count of all fulfillments for the shop.</returns>
-        public virtual async Task<int> CountAsync(long orderId)
+        public virtual int Count(long orderId)
         {
             var req = PrepareRequest(string.Format("orders/{0}/transactions/count.json", orderId));
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace ShopifySharp
         /// <param name="orderId">The order id to which the fulfillments belong.</param>
         /// <param name="sinceId">Filters the results to after the specified id.</param>
         /// <returns>The list of transactions.</returns>
-        public virtual async Task<IEnumerable<Transaction>> ListAsync(long orderId, long? sinceId = null)
+        public virtual List<Transaction> List(long orderId, long? sinceId = null)
         {
             var req = PrepareRequest(string.Format("orders/{0}/transactions.json", orderId));
 
@@ -44,7 +44,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("since_id", sinceId.Value);
             }
 
-            return await ExecuteRequestAsync<List<Transaction>>(req, HttpMethod.Get, rootElement: "transactions");
+            return ExecuteRequest<List<Transaction>>(req, HttpMethod.Get, rootElement: "transactions");
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace ShopifySharp
         /// <param name="transactionId">The id of the Transaction to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Transaction"/>.</returns>
-        public virtual async Task<Transaction> GetAsync(long orderId, long transactionId, string fields = null)
+        public virtual Transaction Get(long orderId, long transactionId, string fields = null)
         {
             var req = PrepareRequest(string.Format("orders/{0}/transactions/{1}.json", orderId, transactionId));
 
@@ -63,7 +63,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Transaction>(req, HttpMethod.Get, rootElement: "transaction");
+            return ExecuteRequest<Transaction>(req, HttpMethod.Get, rootElement: "transaction");
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace ShopifySharp
         /// <param name="orderId">The order id to which the fulfillments belong.</param>
         /// <param name="transaction">The transaction.</param>
         /// <returns>The new <see cref="Transaction"/>.</returns>
-        public virtual async Task<Transaction> CreateAsync(long orderId, Transaction transaction)
+        public virtual Transaction Create(long orderId, Transaction transaction)
         {
             var req = PrepareRequest(string.Format("orders/{0}/transactions.json", orderId));
             var content = new JsonContent(new
@@ -80,7 +80,7 @@ namespace ShopifySharp
                 transaction = transaction
             });
 
-            return await ExecuteRequestAsync<Transaction>(req, HttpMethod.Post, content, "transaction");
+            return ExecuteRequest<Transaction>(req, HttpMethod.Post, content, "transaction");
         }
     }
 }

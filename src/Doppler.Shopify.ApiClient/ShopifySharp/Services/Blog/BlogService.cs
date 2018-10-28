@@ -24,7 +24,7 @@ namespace ShopifySharp
         /// <param name="sinceId">Restrict results to after the specified ID</param>
         /// <param name="handle">Filter by Blog handle</param>
         /// <param name="fields">comma-separated list of fields to include in the response</param>
-        public virtual async Task<IEnumerable<Blog>> ListAsync(long? sinceId = null, string handle = null, string fields = null)
+        public virtual List<Blog> List(long? sinceId = null, string handle = null, string fields = null)
         {
             var request = PrepareRequest("blogs.json");
 
@@ -43,17 +43,17 @@ namespace ShopifySharp
                 request.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<List<Blog>>(request, HttpMethod.Get, rootElement: "blogs");
+            return ExecuteRequest<List<Blog>>(request, HttpMethod.Get, rootElement: "blogs");
         }
 
         /// <summary>
         /// Gets a count of all blogs.
         /// </summary>
-        public virtual async Task<int> CountAsync()
+        public virtual int Count()
         {
             var request = PrepareRequest("blogs/count.json");
 
-            return await ExecuteRequestAsync<int>(request, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(request, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="blog">The blog being created. Id should be null.</param>
         /// <param name="metafields">Optional metafield data that can be returned by the <see cref="MetaFieldService"/>.</param>
-        public virtual async Task<Blog> CreateAsync(Blog blog, IEnumerable<MetaField> metafields = null)
+        public virtual Blog Create(Blog blog, IEnumerable<MetaField> metafields = null)
         {
             var request = PrepareRequest("blogs.json");
             var body = blog.ToDictionary();
@@ -76,7 +76,7 @@ namespace ShopifySharp
                 blog = body
             });
 
-            return await ExecuteRequestAsync<Blog>(request, HttpMethod.Post, content, rootElement: "blog");
+            return ExecuteRequest<Blog>(request, HttpMethod.Post, content, rootElement: "blog");
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace ShopifySharp
         /// <param name="blogId">Id of the object being updated.</param>
         /// <param name="blog">The updated blog.</param>
         /// <param name="metafields">Optional metafield data that can be returned by the <see cref="MetaFieldService"/>.</param>
-        public virtual async Task<Blog> UpdateAsync(long blogId, Blog blog, IEnumerable<MetaField> metafields = null)
+        public virtual Blog Update(long blogId, Blog blog, IEnumerable<MetaField> metafields = null)
         {
             var request = PrepareRequest(string.Format("blogs/{0}.json", blogId));
             var body = blog.ToDictionary();
@@ -100,29 +100,29 @@ namespace ShopifySharp
                 blog = body
             });
 
-            return await ExecuteRequestAsync<Blog>(request, HttpMethod.Put, content, "blog");
+            return ExecuteRequest<Blog>(request, HttpMethod.Put, content, "blog");
         }
 
         /// <summary>
         /// Gets a blog with the given id.
         /// </summary>
         /// <param name="id">The id of the blog you want to retrieve.</param>
-        public virtual async Task<Blog> GetAsync(long id)
+        public virtual Blog Get(long id)
         {
             var request = PrepareRequest(string.Format("blogs/{0}.json", id));
 
-            return await ExecuteRequestAsync<Blog>(request, HttpMethod.Get, rootElement: "blog");
+            return ExecuteRequest<Blog>(request, HttpMethod.Get, rootElement: "blog");
         }
 
         /// <summary>
         /// Deletes a blog with the given id.
         /// </summary>
         /// <param name="id">The id of the blog you want to delete.</param>
-        public virtual async Task DeleteAsync(long id)
+        public virtual void Delete(long id)
         {
             var request = PrepareRequest(string.Format("blogs/{0}.json", id));
 
-            await ExecuteRequestAsync(request, HttpMethod.Delete);
+            ExecuteRequest(request, HttpMethod.Delete);
         }
     }
 }

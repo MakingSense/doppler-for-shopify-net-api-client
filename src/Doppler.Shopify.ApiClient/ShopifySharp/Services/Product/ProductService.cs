@@ -26,7 +26,7 @@ namespace ShopifySharp
         /// Gets a count of all of the shop's products.
         /// </summary>
         /// <returns>The count of all products for the shop.</returns>
-        public virtual async Task<int> CountAsync(ProductFilter filter = null)
+        public virtual int Count(ProductFilter filter = null)
         {
             var req = PrepareRequest("products/count.json");
 
@@ -35,14 +35,14 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
         /// Gets a list of up to 250 of the shop's products.
         /// </summary>
         /// <returns></returns>
-        public virtual async Task<IEnumerable<Product>> ListAsync(ProductFilter options = null)
+        public virtual List<Product> List(ProductFilter options = null)
         {
             var req = PrepareRequest("products.json");
 
@@ -51,7 +51,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(options.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<Product>>(req, HttpMethod.Get, rootElement: "products");
+            return ExecuteRequest<List<Product>>(req, HttpMethod.Get, rootElement: "products");
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace ShopifySharp
         /// <param name="productId">The id of the product to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Product"/>.</returns>
-        public virtual async Task<Product> GetAsync(long productId, string fields = null)
+        public virtual Product Get(long productId, string fields = null)
         {
             var req = PrepareRequest(string.Format("products/{0}.json", productId));
 
@@ -69,7 +69,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Product>(req, HttpMethod.Get, rootElement: "product");
+            return ExecuteRequest<Product>(req, HttpMethod.Get, rootElement: "product");
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace ShopifySharp
         /// <param name="product">A new <see cref="Product"/>. Id should be set to null.</param>
         /// <param name="options">Options for creating the product.</param>
         /// <returns>The new <see cref="Product"/>.</returns>
-        public virtual async Task<Product> CreateAsync(Product product, ProductCreateOptions options = null)
+        public virtual Product Create(Product product, ProductCreateOptions options = null)
         {
             var req = PrepareRequest("products.json");
             var body = product.ToDictionary();
@@ -96,7 +96,7 @@ namespace ShopifySharp
                 product = body
             });
 
-            return await ExecuteRequestAsync<Product>(req, HttpMethod.Post, content, "product");
+            return ExecuteRequest<Product>(req, HttpMethod.Post, content, "product");
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace ShopifySharp
         /// <param name="productId">Id of the object being updated.</param>
         /// <param name="product">The <see cref="Product"/> to update.</param>
         /// <returns>The updated <see cref="Product"/>.</returns>
-        public virtual async Task<Product> UpdateAsync(long productId, Product product)
+        public virtual Product Update(long productId, Product product)
         {
             var req = PrepareRequest(string.Format("products/{0}.json", productId));
             var content = new JsonContent(new
@@ -113,18 +113,18 @@ namespace ShopifySharp
                 product = product
             });
 
-            return await ExecuteRequestAsync<Product>(req, HttpMethod.Put, content, "product");
+            return ExecuteRequest<Product>(req, HttpMethod.Put, content, "product");
         }
 
         /// <summary>
         /// Deletes a product with the given Id.
         /// </summary>
         /// <param name="productId">The product object's Id.</param>
-        public virtual async Task DeleteAsync(long productId)
+        public virtual void Delete(long productId)
         {
             var req = PrepareRequest(string.Format("products/{0}.json", productId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="id">The product's id.</param>
         /// <returns>The published <see cref="Product"/></returns>
-        public virtual async Task<Product> PublishAsync(long id)
+        public virtual Product Publish(long id)
         {
             var req = PrepareRequest(string.Format("products/{0}.json", id));
             var content = new JsonContent(new
@@ -144,7 +144,7 @@ namespace ShopifySharp
                 }
             });
 
-            return await ExecuteRequestAsync<Product>(req, HttpMethod.Put, content, "product");
+            return ExecuteRequest<Product>(req, HttpMethod.Put, content, "product");
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="id">The product's id.</param>
         /// <returns>The unpublished <see cref="Product"/></returns>
-        public virtual async Task<Product> UnpublishAsync(long id)
+        public virtual Product Unpublish(long id)
         {
             var req = PrepareRequest(string.Format("products/{0}.json", id));
             var content = new JsonContent(new
@@ -164,7 +164,7 @@ namespace ShopifySharp
                 }
             });
 
-            return await ExecuteRequestAsync<Product>(req, HttpMethod.Put, content, "product");
+            return ExecuteRequest<Product>(req, HttpMethod.Put, content, "product");
         }
     }
 }

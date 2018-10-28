@@ -24,11 +24,11 @@ namespace ShopifySharp
         /// Gets all the users
         /// </summary>
         /// <returns>The list of all users.</returns>
-        public virtual async Task<IEnumerable<User>> ListAsync()
+        public virtual List<User> List()
         {
             var req = PrepareRequest("users.json");
 
-            return await ExecuteRequestAsync<List<User>>(req, HttpMethod.Get, rootElement: "users");
+            return ExecuteRequest<List<User>>(req, HttpMethod.Get, rootElement: "users");
         }
 
         /// <summary>
@@ -36,22 +36,22 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="userId">The id of the User to retrieve.</param>
         /// <returns>The <see cref="User"/>.</returns>
-        public virtual async Task<User> GetAsync(long userId)
+        public virtual User Get(long userId)
         {
             var req = PrepareRequest(string.Format("users/{0}.json", userId));
             
-            return await ExecuteRequestAsync<User>(req, HttpMethod.Get, rootElement: "user");
+            return ExecuteRequest<User>(req, HttpMethod.Get, rootElement: "user");
         }
 
         /// <summary>
         /// Retrieves the current logged-in <see cref="User"/> (useful only when the access token was created for a specific user of the shop).
         /// </summary>
         /// <returns>The <see cref="User"/>.</returns>
-        public virtual async Task<User> GetCurrentAsync()
+        public virtual User GetCurrent()
         {
             var req = PrepareRequest("users/current.json");
 
-            return await ExecuteRequestAsync<User>(req, HttpMethod.Get, rootElement: "user");
+            return ExecuteRequest<User>(req, HttpMethod.Get, rootElement: "user");
         }
     }
 }

@@ -25,7 +25,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="filter">The <see cref="CustomCollection"/>. used to filter results</param>
         /// <returns></returns>
-        public virtual async Task<IEnumerable<CustomCollection>> ListAsync(CustomCollectionFilter filter = null)
+        public virtual List<CustomCollection> List(CustomCollectionFilter filter = null)
         {
             var req = PrepareRequest("custom_collections.json");
 
@@ -35,7 +35,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<CustomCollection>>(req, HttpMethod.Get, rootElement: "custom_collections");
+            return ExecuteRequest<List<CustomCollection>>(req, HttpMethod.Get, rootElement: "custom_collections");
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="customCollection">A new <see cref="CustomCollection"/>. Id should be set to null.</param>
         /// <returns>The new <see cref="CustomCollection"/>.</returns>
-        public virtual async Task<CustomCollection> CreateAsync(CustomCollection customCollection)
+        public virtual CustomCollection Create(CustomCollection customCollection)
         {
             var req = PrepareRequest("custom_collections.json");
             var content = new JsonContent(new
@@ -51,14 +51,14 @@ namespace ShopifySharp
                 custom_collection = customCollection
             });
 
-            return await ExecuteRequestAsync<CustomCollection>(req, HttpMethod.Post, content, "custom_collection");
+            return ExecuteRequest<CustomCollection>(req, HttpMethod.Post, content, "custom_collection");
         }
 
         /// <summary>
         /// Gets a count of all of the custom collections
         /// </summary>
         /// <returns>The count of all collects for the shop.</returns>
-        public virtual async Task<int> CountAsync(CustomCollectionFilter options = null)
+        public virtual int Count(CustomCollectionFilter options = null)
         {
             var req = PrepareRequest("custom_collections/count.json");
 
@@ -67,7 +67,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(options.ToParameters());
             }
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace ShopifySharp
         /// <param name="customCollectionId">The id of the custom collection to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="CustomCollection"/>.</returns>
-        public virtual async Task<CustomCollection> GetAsync(long customCollectionId, string fields = null)
+        public virtual CustomCollection Get(long customCollectionId, string fields = null)
         {
             var req = PrepareRequest(string.Format("custom_collections/{0}.json", customCollectionId));
 
@@ -85,18 +85,18 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<CustomCollection>(req, HttpMethod.Get, rootElement: "custom_collection");
+            return ExecuteRequest<CustomCollection>(req, HttpMethod.Get, rootElement: "custom_collection");
         }
 
         /// <summary>
         /// Deletes a custom collection with the given Id.
         /// </summary>
         /// <param name="customCollectionId">The custom collection's Id.</param>
-        public virtual async Task DeleteAsync(long customCollectionId)
+        public virtual void Delete(long customCollectionId)
         {
             var req = PrepareRequest(string.Format("custom_collections/{0}.json", customCollectionId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace ShopifySharp
         /// <param name="customCollectionId">Id of the object being updated.</param>
         /// <param name="customCollection">The <see cref="CustomCollection"/> to update.</param>
         /// <returns>The updated <see cref="CustomCollection"/>.</returns>
-        public virtual async Task<CustomCollection> UpdateAsync(long customCollectionId, CustomCollection customCollection)
+        public virtual CustomCollection Update(long customCollectionId, CustomCollection customCollection)
         {
             var req = PrepareRequest(string.Format("custom_collections/{0}.json", customCollectionId));
             var content = new JsonContent(new
@@ -113,7 +113,7 @@ namespace ShopifySharp
                 custom_collection = customCollection
             });
 
-            return await ExecuteRequestAsync<CustomCollection>(req, HttpMethod.Put, content, "custom_collection");
+            return ExecuteRequest<CustomCollection>(req, HttpMethod.Put, content, "custom_collection");
         }
     }
 }

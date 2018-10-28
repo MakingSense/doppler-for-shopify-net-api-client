@@ -4,7 +4,7 @@ using ShopifySharp.Infrastructure;
 
 namespace ShopifySharp
 {
-    public delegate Task<RequestResult<T>> ExecuteRequestAsync<T>(CloneableRequestMessage request);
+    public delegate RequestResult<T> ExecuteRequest<T>(CloneableRequestMessage request);
 
     /// <summary>
     /// Used to specify centralized logic that should run when executing shopify requests.
@@ -13,7 +13,7 @@ namespace ShopifySharp
     public interface IRequestExecutionPolicy
     {
         /// <param name="baseRequest">The base request that was built by a service to execute.</param>
-        /// <param name="executeRequestAsync">A delegate that executes the request you pass to it.</param>
-        Task<T> Run<T>(CloneableRequestMessage requestMessage, ExecuteRequestAsync<T> executeRequestAsync);
+        /// <param name="executeRequest">A delegate that executes the request you pass to it.</param>
+        T Run<T>(CloneableRequestMessage requestMessage, ExecuteRequest<T> executeRequest);
     }
 }

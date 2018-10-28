@@ -69,7 +69,7 @@ namespace ShopifySharp
             })
                 .Where(kvp => kvp.Key != "signature" && kvp.Key != "hmac")
                 .OrderBy(kvp => kvp.Key, StringComparer.Ordinal)
-                .Select(kvp => $"{kvp.Key}={kvp.Value}");
+                .Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value));
 
             return string.Join(joinWith, kvps);
         }
@@ -200,7 +200,7 @@ namespace ShopifySharp
         /// Hint: use Request.InputStream if you're calling this from an ASP.NET MVC controller.</param>
         /// <param name="shopifySecretKey">Your app's secret key.</param>
         /// <returns>A boolean indicating whether the webhook is authentic or not.</returns>
-        public static async Task<bool> IsAuthenticWebhook(IEnumerable<KeyValuePair<string, StringValues>> requestHeaders, Stream inputStream, string shopifySecretKey)
+        public static bool IsAuthenticWebhook(IEnumerable<KeyValuePair<string, StringValues>> requestHeaders, Stream inputStream, string shopifySecretKey)
         {
             //Input stream may have already been read when a controller determines parameters to
             //pass to an action. Reset position to 0.
@@ -208,7 +208,7 @@ namespace ShopifySharp
 
             //We do not dispose the StreamReader because disposing it will also dispose the input stream,
             //and disposing a request's input stream can cause major headaches for the developer.
-            string requestBody = await new StreamReader(inputStream).ReadToEndAsync();
+            string requestBody = new StreamReader(inputStream).ReadToEnd();
 
             return IsAuthenticWebhook(requestHeaders, requestBody, shopifySecretKey);
         }
@@ -272,7 +272,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="url">The URL of the shop to check.</param>
         /// <returns>A boolean indicating whether the URL is valid.</returns>
-        public static async Task<bool> IsValidShopDomainAsync(string url)
+        public static bool IsValidShopDomain(string url)
         {
             var uri = ShopifyService.BuildShopUri(url, true);
 
@@ -282,9 +282,10 @@ namespace ShopifySharp
                 {
                     try
                     {
-                        var response = await client.SendAsync(msg);
+                        var response =  client.SendAsync(msg);
+                        response.Wait();
 
-                        return response.Headers.Any(h => h.Key.Equals("X-ShopId", StringComparison.OrdinalIgnoreCase));
+                        return response.Result.Headers.Any(h => h.Key.Equals("X-ShopId", StringComparison.OrdinalIgnoreCase));
                     }
                     catch (HttpRequestException)
                     {
@@ -346,7 +347,7 @@ namespace ShopifySharp
             }
 
             builder.Path = "admin/oauth/authorize";
-            builder.Query = string.Join("&", qs.Select(s => $"{s.Key}={s.Value}"));
+            builder.Query = string.Join("&", qs.Select(s => string.Format("{0}={1}", s.Key, s.Value)));
 
             return builder.Uri;
         }
@@ -359,9 +360,10 @@ namespace ShopifySharp
         /// <param name="shopifyApiKey">Your app's public API key.</param>
         /// <param name="shopifySecretKey">Your app's secret key.</param>
         /// <returns>The shop access token.</returns>
-        public static async Task<string> Authorize(string code, string myShopifyUrl, string shopifyApiKey, string shopifySecretKey)
+        public static string Authorize(string code, string myShopifyUrl, string shopifyApiKey, string shopifySecretKey)
         {
-            return (await AuthorizeWithResult(code, myShopifyUrl, shopifyApiKey, shopifySecretKey)).AccessToken;
+            var authResult = AuthorizeWithResult(code, myShopifyUrl, shopifyApiKey, shopifySecretKey);
+            return authResult.AccessToken;
         }
 
         /// <summary>
@@ -372,7 +374,7 @@ namespace ShopifySharp
         /// <param name="shopifyApiKey">Your app's public API key.</param>
         /// <param name="shopifySecretKey">Your app's secret key.</param>
         /// <returns>The authorization result.</returns>
-        public static async Task<AuthorizationResult> AuthorizeWithResult(string code, string myShopifyUrl, string shopifyApiKey, string shopifySecretKey)
+        public static AuthorizationResult AuthorizeWithResult(string code, string myShopifyUrl, string shopifyApiKey, string shopifySecretKey)
         {
             var ub = new UriBuilder(ShopifyService.BuildShopUri(myShopifyUrl, false))
             {
@@ -389,12 +391,14 @@ namespace ShopifySharp
             using (var msg = new CloneableRequestMessage(ub.Uri, HttpMethod.Post, content))
             {
                 var request = client.SendAsync(msg);
-                var response = await request;
-                var rawDataString = await response.Content.ReadAsStringAsync();
+                request.Wait();
+                var response = request.Result;
+                var rawDataString = response.Content.ReadAsStringAsync();
+                rawDataString.Wait();
 
-                ShopifyService.CheckResponseExceptions(response, rawDataString);
+                ShopifyService.CheckResponseExceptions(response, rawDataString.Result);
 
-                var json = JToken.Parse(rawDataString);
+                var json = JToken.Parse(rawDataString.Result);
                 return new AuthorizationResult(json.Value<string>("access_token"), json.Value<string>("scope").Split(','));
             }
         }

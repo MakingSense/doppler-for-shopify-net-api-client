@@ -3,8 +3,8 @@
 namespace ShopifySharp.Filters
 {
     /// <summary>
-    /// Options for filtering <see cref="CheckoutService.CountAsync(CheckoutFilter)"/> and 
-    /// <see cref="CheckoutService.ListAsync(CheckoutFilter)"/> results.
+    /// Options for filtering <see cref="CheckoutService.Count(CheckoutFilter)"/> and 
+    /// <see cref="CheckoutService.List(CheckoutFilter)"/> results.
     /// </summary>
     public class CheckoutFilter : ListFilter
     {

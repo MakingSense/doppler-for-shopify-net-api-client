@@ -22,7 +22,7 @@ namespace ShopifySharp
         /// Gets a list of up to 250 of the shop's themes.
         /// </summary>
         /// <returns></returns>
-        public virtual async Task<IEnumerable<Theme>> ListAsync(ListFilter filter = null)
+        public virtual List<Theme> List(ListFilter filter = null)
         {
             var req = PrepareRequest("themes.json");
 
@@ -31,7 +31,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<Theme>>(req, HttpMethod.Get, rootElement: "themes");
+            return ExecuteRequest<List<Theme>>(req, HttpMethod.Get, rootElement: "themes");
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace ShopifySharp
         /// <param name="themeId">The id of the theme to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Theme"/>.</returns>
-        public virtual async Task<Theme> GetAsync(long themeId, string fields = null)
+        public virtual Theme Get(long themeId, string fields = null)
         {
             var req = PrepareRequest(string.Format("themes/{0}.json", themeId));
 
@@ -49,10 +49,10 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Theme>(req, HttpMethod.Get, rootElement: "theme");
+            return ExecuteRequest<Theme>(req, HttpMethod.Get, rootElement: "theme");
         }
 
-        private async Task<Theme> _CreateAsync(Theme theme, string sourceUrl = null)
+        private Theme _Create(Theme theme, string sourceUrl = null)
         {
             var req = PrepareRequest("themes.json");
             var body = theme.ToDictionary();
@@ -67,7 +67,7 @@ namespace ShopifySharp
                 theme = body
             });
 
-            return await ExecuteRequestAsync<Theme>(req, HttpMethod.Post, content, "theme");
+            return ExecuteRequest<Theme>(req, HttpMethod.Post, content, "theme");
         }
 
         /// <summary>
@@ -77,9 +77,9 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="theme">The new theme.</param>
         /// <param name="sourceUrl">A URL that points to the .zip file containing the theme's source files.</param>
-        public virtual async Task<Theme> CreateAsync(Theme theme)
+        public virtual Theme Create(Theme theme)
         {
-            return await _CreateAsync(theme);
+            return _Create(theme);
         }
 
         /// <summary>
@@ -89,9 +89,9 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="theme">The new theme.</param>
         /// <param name="sourceUrl">A URL that points to the .zip file containing the theme's source files.</param>
-        public virtual async Task<Theme> CreateAsync(Theme theme, string sourceUrl)
+        public virtual Theme Create(Theme theme, string sourceUrl)
         {
-            return await _CreateAsync(theme, sourceUrl);
+            return _Create(theme, sourceUrl);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace ShopifySharp
         /// <param name="themeId">Id of the object being updated.</param>
         /// <param name="theme">The <see cref="Theme"/> to update.</param>
         /// <returns>The updated <see cref="Theme"/>.</returns>
-        public virtual async Task<Theme> UpdateAsync(long themeId, Theme theme)
+        public virtual Theme Update(long themeId, Theme theme)
         {
             var req = PrepareRequest(string.Format("themes/{0}.json", themeId));
             var content = new JsonContent(new
@@ -108,18 +108,18 @@ namespace ShopifySharp
                 theme = theme
             });
 
-            return await ExecuteRequestAsync<Theme>(req, HttpMethod.Put, content, "theme");
+            return ExecuteRequest<Theme>(req, HttpMethod.Put, content, "theme");
         }
 
         /// <summary>
         /// Deletes a Theme with the given Id.
         /// </summary>
         /// <param name="themeId">The Theme object's Id.</param>
-        public virtual async Task DeleteAsync(long themeId)
+        public virtual void Delete(long themeId)
         {
             var req = PrepareRequest(string.Format("themes/{0}.json", themeId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
     }
 }

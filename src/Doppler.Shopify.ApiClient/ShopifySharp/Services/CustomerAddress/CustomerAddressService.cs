@@ -24,7 +24,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="customerId">The id of the customer to retrieve.</param>
         /// <returns></returns>
-        public virtual async Task<IEnumerable<Address>> ListAsync(long customerId, ListFilter filter = null)
+        public virtual List<Address> List(long customerId, ListFilter filter = null)
         {
             var req = PrepareRequest(string.Format("customers/{0}/addresses.json", customerId));
 
@@ -33,7 +33,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<Address>>(req, HttpMethod.Get, rootElement: "addresses");
+            return ExecuteRequest<List<Address>>(req, HttpMethod.Get, rootElement: "addresses");
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace ShopifySharp
         /// <param name="addressId">The id of the customer address to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Address"/>.</returns>
-        public virtual async Task<Address> GetAsync(long customerId, long addressId, string fields = null)
+        public virtual Address Get(long customerId, long addressId, string fields = null)
         {
             var req = PrepareRequest(string.Format("customers/{0}/addresses/{1}.json", customerId, addressId));
 
@@ -52,7 +52,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Address>(req, HttpMethod.Get, rootElement: "customer_address");
+            return ExecuteRequest<Address>(req, HttpMethod.Get, rootElement: "customer_address");
         }
 
 
@@ -62,7 +62,7 @@ namespace ShopifySharp
         /// <param name="customerId">The id of the customer to create address for.</param>
         /// <param name="address">A new <see cref="Address"/>. Id should be set to null.</param>
         /// <returns>The new <see cref="Address"/>.</returns>
-        public virtual async Task<Address> CreateAsync(long customerId, Address address)
+        public virtual Address Create(long customerId, Address address)
         {
             var req = PrepareRequest(string.Format("customers/{0}/addresses.json", customerId));
             var addressBody = address.ToDictionary();
@@ -71,7 +71,7 @@ namespace ShopifySharp
                 address = addressBody
             });
 
-            return await ExecuteRequestAsync<Address>(req, HttpMethod.Post, content, "customer_address");
+            return ExecuteRequest<Address>(req, HttpMethod.Post, content, "customer_address");
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace ShopifySharp
         /// <param name="addressId">Id of the address object being updated.</param>
         /// <param name="address">The <see cref="Address"/> to update.</param>
         /// <returns>The updated <see cref="Customer"/>.</returns>
-        public virtual async Task<Address> UpdateAsync(long customerId, long addressId, Address address)
+        public virtual Address Update(long customerId, long addressId, Address address)
         {
             var req = PrepareRequest(string.Format("customers/{0}/addresses/{1}.json", customerId, addressId));
             var addressBody = address.ToDictionary();
@@ -91,7 +91,7 @@ namespace ShopifySharp
                 address = addressBody
             });
 
-            return await ExecuteRequestAsync<Address>(req, HttpMethod.Put, content, "customer_address");
+            return ExecuteRequest<Address>(req, HttpMethod.Put, content, "customer_address");
         }
 
         /// <summary>
@@ -99,11 +99,11 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="customerId">The customer object's Id.</param>
         /// <param name="addressId">The address object's Id.</param>
-        public virtual async Task DeleteAsync(long customerId, long addressId)
+        public virtual void Delete(long customerId, long addressId)
         {
             var req = PrepareRequest(string.Format("customers/{0}/addresses/{1}.json", customerId, addressId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
 
         /// <summary>
@@ -112,11 +112,11 @@ namespace ShopifySharp
         /// <param name="customerId">The customer object's Id.</param>
         /// <param name="addressId">The address object's Id.</param>
         /// <returns></returns>
-        public virtual async Task<Address> SetDefault(long customerId, long addressId)
+        public virtual Address SetDefault(long customerId, long addressId)
         {
             var req = PrepareRequest(string.Format("customers/{0}/addresses/{1}/default.json", customerId, addressId));
 
-            return await ExecuteRequestAsync<Address>(req, HttpMethod.Put, rootElement: "customer_address");
+            return ExecuteRequest<Address>(req, HttpMethod.Put, rootElement: "customer_address");
 
         }
 

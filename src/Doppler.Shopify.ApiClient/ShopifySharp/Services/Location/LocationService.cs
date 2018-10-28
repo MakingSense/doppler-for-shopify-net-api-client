@@ -21,22 +21,22 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="id">The id of the charge to retrieve.</param>
         /// <returns>The <see cref="Location"/>.</returns>
-        public virtual async Task<Location> GetAsync(long id)
+        public virtual Location Get(long id)
         {
             var req = PrepareRequest(string.Format("locations/{0}.json", id));           
 
-            return await ExecuteRequestAsync<Location>(req, HttpMethod.Get, rootElement: "location");
+            return ExecuteRequest<Location>(req, HttpMethod.Get, rootElement: "location");
         }
 
         /// <summary>
         /// Retrieves a list of all <see cref="Location"/> objects.
         /// </summary>
         /// <returns>The list of <see cref="Location"/> objects.</returns>
-        public virtual async Task<IEnumerable<Location>> ListAsync()
+        public virtual List<Location> List()
         {
-            var req = PrepareRequest(string.Format("locations.json");
+            var req = PrepareRequest("locations.json");
 
-            return await ExecuteRequestAsync<List<Location>>(req, HttpMethod.Get, rootElement: "locations");
+            return ExecuteRequest<List<Location>>(req, HttpMethod.Get, rootElement: "locations");
         }
     }
 }

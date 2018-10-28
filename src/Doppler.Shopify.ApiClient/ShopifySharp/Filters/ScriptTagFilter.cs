@@ -3,7 +3,7 @@
 namespace ShopifySharp.Filters
 {
     /// <summary>
-    /// Options for filtering <see cref="ScriptTagService.ListAsync(ScriptTagFilter)"/> results.
+    /// Options for filtering <see cref="ScriptTagService.List(ScriptTagFilter)"/> results.
     /// </summary>
     public class ScriptTagFilter : ListFilter
     {

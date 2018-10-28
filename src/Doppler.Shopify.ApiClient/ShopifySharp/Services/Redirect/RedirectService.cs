@@ -25,7 +25,7 @@ namespace ShopifySharp
         /// <param name="path">An optional parameter that filters the result to redirects with the given path.</param>
         /// <param name="target">An optional parameter that filters the result to redirects with the given target.</param>
         /// <returns>The count of all redirects for the shop.</returns>
-        public virtual async Task<int> CountAsync(string path = null, string target = null)
+        public virtual int Count(string path = null, string target = null)
         {
             var req = PrepareRequest("redirects/count.json");
 
@@ -39,7 +39,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("target", target);
             }
 
-            return await ExecuteRequestAsync<int>(req, HttpMethod.Get, rootElement: "count");
+            return ExecuteRequest<int>(req, HttpMethod.Get, rootElement: "count");
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="filter">An optional filter that restricts the results.</param>
         /// <returns>The list of <see cref="Redirect"/>.</returns>
-        public virtual async Task<IEnumerable<Redirect>> ListAsync(RedirectFilter filter = null)
+        public virtual List<Redirect> List(RedirectFilter filter = null)
         {
             var req = PrepareRequest("redirects.json");
 
@@ -56,7 +56,7 @@ namespace ShopifySharp
                 req.QueryParams.AddRange(filter.ToParameters());
             }
 
-            return await ExecuteRequestAsync<List<Redirect>>(req, HttpMethod.Get, rootElement: "redirects");
+            return ExecuteRequest<List<Redirect>>(req, HttpMethod.Get, rootElement: "redirects");
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace ShopifySharp
         /// <param name="redirectId">The id of the redirect to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="Redirect"/>.</returns>
-        public virtual async Task<Redirect> GetAsync(long redirectId, string fields = null)
+        public virtual Redirect Get(long redirectId, string fields = null)
         {
             var req = PrepareRequest(string.Format("redirects/{0}.json", redirectId));
 
@@ -74,7 +74,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<Redirect>(req, HttpMethod.Get, rootElement: "redirect");
+            return ExecuteRequest<Redirect>(req, HttpMethod.Get, rootElement: "redirect");
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace ShopifySharp
         /// </summary>
         /// <param name="redirect">The new <see cref="Redirect"/>.</param>
         /// <returns>The new <see cref="Redirect"/>.</returns>
-        public virtual async Task<Redirect> CreateAsync(Redirect redirect)
+        public virtual Redirect Create(Redirect redirect)
         {
             var req = PrepareRequest("redirects.json");
             var content = new JsonContent(new
@@ -92,7 +92,7 @@ namespace ShopifySharp
                 redirect = redirect
             });
 
-            return await ExecuteRequestAsync<Redirect>(req, HttpMethod.Post, content, "redirect");
+            return ExecuteRequest<Redirect>(req, HttpMethod.Post, content, "redirect");
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace ShopifySharp
         /// <param name="redirectId">Id of the object being updated.</param>
         /// <param name="redirect">The <see cref="Redirect"/> to update.</param>
         /// <returns>The updated <see cref="Redirect"/>.</returns>
-        public virtual async Task<Redirect> UpdateAsync(long redirectId, Redirect redirect)
+        public virtual Redirect Update(long redirectId, Redirect redirect)
         {
             var req = PrepareRequest(string.Format("redirects/{0}.json", redirectId));
             var content = new JsonContent(new
@@ -109,18 +109,18 @@ namespace ShopifySharp
                 redirect = redirect
             });
 
-            return await ExecuteRequestAsync<Redirect>(req, HttpMethod.Put, content, "redirect");
+            return ExecuteRequest<Redirect>(req, HttpMethod.Put, content, "redirect");
         }
 
         /// <summary>
         /// Deletes a redirect with the given Id.
         /// </summary>
         /// <param name="redirectId">The redirect object's Id.</param>
-        public virtual async Task DeleteAsync(long redirectId)
+        public virtual void Delete(long redirectId)
         {
             var req = PrepareRequest(string.Format("redirects/{0}.json", redirectId));
 
-            await ExecuteRequestAsync(req, HttpMethod.Delete);
+            ExecuteRequest(req, HttpMethod.Delete);
         }
     }
 }

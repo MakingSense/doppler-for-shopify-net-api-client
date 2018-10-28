@@ -24,7 +24,7 @@ namespace ShopifySharp
         /// <param name="description">The name or description of the usage charge.</param>
         /// <param name="price">The price of the usage charge.</param>
         /// <returns>The new <see cref="UsageCharge"/>.</returns>
-        public virtual async Task<UsageCharge> CreateAsync(long recurringChargeId, string description, decimal price)
+        public virtual UsageCharge Create(long recurringChargeId, string description, decimal price)
         {
             var req = PrepareRequest(string.Format("recurring_application_charges/{0}/usage_charges.json", recurringChargeId));
             var content = new JsonContent(new
@@ -36,7 +36,7 @@ namespace ShopifySharp
                 }
             });
 
-            return await ExecuteRequestAsync<UsageCharge>(req, HttpMethod.Post, content, "usage_charge");
+            return ExecuteRequest<UsageCharge>(req, HttpMethod.Post, content, "usage_charge");
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace ShopifySharp
         /// <param name="id">The id of the charge to retrieve.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The <see cref="UsageCharge"/>.</returns>
-        public virtual async Task<UsageCharge> GetAsync(long recurringChargeId, long id, string fields = null)
+        public virtual UsageCharge Get(long recurringChargeId, long id, string fields = null)
         {
             var req = PrepareRequest(string.Format("recurring_application_charges/{0}/usage_charges/{1}.json", recurringChargeId, id));
 
@@ -55,7 +55,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<UsageCharge>(req, HttpMethod.Get, rootElement: "usage_charge");
+            return ExecuteRequest<UsageCharge>(req, HttpMethod.Get, rootElement: "usage_charge");
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace ShopifySharp
         /// <param name="recurringChargeId">The id of the recurring charge that these usage charges belong to.</param>
         /// <param name="fields">A comma-separated list of fields to return.</param>
         /// <returns>The list of <see cref="UsageCharge"/> objects.</returns>
-        public virtual async Task<IEnumerable<UsageCharge>> ListAsync(long recurringChargeId, string fields = null)
+        public virtual List<UsageCharge> List(long recurringChargeId, string fields = null)
         {
             var req = PrepareRequest(string.Format("recurring_application_charges/{0}/usage_charges.json", recurringChargeId));
 
@@ -73,7 +73,7 @@ namespace ShopifySharp
                 req.QueryParams.Add("fields", fields);
             }
 
-            return await ExecuteRequestAsync<List<UsageCharge>>(req, HttpMethod.Get, rootElement: "usage_charges");
+            return ExecuteRequest<List<UsageCharge>>(req, HttpMethod.Get, rootElement: "usage_charges");
         }
     }
 }

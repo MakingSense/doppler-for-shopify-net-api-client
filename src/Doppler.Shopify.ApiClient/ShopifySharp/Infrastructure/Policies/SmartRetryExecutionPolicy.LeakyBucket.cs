@@ -26,9 +26,9 @@ namespace ShopifySharp
                 _allLeakyBuckets.Add(this);
             }
 
-            public Task GrantAsync()
+            public void Grant()
             {
-                return _semaphore.WaitAsync();
+                _semaphore.Wait();
             }
 
             public void SetState(LeakyBucketState bucketInfo)
