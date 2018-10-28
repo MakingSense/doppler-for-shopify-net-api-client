@@ -282,10 +282,9 @@ namespace ShopifySharp
                 {
                     try
                     {
-                        var response =  client.SendAsync(msg);
-                        response.Wait();
+                        var response =  client.SendAsync(msg).Result;
 
-                        return response.Result.Headers.Any(h => h.Key.Equals("X-ShopId", StringComparison.OrdinalIgnoreCase));
+                        return response.Headers.Any(h => h.Key.Equals("X-ShopId", StringComparison.OrdinalIgnoreCase));
                     }
                     catch (HttpRequestException)
                     {
@@ -390,15 +389,12 @@ namespace ShopifySharp
             using (var client = new HttpClient())
             using (var msg = new CloneableRequestMessage(ub.Uri, HttpMethod.Post, content))
             {
-                var request = client.SendAsync(msg);
-                request.Wait();
-                var response = request.Result;
-                var rawDataString = response.Content.ReadAsStringAsync();
-                rawDataString.Wait();
+                var response = client.SendAsync(msg).Result;
+                var rawDataString = response.Content.ReadAsStringAsync().Result;
 
-                ShopifyService.CheckResponseExceptions(response, rawDataString.Result);
+                ShopifyService.CheckResponseExceptions(response, rawDataString);
 
-                var json = JToken.Parse(rawDataString.Result);
+                var json = JToken.Parse(rawDataString);
                 return new AuthorizationResult(json.Value<string>("access_token"), json.Value<string>("scope").Split(','));
             }
         }

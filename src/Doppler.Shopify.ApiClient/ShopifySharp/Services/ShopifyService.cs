@@ -133,24 +133,23 @@ namespace ShopifySharp
                 var policyResult =  _ExecutionPolicy.Run(baseRequestMessage, (requestMessage) =>
                 {
                     var request = _Client.SendAsync(requestMessage);
-                    request.Wait();
 
                     using (var response = request.Result)
                     {
-                        var rawResult = response.Content.ReadAsStringAsync();
-                        rawResult.Wait();
+                        var rawResult = response.Content.ReadAsStringAsync().Result;
+                        
                         //Check for and throw exception when necessary.
-                        CheckResponseExceptions(response, rawResult.Result);
+                        CheckResponseExceptions(response, rawResult);
 
                         JToken jtoken = null;
 
                         // Don't parse the result when the request was Delete.
                         if (baseRequestMessage.Method != HttpMethod.Delete)
                         {
-                            jtoken = JToken.Parse(rawResult.Result);
+                            jtoken = JToken.Parse(rawResult);
                         }
 
-                        return new RequestResult<JToken>(response, jtoken, rawResult.Result);
+                        return new RequestResult<JToken>(response, jtoken, rawResult);
                     }
                 });
 
@@ -172,22 +171,22 @@ namespace ShopifySharp
                 var policyResult = _ExecutionPolicy.Run<T>(baseRequestMessage, (requestMessage) =>
                 {
                     var request = _Client.SendAsync(requestMessage);
-                    request.Wait();
+                    
                     using (var response = request.Result)
                     {
-                        var rawResult = response.Content.ReadAsStringAsync();
-                        rawResult.Wait();
+                        var rawResult = response.Content.ReadAsStringAsync().Result;
+                        
                         //Check for and throw exception when necessary.
-                        CheckResponseExceptions(response, rawResult.Result);
+                        CheckResponseExceptions(response, rawResult);
 
                         // This method may fail when the method was Delete, which is intendend.
                         // Delete methods should not be parsing the response JSON and should instead
                         // be using the non-generic ExecuteRequest.
-                        var reader = new JsonTextReader(new StringReader(rawResult.Result));
+                        var reader = new JsonTextReader(new StringReader(rawResult));
                         var data = _Serializer.Deserialize<JObject>(reader).SelectToken(rootElement);
                         var result = data.ToObject<T>();
 
-                        return new RequestResult<T>(response, result, rawResult.Result);
+                        return new RequestResult<T>(response, result, rawResult);
                     }
                 });
 

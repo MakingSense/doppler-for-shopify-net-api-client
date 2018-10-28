@@ -29,7 +29,7 @@ namespace ShopifySharp
                     
                 if (attribute != null && attribute.Length > 0)
                 {
-                    return attribute[0].ToString();
+                    return ((EnumMemberAttribute)attribute[0]).Value;
                 }
             }
 
