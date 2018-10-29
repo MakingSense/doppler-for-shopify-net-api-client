@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "DraftOrder")]
     public class DraftOrder_Tests : IClassFixture<DraftOrder_Tests_Fixture>
     {
-        private DraftOrder_Tests_Fixture Fixture { get; private set; }
+        private DraftOrder_Tests_Fixture Fixture { get; set; }
 
         public DraftOrder_Tests(DraftOrder_Tests_Fixture fixture)
         {
@@ -149,11 +149,11 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class DraftOrder_Tests_Fixture: IAsyncLifetime
+    public class DraftOrder_Tests_Fixture: IDisposable
     {
-        public DraftOrderService Service => new DraftOrderService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public DraftOrderService Service { get { return new DraftOrderService(Utils.MyShopifyUrl, Utils.AccessToken); } }
 
-        public List<DraftOrder> Created { get; private set; } = new List<DraftOrder>();
+        public List<DraftOrder> Created { get; private set; }
 
         public string LineItemTitle = "Custom Draft Line Item";
 
@@ -162,6 +162,12 @@ namespace Doppler.Shopify.ApiClient.Tests
         public int LineItemQuantity = 2;
 
         public string Note = "A note for the draft order.";
+
+        DraftOrder_Tests_Fixture()
+        {
+            Created = new List<DraftOrder>();
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -181,7 +187,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created DraftOrder with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created DraftOrder with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -190,7 +196,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<DraftOrder> Create(bool skipAddToCreateList = false)
+        public DraftOrder Create(bool skipAddToCreateList = false)
         {
             var obj = Service.Create(new DraftOrder()
             {

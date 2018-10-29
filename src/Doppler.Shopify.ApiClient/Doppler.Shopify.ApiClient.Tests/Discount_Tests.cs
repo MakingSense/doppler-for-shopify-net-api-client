@@ -6,7 +6,12 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Discount")]
     public class Discount_Tests
     {
-        private DiscountService _Service { get; private set; } = new DiscountService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private DiscountService _Service { get; set; }
+
+        public Discount_Tests()
+        {
+            _Service =  new DiscountService(Utils.MyShopifyUrl, Utils.AccessToken);
+        }
 
         [Fact(Skip = "Shopify Discount API requires a Shopify Plus account, which is difficult to use when testing a lib.")]
         public void Creates_An_Application_Credit()

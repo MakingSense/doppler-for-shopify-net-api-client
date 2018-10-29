@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -68,8 +68,14 @@ namespace Doppler.Shopify.ApiClient.Tests
 
     public class Event_Tests_Fixture
     {
-        public EventService Service { get; private set; } = new EventService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public EventService Service { get; private set; }
 
-        public List<Event> Created { get; private set; } = new List<Event>();
+        public List<Event> Created { get; private set; }
+
+        public Event_Tests_Fixture()
+        {
+            Service = new EventService(Utils.MyShopifyUrl, Utils.AccessToken);
+            Created = new List<Event>();
+        }
     }
 }
