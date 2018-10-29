@@ -109,7 +109,7 @@ namespace Doppler.Shopify.ApiClient
 
             var content = new JsonContent(new
             {
-                customer = body
+                customer_saved_search = body
             });
 
             return ExecuteRequest<CustomerSavedSearch>(req, HttpMethod.Post, content, RootElement);

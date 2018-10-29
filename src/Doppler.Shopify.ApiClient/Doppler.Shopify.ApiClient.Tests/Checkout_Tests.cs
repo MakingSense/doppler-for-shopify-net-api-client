@@ -10,8 +10,12 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Checkout")]
     public class Checkout_Tests
     {
+        private CheckoutService _Service { get; set; }
 
-        private CheckoutService _Service { get; private set; } = new CheckoutService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public Checkout_Tests()
+        {
+            _Service = new CheckoutService(Utils.MyShopifyUrl, Utils.AccessToken);
+        }
 
         [Fact]
         public void Counts_Checkouts()

@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Carrier")]
     public class Carrier_Tests : IClassFixture<Carrier_Tests_Fixture>
     {
-        private Carrier_Tests_Fixture Fixture { get; private set; }
+        private Carrier_Tests_Fixture Fixture { get; set; }
 
         public Carrier_Tests(Carrier_Tests_Fixture fixture)
         {
@@ -50,7 +50,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Carriers)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Carriers failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -87,13 +87,18 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class Carrier_Tests_Fixture
+    public class Carrier_Tests_Fixture : IDisposable
     {
-        public CarrierService Service { get; private set; } = new CarrierService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public CarrierService Service { get; private set; }
+        public List<Carrier> Created { get; private set; }
 
-        public List<Carrier> Created { get; private set; } = new List<Carrier>();
+        public string CallbackUrl { get { return "http://fakecallback.com/"; } }
 
-        public string CallbackUrl => "http://fakecallback.com/";
+        public Carrier_Tests_Fixture()
+        {
+            Service = new CarrierService(Utils.MyShopifyUrl, Utils.AccessToken);
+            Created  = new List<Carrier>();
+        }
 
         public void Dispose()
         {
@@ -107,7 +112,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete Carrier with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete Carrier with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -116,11 +121,11 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<Carrier> Create()
+        public Carrier Create()
         {
             string uid = Guid.NewGuid().ToString();
-            string name = string.Format("DERP DERP {uid}";
-            string cb = string.Format("{CallbackUrl}{uid}";
+            string name = string.Format("DERP DERP {0}", uid);
+            string cb = string.Format("{CallbackUrl}{0}", uid);
 
             var obj = Service.Create(new Carrier()
             {

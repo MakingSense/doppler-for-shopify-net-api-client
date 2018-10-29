@@ -5,7 +5,12 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Charge")]
     public class Charge_Tests
     {
-        private ChargeService _Service { get; private set; } = new ChargeService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private ChargeService _Service { get; set; }
+
+        public Charge_Tests()
+        {
+            _Service = new ChargeService(Utils.MyShopifyUrl, Utils.AccessToken);
+        }
 
         [Fact(Skip = "Charges cannot be tested with a private application.")]
         public void  Creates_Charges()

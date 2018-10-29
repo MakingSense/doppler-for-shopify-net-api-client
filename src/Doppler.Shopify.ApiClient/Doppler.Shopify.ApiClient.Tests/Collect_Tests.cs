@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
 using Xunit;
+using Doppler.Shopify.ApiClient.Filters;
 
 namespace Doppler.Shopify.ApiClient.Tests
 {
     [Trait("Category", "Collect")]
     public class Collect_Tests : IClassFixture<Collect_Tests_Fixture>
     {
-        private Collect_Tests_Fixture Fixture { get; private set; }
+        private Collect_Tests_Fixture Fixture { get; set; }
 
         public Collect_Tests(Collect_Tests_Fixture fixture)
         {
@@ -70,7 +70,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.Write(string.Format("{nameof(Deletes_Collects)} failed. {ex.Message}.");
+                Console.Write(string.Format("Deletes_Collects failed. {0}.", ex.Message));
                 
                 thrown = true;
             }
@@ -90,11 +90,19 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class Collect_Tests_Fixture : IAsyncLifetime
+    public class Collect_Tests_Fixture : IDisposable
     {
-        public CollectService Service { get; private set; } = new CollectService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public CollectService Service { get; private set; }
 
-        public List<Collect> Created { get; private set; } = new List<Collect>();
+        public List<Collect> Created { get; private set; }
+
+        public Collect_Tests_Fixture()
+        {
+            ShopifyService.SetGlobalExecutionPolicy(new RetryExecutionPolicy());
+            Service = new CollectService(Utils.MyShopifyUrl, Utils.AccessToken);
+            Created = new List<Collect>();
+            Initialize();
+        }
 
         /// <remarks>
         /// Hardcoded collection id used in previous versions was 27369427.
@@ -135,7 +143,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Collect with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Collect with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -147,10 +155,10 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<Collect> Create(bool skipAddToCreatedList = false)
+        public Collect Create(bool skipAddToCreatedList = false)
         {
             // Create a product to use with these tests.
-            var product = new ProductService(Utils.MyShopifyUrl, Utils.AccessToken).Create(new ShopifySharp.Product()
+            var product = new ProductService(Utils.MyShopifyUrl, Utils.AccessToken).Create(new Doppler.Shopify.ApiClient.Product()
             {
                 CreatedAt = DateTime.UtcNow,
                 Title = "Burton Custom Freestlye 151",

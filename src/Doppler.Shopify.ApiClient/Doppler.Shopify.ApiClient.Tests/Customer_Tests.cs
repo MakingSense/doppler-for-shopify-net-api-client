@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Customer")]
     public class Customer_Tests : IClassFixture<Customer_Tests_Fixture>
     {
-        private Customer_Tests_Fixture Fixture { get; private set; }
+        private Customer_Tests_Fixture Fixture { get; set; }
 
         public Customer_Tests(Customer_Tests_Fixture fixture)
         {
@@ -46,7 +46,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Customers)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Customers failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -165,7 +165,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Searches_For_Customers)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Searches_For_Customers failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -240,17 +240,25 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class Customer_Tests_Fixture : IAsyncLifetime
+    public class Customer_Tests_Fixture : IDisposable
     {
-        public CustomerService Service { get; private set; } = new CustomerService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public CustomerService Service { get; private set; }
 
-        public List<Customer> Created { get; private set; } = new List<Customer>();
+        public List<Customer> Created { get; private set; }
 
-        public string FirstName => "John";
+        public string FirstName { get { return "John"; } }
 
-        public string LastName => "Doe";
+        public string LastName { get { return "Doe"; } }
 
-        public string Note => "Test note about this customer.";
+        public string Note { get { return "Test note about this customer."; } }
+
+        public Customer_Tests_Fixture()
+        {
+            ShopifyService.SetGlobalExecutionPolicy(new RetryExecutionPolicy());
+            Service = new CustomerService(Utils.MyShopifyUrl, Utils.AccessToken);
+            Created = new List<Customer>();
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -270,13 +278,13 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Customer with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Customer with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
         }
 
-        public async Task<Customer> Create(bool skipAddToCreatedList = false, CustomerCreateOptions options = null)
+        public Customer Create(bool skipAddToCreatedList = false, CustomerCreateOptions options = null)
         {
             var obj = Service.Create(new Customer()
             {

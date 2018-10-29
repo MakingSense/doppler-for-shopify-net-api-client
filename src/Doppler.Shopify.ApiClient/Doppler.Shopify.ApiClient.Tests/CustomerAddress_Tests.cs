@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "CustomerAddress")]
     public class CustomerAddress_Tests : IClassFixture<CustomerAddress_Tests_Fixture>
     {
-        private CustomerAddress_Tests_Fixture Fixture { get; private set; }
+        private CustomerAddress_Tests_Fixture Fixture { get; set; }
 
         public CustomerAddress_Tests(CustomerAddress_Tests_Fixture fixture)
         {
@@ -38,7 +38,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Addresses)} threw exception. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Addresses threw exception. {0}", ex.Message));
 
                 threw = true;
             }
@@ -92,17 +92,24 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class CustomerAddress_Tests_Fixture : IAsyncLifetime
+    public class CustomerAddress_Tests_Fixture : IDisposable
     {
-        public CustomerAddressService Service { get; private set; } = new CustomerAddressService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public CustomerAddressService Service { get; private set; }
 
-        public string FirstName => "John";
+        public string FirstName { get { return "John"; } }
 
-        public string LastName => "Doe";
+        public string LastName { get { return "Doe"; } }
 
         public long? CustomerId { get; set; }
 
-        public List<Address> Created { get; private set; } = new List<Address>();
+        public List<Address> Created { get; private set; }
+
+        public CustomerAddress_Tests_Fixture()
+        {
+            Service = new CustomerAddressService(Utils.MyShopifyUrl, Utils.AccessToken);
+            Created = new List<Address>();
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -127,7 +134,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete CustomerAddress with id {Address.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete CustomerAddress with id {0}. {1}", Address.Id.Value, ex.Message));
                     }
                 }
             }
@@ -136,7 +143,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Gets an object from the list of already created objects, or creates the object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<Address> Create(string streetAddress, bool skipAddToDeleteList = false)
+        public Address Create(string streetAddress, bool skipAddToDeleteList = false)
         {
             var obj = Service.Create(CustomerId.Value, new Address()
             {

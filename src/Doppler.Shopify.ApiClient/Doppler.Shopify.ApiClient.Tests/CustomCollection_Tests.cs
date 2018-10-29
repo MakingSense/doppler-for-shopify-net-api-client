@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "CustomCollection")]
     public class CustomCollection_Tests : IClassFixture<CustomCollection_Tests_Fixture>
     {
-        private CustomCollection_Tests_Fixture Fixture { get; private set; }
+        private CustomCollection_Tests_Fixture Fixture { get; set; }
 
         public CustomCollection_Tests(CustomCollection_Tests_Fixture fixture)
         {
@@ -56,14 +56,13 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_CustomCollections)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_CustomCollections failed. {0}", ex.Message));
 
                 threw = true;
             }
 
             Assert.False(threw);
         }
-
 
         [Fact]
         public void Creates_CustomCollections()
@@ -94,13 +93,20 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class CustomCollection_Tests_Fixture : IAsyncLifetime
+    public class CustomCollection_Tests_Fixture : IDisposable
     {
-        public CustomCollectionService Service { get; private set; } = new CustomCollectionService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public CustomCollectionService Service { get; private set; }
 
-        public List<CustomCollection> Created { get; private set; } = new List<CustomCollection>();
+        public List<CustomCollection> Created { get; private set; }
 
-        public string Title => "Things";
+        public string Title { get { return "Things"; } }
+
+        public CustomCollection_Tests_Fixture()
+        {
+            Service  = new CustomCollectionService(Utils.MyShopifyUrl, Utils.AccessToken);
+            Created  = new List<CustomCollection>();
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -120,7 +126,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created CustomCollection with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created CustomCollection with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -129,7 +135,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<CustomCollection> Create(bool skipAddToCreatedList = false)
+        public CustomCollection Create(bool skipAddToCreatedList = false)
         {
             var obj = Service.Create(new CustomCollection()
             {
