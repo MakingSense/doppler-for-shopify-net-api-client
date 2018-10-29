@@ -67,7 +67,8 @@ namespace Doppler.Shopify.ApiClient
                 Key = EncodeQuery(kvp.Key, true),
                 Value = EncodeQuery(kvp.Value, false)
             })
-                .Where(kvp => kvp.Key != "signature" && kvp.Key != "hmac")
+                //.Where(kvp => kvp.Key != "signature" && kvp.Key != "hmac")
+                .Where(kvp => kvp.Key == "shop" || kvp.Key == "shop")
                 .OrderBy(kvp => kvp.Key, StringComparer.Ordinal)
                 .Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value));
 
@@ -108,6 +109,7 @@ namespace Doppler.Shopify.ApiClient
             //Convert bytes back to string, replacing dashes, to get the final signature.
             var calculatedSignature = BitConverter.ToString(hash).Replace("-", "");
 
+            Console.WriteLine("XXXXXXXXX " + calculatedSignature);
             //Request is valid if the calculated signature matches the signature from the querystring.
             return calculatedSignature.ToUpper() == hmac.ToUpper();
         }
@@ -147,7 +149,7 @@ namespace Doppler.Shopify.ApiClient
         {
             // To calculate signature, order all querystring parameters by alphabetical (exclude the
             // signature itself). Then, hash it with the secret key.
-            var signatureValues = querystring.FirstOrDefault(kvp => kvp.Key == "signature").Value;
+            var signatureValues = querystring.FirstOrDefault(kvp => kvp.Key == "hmac").Value;
 
             if (string.IsNullOrEmpty(signatureValues) || signatureValues.Count() < 1)
             {
@@ -286,9 +288,13 @@ namespace Doppler.Shopify.ApiClient
 
                         return response.Headers.Any(h => h.Key.Equals("X-ShopId", StringComparison.OrdinalIgnoreCase));
                     }
-                    catch (HttpRequestException)
+                    catch (AggregateException ae)
                     {
-                        return false;
+                        if (ae.InnerException is HttpRequestException)
+                        {
+                            return false;
+                        }
+                        throw ae.InnerException;
                     }
                 }
             }

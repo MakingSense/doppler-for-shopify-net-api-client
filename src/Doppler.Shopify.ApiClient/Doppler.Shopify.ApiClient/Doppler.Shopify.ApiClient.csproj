@@ -228,7 +228,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)..\packages\ILMerge.3.0.18\tools\net452\ILMerge.exe" /targetplatform:"v4,C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /internalize /log:"$(TargetDir)Merge\log.txt" "$(TargetPath)"  /OUT:"$(TargetDir)Merge\Doppler.Shopify.ApiClient.dll"</PostBuildEvent>
+    <PostBuildEvent>"$(ProjectDir)..\packages\ILMerge.3.0.18\tools\net452\ILMerge.exe" /targetplatform:"v4,C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /internalize /log:"$(TargetDir)Merge\log.txt" "$(TargetPath)" "$(TargetDir)Newtonsoft.Json.dll" "$(TargetDir)System.Net.Http.dll" /OUT:"$(TargetDir)Merge\Doppler.Shopify.ApiClient.dll"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>mkdir "$(TargetDir)Merge"
