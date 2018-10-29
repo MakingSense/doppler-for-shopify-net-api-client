@@ -56,47 +56,57 @@ namespace Doppler.Shopify.ApiClient.Tests
         //    Assert.True(isValid);
         //}
 
-        //[Fact]
-        //public void  Validates_Web_Requests()
-        //{
-        //    var qs = new Dictionary<string, StringValues>()
-        //    {
-        //        {"hmac", "134298b94779fc1be04851ed8f972c827d9a3b4fdf6725fe97369ef422cc5746"},
-        //        {"shop", "stages-test-shop-2.myshopify.com"},
-        //        {"signature", "f477a85f3ed6027735589159f9da74da"},
-        //        {"timestamp", "1459779785"},
-        //    };
+        [Fact]
+        public void Validates_Web_Requests()
+        {
+            var qs = new Dictionary<string, StringValues>()
+            {
+                {"hmac", "1f2b427c24b6a0e2a9004a71ea16d3d5a213db5058218e57e9d5fb44d601b903"},
+                {"shop", "doppler-dev01.myshopify.com"},
+                {"code", "cda84da98ee07b1231068a6ba51f7101"},
+                {"timestamp", "1540772285"},
+            };
 
-        //    bool isValid = AuthorizationService.IsAuthenticRequest(qs, Utils.SecretKey);
+            bool isValid = AuthorizationService.IsAuthenticRequest(qs, "3467219a2f96ab7d2e95b8b9b3cd0514");
 
-        //    Assert.True(isValid);
-        //}
-
-        //[Fact]
-        //public void Validates_Web_Requests_With_Dictionary_Querystring()
-        //{
-        //    // Note that this method differes from Validates_Web_Requests() in that the aforementioned's dictionary is Dictionary<string, stringvalues> and this is Dictionary<string, string>.
-        //    var qs = new Dictionary<string, string>()
-        //    {
-        //        {"hmac", "134298b94779fc1be04851ed8f972c827d9a3b4fdf6725fe97369ef422cc5746"},
-        //        {"shop", "stages-test-shop-2.myshopify.com"},
-        //        {"signature", "f477a85f3ed6027735589159f9da74da"},
-        //        {"timestamp", "1459779785"},
-        //    };
-
-        //    bool isValid = AuthorizationService.IsAuthenticRequest(qs, Utils.SecretKey);
-
-        //    Assert.True(isValid);
-        //}
+            Assert.True(isValid);
+        }
 
         [Fact]
-        public void  Validates_Web_Requests_With_Raw_Querystring()
+        public void Validates_Web_Requests_With_Dictionary_Querystring()
+        {
+            // Note that this method differes from Validates_Web_Requests() in that the aforementioned's dictionary is Dictionary<string, stringvalues> and this is Dictionary<string, string>.
+            var qs = new Dictionary<string, string>()
+            {
+                {"hmac", "1f2b427c24b6a0e2a9004a71ea16d3d5a213db5058218e57e9d5fb44d601b903"},
+                {"shop", "doppler-dev01.myshopify.com"},
+                {"code", "cda84da98ee07b1231068a6ba51f7101"},
+                {"timestamp", "1540772285"},
+            };
+
+            bool isValid = AuthorizationService.IsAuthenticRequest(qs, "3467219a2f96ab7d2e95b8b9b3cd0514");
+
+            Assert.True(isValid);
+        }
+
+        [Fact]
+        public void  Validates_Web_Requests_With_Raw_Querystring_1()
         {
             var qs = "code=cda84da98ee07b1231068a6ba51f7101&hmac=1f2b427c24b6a0e2a9004a71ea16d3d5a213db5058218e57e9d5fb44d601b903&shop=doppler-dev01.myshopify.com&timestamp=1540772285";
 
             bool isValid = AuthorizationService.IsAuthenticRequest(qs, "3467219a2f96ab7d2e95b8b9b3cd0514");
 
             Assert.True(isValid);
+        }
+
+        [Fact]
+        public void Validates_Web_Requests_With_Raw_Querystring_2()
+        {
+            var qs = "code=cda84da98ee07b1231068a6ba51f7101&hmac=1f2b427c24b6a0e2a9004a71ea16d3d5a213db5058218e57e9d5fb44d601b904&shop=doppler-dev01.myshopify.com&timestamp=1540772285";
+
+            bool isValid = AuthorizationService.IsAuthenticRequest(qs, "3467219a2f96ab7d2e95b8b9b3cd0514");
+
+            Assert.False(isValid);
         }
 
         [Fact]

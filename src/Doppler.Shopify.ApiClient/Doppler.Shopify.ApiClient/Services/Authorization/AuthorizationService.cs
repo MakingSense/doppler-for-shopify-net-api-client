@@ -67,8 +67,7 @@ namespace Doppler.Shopify.ApiClient
                 Key = EncodeQuery(kvp.Key, true),
                 Value = EncodeQuery(kvp.Value, false)
             })
-                //.Where(kvp => kvp.Key != "signature" && kvp.Key != "hmac")
-                .Where(kvp => kvp.Key == "shop" || kvp.Key == "shop")
+                .Where(kvp => kvp.Key != "signature" && kvp.Key != "hmac")
                 .OrderBy(kvp => kvp.Key, StringComparer.Ordinal)
                 .Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value));
 
@@ -109,7 +108,6 @@ namespace Doppler.Shopify.ApiClient
             //Convert bytes back to string, replacing dashes, to get the final signature.
             var calculatedSignature = BitConverter.ToString(hash).Replace("-", "");
 
-            Console.WriteLine("XXXXXXXXX " + calculatedSignature);
             //Request is valid if the calculated signature matches the signature from the querystring.
             return calculatedSignature.ToUpper() == hmac.ToUpper();
         }

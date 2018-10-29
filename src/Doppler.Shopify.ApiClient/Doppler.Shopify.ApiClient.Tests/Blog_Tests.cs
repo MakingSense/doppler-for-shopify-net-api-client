@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Blog")]
     public class Blog_Tests : IClassFixture<Blog_Tests_Fixture>
     {
-        private Blog_Tests_Fixture Fixture { get; private set; }
+        private Blog_Tests_Fixture Fixture { get; set; }
 
         public Blog_Tests(Blog_Tests_Fixture fixture)
         {
@@ -56,7 +56,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Blogs)} threw exception. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Blogs threw exception. {0}", ex.Message));
 
                 threw = true;
             }
@@ -92,15 +92,22 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class Blog_Tests_Fixture : IAsyncLifetime
+    public class Blog_Tests_Fixture : IDisposable
     {
-        public BlogService Service { get; private set; } = new BlogService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public BlogService Service { get; private set; }
 
-        public List<Blog> Created { get; private set; } = new List<Blog>();
+        public List<Blog> Created { get; private set; }
 
-        public string Title => "ShopifySharp Test Blog";
+        public string Title { get { return "ShopifySharp Test Blog"; } }
 
-        public string Commentable => "moderate";
+        public string Commentable { get { return "moderate"; } }
+
+        public Blog_Tests_Fixture()
+        {
+            Service = new BlogService(Utils.MyShopifyUrl, Utils.AccessToken);
+            Created = new List<Blog>();
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -120,7 +127,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Blog with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Blog with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -129,11 +136,11 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<Blog> Create(bool skipAddToCreatedList = false)
+        public Blog Create(bool skipAddToCreatedList = false)
         {
             var blog = Service.Create(new Blog()
             {
-                Title = string.Format("{Title} #{Guid.NewGuid()}",
+                Title = string.Format("{0} #{1}", Title, Guid.NewGuid()),
                 Commentable = Commentable,
             });
 
