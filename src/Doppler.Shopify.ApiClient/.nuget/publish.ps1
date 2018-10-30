@@ -27,7 +27,7 @@ else
   }
 
   .\NuGet.exe pack Doppler.Shopify.ApiClient.nuspec -BasePath . -OutputDirectory $packagesDir -Version $assemblyVersion
-  # .\NuGet.exe push $packageName -source https://nuget.dataonix.com/api/v2/package 1234-dataonix -ConfigFile NuGet.Config
+  .\NuGet.exe push $packageName  -ApiKey 9qesmq566dajasa1frmymimc -Source https://ci.appveyor.com/nuget/makingsense-aspnet/api/v2/package
 }
 
 read-Host "Pausing..."
