@@ -122,7 +122,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             get
             {
-                return "USD";
+                return "ARS";// TODO: It's hardcoded
             }
         }
 

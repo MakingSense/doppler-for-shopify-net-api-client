@@ -76,7 +76,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.True(obj.Id.HasValue);
             Assert.Equal(Fixture.BodyHtml, obj.BodyHtml);
             Assert.Equal(Fixture.Title, obj.Title);
-            Assert.StartsWith(Fixture.Handle, obj.Handle, StringComparison.OrdinalIgnoreCase);
+            Assert.StartsWith(Fixture.Handle, obj.Handle, StringComparison. OrdinalIgnoreCase);
             Assert.NotNull(obj.PublishedAt);
             Assert.NotNull(obj.PublishedScope);
         }
@@ -215,7 +215,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             get
             {
-                return "Doppler.Shopify.ApiClient-Handle";
+                return "Doppler-Shopify-ApiClient-Handle";
             }
         }
 
@@ -223,7 +223,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             get
             {
-                return "Doppler.Shopify.ApiClient Test Smart Collection";
+                return "Doppler-Shopify-ApiClient Test Smart Collection";
             }
         }
 
