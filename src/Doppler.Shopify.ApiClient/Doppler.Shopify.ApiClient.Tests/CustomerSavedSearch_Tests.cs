@@ -127,7 +127,7 @@
 //            Assert.Equal(created.Id, updated.Id);
 //            Assert.Equal(newQuery, updated.Query);
 
-//            // In previous versions of ShopifySharp, the updated JSON would have sent 'email=null' or 'note=null', clearing out the email address.
+//            // In previous versions of Doppler.Shopify.ApiClient, the updated JSON would have sent 'email=null' or 'note=null', clearing out the email address.
 //            Assert.Equal(created.Name, updated.Name);
 //        }
 

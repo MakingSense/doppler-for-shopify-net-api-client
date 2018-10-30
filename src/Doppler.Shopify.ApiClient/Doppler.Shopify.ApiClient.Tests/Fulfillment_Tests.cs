@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Fulfillment")]
     public class Fulfillment_Tests : IClassFixture<Fulfillment_Tests_Fixture>
     {
-        private Fulfillment_Tests_Fixture Fixture { get; private set; }
+        private Fulfillment_Tests_Fixture Fixture { get; set; }
 
         public Fulfillment_Tests(Fulfillment_Tests_Fixture fixture)
         {
@@ -160,19 +160,25 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class Fulfillment_Tests_Fixture : IAsyncLifetime
+    public class Fulfillment_Tests_Fixture : IDisposable
     {
-        public FulfillmentService Service { get; private set; } = new FulfillmentService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private FulfillmentService _service = new FulfillmentService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private OrderService _orderService = new OrderService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<Order> _createdOrders = new List<Order>();
+        private List<Fulfillment> _created = new List<Fulfillment>();
 
-        public OrderService OrderService { get; private set; } = new OrderService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public Fulfillment_Tests_Fixture()
+        {
+            Initialize();
+        }
 
+        public FulfillmentService Service { get { return _service; } private set { _service = value; } }
+        public OrderService OrderService { get { return _orderService; } private set { _orderService = value; } }
         /// <summary>
         /// Fulfillments must be part of an order and cannot be deleted.
         /// </summary>
-        public List<Order> CreatedOrders { get; private set; } = new List<Order>();
-
-        public List<Fulfillment> Created { get; private set; } = new List<Fulfillment>();
-
+        public List<Order> CreatedOrders { get { return _createdOrders; } private set { _createdOrders = value; } }
+        public List<Fulfillment> Created { get { return _created; } private set { _created = value; } }
         public void Initialize()
         {
             // Fulfillment API has a stricter rate limit when on a non-paid store.
@@ -193,12 +199,12 @@ namespace Doppler.Shopify.ApiClient.Tests
                 }
                 catch (ShopifyException ex)
                 {
-                    Console.WriteLine(string.Format("Failed to delete order with id {obj.Id.Value}. {ex.Message}");
+                    Console.WriteLine(string.Format("Failed to delete order with id {0}. {1}", obj.Id.Value, ex.Message));
                 }
             }
         }
 
-        public async Task<Order> CreateOrder()
+        public Order CreateOrder()
         {
             var obj = OrderService.Create(new Order()
             {
@@ -250,7 +256,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             return obj;
         }
 
-        public async Task<Fulfillment> Create(long orderId, bool multipleTrackingNumbers = false, IEnumerable<LineItem> items = null)
+        public Fulfillment Create(long orderId, bool multipleTrackingNumbers = false, IEnumerable<LineItem> items = null)
         {
             Fulfillment fulfillment;
 

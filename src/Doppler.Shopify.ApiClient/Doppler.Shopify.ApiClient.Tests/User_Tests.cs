@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "User")]
     public class User_Tests : IClassFixture<User_Tests_Fixture>
     {
-        private User_Tests_Fixture Fixture { get; private set; }
+        private User_Tests_Fixture Fixture { get; set; }
 
         public User_Tests(User_Tests_Fixture fixture)
         {
@@ -39,12 +39,14 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class User_Tests_Fixture : IAsyncLifetime
+    public class User_Tests_Fixture
     {
-        public UserService Service => new UserService(Utils.MyShopifyUrl, Utils.AccessToken);
-
-        public Task Initialize() => Task.CompletedTask;
-
-        public Task Dispose() => Task.CompletedTask;
+        public UserService Service
+        {
+            get
+            {
+                return new UserService(Utils.MyShopifyUrl, Utils.AccessToken);
+            }
+        }
     }
 }

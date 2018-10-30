@@ -8,7 +8,9 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Shop")]
     public class Shop_Tests
     {
-        private ShopService _Service { get; private set; } = new ShopService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private ShopService _service = new ShopService(Utils.MyShopifyUrl, Utils.AccessToken);
+
+        private ShopService _Service { get { return _service; } set { _service = value; } }
 
         [Fact]
         public void Gets_Shops()
@@ -32,7 +34,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Uninstalls_Apps)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Uninstalls_Apps failed. {0}", ex.Message));
 
                 threw = true;
             }

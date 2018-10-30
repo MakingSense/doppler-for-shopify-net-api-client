@@ -9,7 +9,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Event")]
     public class Event_Tests : IClassFixture<Event_Tests_Fixture>
     {
-        private Event_Tests_Fixture Fixture { get; private set; }
+        private Event_Tests_Fixture Fixture { get; set; }
 
         public Event_Tests(Event_Tests_Fixture fixture)
         {

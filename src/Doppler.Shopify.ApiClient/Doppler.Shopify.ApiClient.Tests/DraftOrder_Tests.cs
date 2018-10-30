@@ -45,7 +45,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_DraftOrders)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_DraftOrders failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -93,7 +93,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         [Fact]
         public void Updates_DraftOrders()
         {
-            string newNote = string.Format("New note value {Guid.NewGuid()}";
+            string newNote = string.Format("New note value {0}", Guid.NewGuid());
             var created = Fixture.Create();
             long id = created.Id.Value;
             
@@ -163,7 +163,7 @@ namespace Doppler.Shopify.ApiClient.Tests
 
         public string Note = "A note for the draft order.";
 
-        DraftOrder_Tests_Fixture()
+        public DraftOrder_Tests_Fixture()
         {
             Created = new List<DraftOrder>();
             Initialize();

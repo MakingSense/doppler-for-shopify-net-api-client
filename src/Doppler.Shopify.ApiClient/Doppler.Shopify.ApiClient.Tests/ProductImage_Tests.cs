@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "ProductImage")]
     public class ProductImage_Tests : IClassFixture<ProductImage_Tests_Fixture>
     {
-        private ProductImage_Tests_Fixture Fixture { get; private set; }
+        private ProductImage_Tests_Fixture Fixture { get; set; }
 
         public ProductImage_Tests(ProductImage_Tests_Fixture fixture)
         {
@@ -46,7 +46,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_ProductImages)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_ProductImages failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -78,7 +78,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         public void Updates_ProductImages()
         {
             var created = Fixture.Create();
-            var newAlt = string.Format("ShopifySharp test {Guid.NewGuid()}";
+            var newAlt = string.Format("Doppler.Shopify.ApiClient test {0}", Guid.NewGuid());
             long id = created.Id.Value;
             
             created.Alt = newAlt;       
@@ -93,17 +93,29 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class ProductImage_Tests_Fixture : IAsyncLifetime
+    public class ProductImage_Tests_Fixture : IDisposable
     {
-        public string ImageFileName => "image-filename.jpg";
+        private ProductService _productService = new ProductService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private ProductImageService _service = new ProductImageService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<ProductImage> _created = new List<ProductImage>();
 
-        public ProductService ProductService { get; private set; } = new ProductService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public string ImageFileName
+        {
+            get
+            {
+                return "image-filename.jpg";
+            }
+        }
 
-        public ProductImageService Service { get; private set; } = new ProductImageService(Utils.MyShopifyUrl, Utils.AccessToken);
-
-        public List<ProductImage> Created { get; private set; } = new List<ProductImage>();
-
+        public ProductService ProductService { get { return _productService; } private set { _productService = value; } }
+        public ProductImageService Service { get { return _service; } private set { _service = value; } }
+        public List<ProductImage> Created { get { return _created; } private set { _created = value; } }
         public long ProductId { get; set; }
+
+        public ProductImage_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -129,7 +141,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Page with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Page with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -138,7 +150,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<ProductImage> Create(bool skipAddToCreatedList = false)
+        public ProductImage Create(bool skipAddToCreatedList = false)
         {
             var obj = Service.Create(ProductId, new ProductImage()
             {
@@ -146,7 +158,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 Attachment = "R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\n"
             });
 
-            if (! skipAddToCreatedList)
+            if (!skipAddToCreatedList)
             {
                 Created.Add(obj);
             }

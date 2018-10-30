@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
-using ShopifySharp.Infrastructure;
+using Doppler.Shopify.ApiClient.Filters;
+using Doppler.Shopify.ApiClient.Infrastructure;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -17,7 +17,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             var ub = new UriBuilder(Utils.MyShopifyUrl)
             {
-                Path = string.Format("admin/{path}"
+                Path = string.Format("admin/{0}", path)
             };
             var msg = new HttpRequestMessage(method, ub.ToString())
             {
@@ -72,9 +72,9 @@ namespace Doppler.Shopify.ApiClient.Tests
                     // This request will return a response which looks like { errors: "some error message"}
                     using (var msg = PrepareRequest(HttpMethod.Get, "api_permissions/current.json"))
                     {
-                        var req = client.Send(msg);
+                        var req = client.SendAsync(msg).Result;
                         response = req;
-                        rawBody = response.Content.ReadAsString();
+                        rawBody = response.Content.ReadAsStringAsync().Result;
                     }
 
                     try
@@ -114,9 +114,9 @@ namespace Doppler.Shopify.ApiClient.Tests
                     // This request will return a response which looks like { errors: { "order" : "some error message" } }
                     using (var msg = PrepareRequest(HttpMethod.Post, "orders.json", new JsonContent(new { })))
                     {
-                        var req = client.Send(msg);
+                        var req = client.SendAsync(msg).Result;
                         response = req;
-                        rawBody = response.Content.ReadAsString();
+                        rawBody = response.Content.ReadAsStringAsync().Result;
                     }
 
                     try
@@ -191,9 +191,9 @@ namespace Doppler.Shopify.ApiClient.Tests
                     // This request will return a response which looks like { errors: { "order" : [ "some error message" ] } }
                     using (var msg = PrepareRequest(HttpMethod.Post, "orders.json", new JsonContent(new { order = order })))
                     {
-                        var req = client.Send(msg);
+                        var req = client.SendAsync(msg).Result;
                         response = req;
-                        rawBody = response.Content.ReadAsString();
+                        rawBody = response.Content.ReadAsStringAsync().Result;
                     }
 
                     try
@@ -233,11 +233,12 @@ namespace Doppler.Shopify.ApiClient.Tests
 
             try
             {
-                var tasks = Enumerable.Range(0, requestCount).Select(_ => service.List(new OrderFilter()
+                var tasks = Enumerable.Range(0, requestCount).Select(_ => Task.FromResult(service.List(new OrderFilter()
                 {
                     Limit = 1
-                }));
-                list = Task.WhenAll(tasks);
+                })));
+
+                list = Task.WhenAll(tasks).Result;
             }
             catch (ShopifyRateLimitException)
             {
@@ -260,11 +261,11 @@ namespace Doppler.Shopify.ApiClient.Tests
 
             try
             {
-                var tasks = Enumerable.Range(0, requestCount).Select(_ => service.List(new OrderFilter()
+                var tasks = Enumerable.Range(0, requestCount).Select(_ => Task.FromResult(service.List(new OrderFilter()
                 {
                     Limit = 1
-                }));
-                list = Task.WhenAll(tasks);
+                })));
+                list = Task.WhenAll(tasks).Result;
             }
             catch (ShopifyRateLimitException)
             {
@@ -285,12 +286,12 @@ namespace Doppler.Shopify.ApiClient.Tests
 
             try
             {
-                var tasks = Enumerable.Range(0, requestCount).Select(_ => service.List(new OrderFilter()
+                var tasks = Enumerable.Range(0, requestCount).Select(_ => Task.FromResult(service.List(new OrderFilter()
                 {
                     Limit = 1
-                }));
+                })));
 
-                Task.WhenAll(tasks);
+                Task.WhenAll(tasks).Wait();
             }
             catch (ShopifyRateLimitException e)
             {
@@ -315,12 +316,12 @@ namespace Doppler.Shopify.ApiClient.Tests
 
             try
             {
-                var tasks = Enumerable.Range(0, requestCount).Select(_ => service.List(new OrderFilter()
+                var tasks = Enumerable.Range(0, requestCount).Select(_ => Task.FromResult(service.List(new OrderFilter()
                 {
                     Limit = 1
-                }));
+                })));
 
-                Task.WhenAll(tasks);
+                Task.WhenAll(tasks).Wait();
             }
             catch (ShopifyException e)
             {

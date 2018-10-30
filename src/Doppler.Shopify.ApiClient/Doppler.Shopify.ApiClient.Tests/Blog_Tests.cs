@@ -98,7 +98,7 @@ namespace Doppler.Shopify.ApiClient.Tests
 
         public List<Blog> Created { get; private set; }
 
-        public string Title { get { return "ShopifySharp Test Blog"; } }
+        public string Title { get { return "Doppler.Shopify.ApiClient Test Blog"; } }
 
         public string Commentable { get { return "moderate"; } }
 

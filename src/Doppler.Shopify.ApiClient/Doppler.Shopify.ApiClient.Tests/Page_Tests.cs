@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Page")]
     public class Page_Tests : IClassFixture<Page_Tests_Fixture>
     {
-        private Page_Tests_Fixture Fixture { get; private set; }
+        private Page_Tests_Fixture Fixture { get; set; }
 
         public Page_Tests(Page_Tests_Fixture fixture)
         {
@@ -45,7 +45,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Pages)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Pages failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -76,7 +76,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         [Fact]
         public void Updates_Pages()
         {
-            string html = "<h1>This string was updated while testing ShopifySharp!</h1>";
+            string html = "<h1>This string was updated while testing Doppler.Shopify.ApiClient!</h1>";
             var created = Fixture.Create();
             long id = created.Id.Value;
 
@@ -92,15 +92,33 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class Page_Tests_Fixture : IAsyncLifetime
+    public class Page_Tests_Fixture : IDisposable
     {
-        public PageService Service { get; private set; } = new PageService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private PageService _service = new PageService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<Page> _created = new List<Page>();
 
-        public List<Page> Created { get; private set; } = new List<Page>();
+        public PageService Service { get { return _service; } private set { _service = value; } }
+        public List<Page> Created { get { return _created; } private set { _created = value; } }
+        public string Title
+        {
+            get
+            {
+                return "Doppler.Shopify.ApiClient Page API Tests";
+            }
+        }
 
-        public string Title => "ShopifySharp Page API Tests";
+        public string Html
+        {
+            get
+            {
+                return "<strong>This string was created by Doppler.Shopify.ApiClient!</strong>";
+            }
+        }
 
-        public string Html => "<strong>This string was created by ShopifySharp!</strong>";
+        public Page_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -120,7 +138,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Page with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Page with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -129,16 +147,16 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<Page> Create(bool skipAddToCreatedList = false)
+        public Page Create(bool skipAddToCreatedList = false)
         {
-            var obj = Service.Create(new ShopifySharp.Page()
+            var obj = Service.Create(new Doppler.Shopify.ApiClient.Page()
             {
                 CreatedAt = DateTime.UtcNow,
                 Title = Title,
                 BodyHtml = Html,
             });
 
-            if (! skipAddToCreatedList)
+            if (!skipAddToCreatedList)
             {
                 Created.Add(obj);
             }

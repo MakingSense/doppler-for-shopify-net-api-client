@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "FulfillmentService")]
     public class FulfillmentService_Tests : IClassFixture<FulfillmentService_Tests_Fixture>
     {
-        private FulfillmentService_Tests_Fixture Fixture { get; private set; }
+        private FulfillmentService_Tests_Fixture Fixture { get; set; }
 
         public FulfillmentService_Tests(FulfillmentService_Tests_Fixture fixture)
         {
@@ -74,11 +74,18 @@ namespace Doppler.Shopify.ApiClient.Tests
 
     }
 
-    public class FulfillmentService_Tests_Fixture : IAsyncLifetime
+    public class FulfillmentService_Tests_Fixture : IDisposable
     {
-        public FulfillmentServiceService Service { get; private set; } = new FulfillmentServiceService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private FulfillmentServiceService _service = new FulfillmentServiceService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<FulfillmentServiceEntity> _created = new List<FulfillmentServiceEntity>();
 
-        public List<FulfillmentServiceEntity> Created { get; private set; } = new List<FulfillmentServiceEntity>();
+        public FulfillmentServiceService Service { get { return _service; } private set { _service = value; } }
+        public List<FulfillmentServiceEntity> Created { get { return _created; } private set { _created = value; } }
+
+        public FulfillmentService_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -99,16 +106,16 @@ namespace Doppler.Shopify.ApiClient.Tests
                 }
                 catch (ShopifyException ex)
                 {
-                    Console.WriteLine(string.Format("Failed to delete fulfillment service with id {obj.Id.Value}. {ex.Message}");
+                    Console.WriteLine(string.Format("Failed to delete fulfillment service with id {0}. {1}", obj.Id.Value, ex.Message));
                 }
             }
         }
 
-        public async Task<FulfillmentServiceEntity> Create(bool skipAddToCreateList = false)
+        public FulfillmentServiceEntity Create(bool skipAddToCreateList = false)
         {
             FulfillmentServiceEntity fulfillmentServiceEntity = Service.Create(new FulfillmentServiceEntity()
             {
-                Name = string.Format("MarsFulfillment{DateTime.Now.Ticks}",
+                Name = string.Format("MarsFulfillment{0}",DateTime.Now.Ticks),
                 CallbackUrl = "http://google.com",
                 InventoryManagement = false,
                 TrackingSupport = false,

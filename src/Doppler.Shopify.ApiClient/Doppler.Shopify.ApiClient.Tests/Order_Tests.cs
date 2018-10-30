@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Order")]
     public class Order_Tests : IClassFixture<Order_Tests_Fixture>
     {
-        private Order_Tests_Fixture Fixture { get; private set; }
+        private Order_Tests_Fixture Fixture { get; set; }
 
         public Order_Tests(Order_Tests_Fixture fixture)
         {
@@ -37,7 +37,8 @@ namespace Doppler.Shopify.ApiClient.Tests
         [Fact]
         public void Lists_Orders_With_Filter()
         {
-            var created = Task.WhenAll(Enumerable.Range(0, 2).Select(i => Fixture.Create()));
+            var created = Task.WhenAll(Enumerable.Range(0, 2).Select(i => Task.FromResult(Fixture.Create())))
+                .Result;
             var ids = created.Select(o => o.Id.Value);
             var list = Fixture.Service.List(new OrderFilter()
             {
@@ -59,7 +60,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Orders)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Orders failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -90,7 +91,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         [Fact]
         public void Updates_Orders()
         {
-            string note = "This note was updated while testing ShopifySharp!";
+            string note = "This note was updated while testing Doppler.Shopify.ApiClient!";
             var created = Fixture.Create();
             long id = created.Id.Value;
 
@@ -135,7 +136,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Cancels_Orders)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Cancels_Orders failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -158,7 +159,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Cancels_Orders_With_Options)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Cancels_Orders_With_Options failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -179,18 +180,30 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.Equal(created.Id, updated.Id);
             Assert.Equal(newNote, updated.Note);
 
-            // In previous versions of ShopifySharp, the updated JSON would have sent 'email=null', clearing out the email address.
+            // In previous versions of Doppler.Shopify.ApiClient, the updated JSON would have sent 'email=null', clearing out the email address.
             Assert.Equal(created.Email, updated.Email);
         }
     }
 
-    public class Order_Tests_Fixture : IAsyncLifetime
+    public class Order_Tests_Fixture : IDisposable
     {
-        public OrderService Service { get; private set; } = new OrderService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private OrderService _service = new OrderService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<Order> _created = new List<Order>();
 
-        public string Note => "This order was created while testing ShopifySharp!";
+        public OrderService Service { get { return _service; } private set { _service = value; } }
+        public string Note
+        {
+            get
+            {
+                return "This order was created while testing Doppler.Shopify.ApiClient!";
+            }
+        }
 
-        public List<Order> Created { get; private set; } = new List<Order>();
+        public List<Order> Created { get { return _created; } private set { _created = value; } }
+        public Order_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -210,7 +223,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Order with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Order with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -219,7 +232,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<Order> Create(bool skipAddToCreateList = false)
+        public Order Create(bool skipAddToCreateList = false)
         {
             var obj = Service.Create(new Order()
             {

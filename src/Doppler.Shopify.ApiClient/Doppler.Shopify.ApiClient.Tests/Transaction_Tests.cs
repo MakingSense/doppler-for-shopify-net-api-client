@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Transaction")]
     public class Transaction_Tests : IClassFixture<Transaction_Tests_Fixture>
     {
-        private Transaction_Tests_Fixture Fixture { get; private set; }
+        private Transaction_Tests_Fixture Fixture { get; set; }
 
         public Transaction_Tests(Transaction_Tests_Fixture fixture)
         {
@@ -99,25 +99,55 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class Transaction_Tests_Fixture : IAsyncLifetime
+    public class Transaction_Tests_Fixture : IDisposable
     {
-        public TransactionService Service { get; private set; } = new TransactionService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private TransactionService _service = new TransactionService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private OrderService _orderService = new OrderService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<Transaction> _created = new List<Transaction>();
+        private List<Order> _createdOrders = new List<Order>();
 
-        public OrderService OrderService { get; private set; } = new OrderService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public TransactionService Service { get { return _service; } private set { _service = value; } }
+        public OrderService OrderService { get { return _orderService; } private set { _orderService = value; } }
+        public List<Transaction> Created { get { return _created; } private set { _created = value; } }
+        public List<Order> CreatedOrders { get { return _createdOrders; } private set { _createdOrders = value; } }
+        public decimal Amount
+        {
+            get
+            {
+                return 10.00m;
+            }
+        }
 
-        public List<Transaction> Created { get; private set; } = new List<Transaction>();
+        public string Currency
+        {
+            get
+            {
+                return "USD";
+            }
+        }
 
-        public List<Order> CreatedOrders { get; private set; } = new List<Order>();
+        public string Gateway
+        {
+            get
+            {
+                return "bogus";
+            }
+        }
 
-        public decimal Amount => 10.00m;
-
-        public string Currency => "USD";
-
-        public string Gateway => "bogus";
-
-        public string Status => "success";
+        public string Status
+        {
+            get
+            {
+                return "success";
+            }
+        }
 
         public long OrderId { get; set; }
+
+        public Transaction_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -138,13 +168,13 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Order with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Order with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
         }
 
-        public async Task<Order> CreateOrder()
+        public Order CreateOrder()
         {
             var obj = OrderService.Create(new Order()
             {
@@ -208,7 +238,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<Transaction> Create(long orderId, string kind = "capture", bool skipAddToCreatedList = false)
+        public Transaction Create(long orderId, string kind = "capture", bool skipAddToCreatedList = false)
         {
             var obj = Service.Create(orderId, new Transaction()
             {
@@ -220,7 +250,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 Kind = kind
             });
 
-            if (! skipAddToCreatedList)
+            if (!skipAddToCreatedList)
             {
                 Created.Add(obj);
             }

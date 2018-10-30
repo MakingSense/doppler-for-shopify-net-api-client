@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "FulfillmentEvent")]
     public class FulfillmentEvents_Tests : IClassFixture<FulfillmentEvents_Tests_Fixture>
     {
-        private FulfillmentEvents_Tests_Fixture Fixture { get; private set; }
+        private FulfillmentEvents_Tests_Fixture Fixture { get; set; }
 
         public FulfillmentEvents_Tests(FulfillmentEvents_Tests_Fixture fixture)
         {
@@ -41,22 +41,29 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class FulfillmentEvents_Tests_Fixture : IAsyncLifetime
+    public class FulfillmentEvents_Tests_Fixture : IDisposable
     {
-        public FulfillmentEventService FulfillmentEventService { get; private set; } = new FulfillmentEventService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private FulfillmentEventService _fulfillmentEventService = new FulfillmentEventService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private FulfillmentService _fulfillmentService = new FulfillmentService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private OrderService _orderService = new OrderService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<Order> _createdOrders = new List<Order>();
+        private List<Fulfillment> _createdFulfillments = new List<Fulfillment>();
+        private List<FulfillmentEvent> _createdFulfillmentEvents = new List<FulfillmentEvent>();
 
-        public FulfillmentService FulfillmentService { get; private set; } = new FulfillmentService(Utils.MyShopifyUrl, Utils.AccessToken);
-
-        public OrderService OrderService { get; private set; } = new OrderService(Utils.MyShopifyUrl, Utils.AccessToken);
-
+        public FulfillmentEventService FulfillmentEventService { get { return _fulfillmentEventService; } private set { _fulfillmentEventService = value; } }
+        public FulfillmentService FulfillmentService { get { return _fulfillmentService; } private set { _fulfillmentService = value; } }
+        public OrderService OrderService { get { return _orderService; } private set { _orderService = value; } }
         /// <summary>
         /// Fulfillments must be part of an order and cannot be deleted.
         /// </summary>
-        public List<Order> CreatedOrders { get; private set; } = new List<Order>();
+        public List<Order> CreatedOrders { get { return _createdOrders; } private set { _createdOrders = value; } }
+        public List<Fulfillment> CreatedFulfillments { get { return _createdFulfillments; } private set { _createdFulfillments = value; } }
+        public List<FulfillmentEvent> CreatedFulfillmentEvents { get { return _createdFulfillmentEvents; } private set { _createdFulfillmentEvents = value; } }
 
-        public List<Fulfillment> CreatedFulfillments { get; private set; } = new List<Fulfillment>();
-
-        public List<FulfillmentEvent> CreatedFulfillmentEvents { get; private set; } = new List<FulfillmentEvent>();
+        public FulfillmentEvents_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -79,12 +86,12 @@ namespace Doppler.Shopify.ApiClient.Tests
                 }
                 catch (ShopifyException ex)
                 {
-                    Console.WriteLine(string.Format("Failed to delete order with id {obj.Id.Value}. {ex.Message}");
+                    Console.WriteLine(string.Format("Failed to delete order with id {0}. {1}", obj.Id.Value, ex.Message));
                 }
             }
         }
 
-        public async Task<Order> CreateOrder()
+        public Order CreateOrder()
         {
             var obj = OrderService.Create(new Order()
             {
@@ -136,7 +143,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             return obj;
         }
 
-        public async Task<Fulfillment> CreateFulfillment(long orderId, bool multipleTrackingNumbers = false, IEnumerable<LineItem> items = null)
+        public Fulfillment CreateFulfillment(long orderId, bool multipleTrackingNumbers = false, IEnumerable<LineItem> items = null)
         {
             Fulfillment fulfillment = new Fulfillment()
             {
@@ -153,7 +160,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             return fulfillment;
         }
 
-        public async Task<FulfillmentEvent> CreateFulfillmentEvent(long orderId, long fulfillmentId)
+        public FulfillmentEvent CreateFulfillmentEvent(long orderId, long fulfillmentId)
         {
             var @event = new FulfillmentEvent()
             {

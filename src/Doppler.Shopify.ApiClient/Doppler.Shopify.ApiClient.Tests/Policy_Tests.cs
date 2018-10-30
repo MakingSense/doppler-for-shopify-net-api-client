@@ -8,7 +8,9 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Policy")]
     public class Policy_Tests
     {
-        private PolicyService _Service { get; private set; } = new PolicyService(Utils.MyShopifyUrl, Utils.AccessToken);              
+        private PolicyService _service = new PolicyService(Utils.MyShopifyUrl, Utils.AccessToken);
+
+        private PolicyService _Service { get { return _service; } set { _service = value; } } 
 
         [Fact]
         public void Lists_Orders()
@@ -16,8 +18,8 @@ namespace Doppler.Shopify.ApiClient.Tests
             var list = _Service.List();
 
             Assert.NotNull(list);
-            
-            foreach(var policy in list)
+
+            foreach (var policy in list)
             {
                 EmptyAssert.NotNullOrEmpty(policy.Title);
                 Assert.NotNull(policy.CreatedAt);

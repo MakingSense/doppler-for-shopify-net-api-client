@@ -7,7 +7,9 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Location")]
     public class Location_Tests
     {
-        private LocationService _Service { get; private set; } = new LocationService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private LocationService _service = new LocationService(Utils.MyShopifyUrl, Utils.AccessToken);
+
+        private LocationService _Service { get { return _service; } set { _service = value; } }
 
         [Fact]
         public void Lists_Locations()

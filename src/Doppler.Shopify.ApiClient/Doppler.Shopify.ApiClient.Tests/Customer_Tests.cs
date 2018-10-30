@@ -189,7 +189,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.Equal(newFirstName, updated.FirstName);
             Assert.Equal(newLastName, updated.LastName);
 
-            // In previous versions of ShopifySharp, the updated JSON would have sent 'email=null' or 'note=null', clearing out the email address.
+            // In previous versions of Doppler.Shopify.ApiClient, the updated JSON would have sent 'email=null' or 'note=null', clearing out the email address.
             Assert.Equal(created.Email, updated.Email);
             Assert.Equal(created.Note, updated.Note);
         }
@@ -214,8 +214,8 @@ namespace Doppler.Shopify.ApiClient.Tests
 
             var options = new CustomerInvite()
             {
-                Subject = "Custom Subject courtesy of ShopifySharp",
-                CustomMessage = "Custom Message courtesy of ShopifySharp"
+                Subject = "Custom Subject courtesy of Doppler.Shopify.ApiClient",
+                CustomMessage = "Custom Message courtesy of Doppler.Shopify.ApiClient"
             };
 
             var invite = Fixture.Service.SendInvite(created.Id.Value, options);

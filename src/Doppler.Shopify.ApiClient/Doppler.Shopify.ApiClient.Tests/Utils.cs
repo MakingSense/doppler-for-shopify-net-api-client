@@ -15,7 +15,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
 
         /// <summary>
-        /// Attempts to get an environment variable first by the key, then by 'SHOPIFYSHARP_{KEY}'. All keys must be uppercased!
+        /// Attempts to get an environment variable first by the key, then by 'Doppler.Shopify.ApiClient_{KEY}'. All keys must be uppercased!
         /// </summary>
         private static string Get(string key)
         {

@@ -40,11 +40,16 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core">
+      <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.abstractions.2.0.0\lib\net35\xunit.abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -74,26 +79,89 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AccessScope_Tests.cs" />
-    <Compile Include="ApplicationCredit_Tests.cs" />
-    <Compile Include="Article_Tests.cs" />
-    <Compile Include="Asset_Tests.cs" />
-    <Compile Include="Authorization_Tests.cs" />
-    <Compile Include="Blog_Tests.cs" />
-    <Compile Include="Carrier_Tests.cs" />
-    <Compile Include="Charge_Tests.cs" />
-    <Compile Include="Checkout_Tests.cs" />
-    <Compile Include="Collect_Tests.cs" />
-    <Compile Include="CustomCollection_Tests.cs" />
-    <Compile Include="CustomerAddress_Tests.cs" />
-    <Compile Include="CustomerSavedSearch_Tests.cs" />
-    <Compile Include="Customer_Tests.cs" />
-    <Compile Include="DiscountCode_Tests.cs" />
-    <Compile Include="Discount_Tests.cs" />
+    <Compile Include="AccessScope_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ApplicationCredit_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Article_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Asset_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Authorization_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Blog_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Carrier_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Charge_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Checkout_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Collect_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CustomCollection_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CustomerAddress_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CustomerSavedSearch_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Customer_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscountCode_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Discount_Tests.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DraftOrder_Tests.cs" />
     <Compile Include="Event_Tests.cs" />
     <Compile Include="Extensions\AssertExtensions.cs" />
+    <Compile Include="FalseToNullConverter_Tests.cs" />
+    <Compile Include="FulfillmentEvents_Tests .cs" />
+    <Compile Include="FulfillmentService_Tests.cs" />
+    <Compile Include="Fulfillment_Tests.cs" />
+    <Compile Include="GdprEntities_Tests.cs" />
+    <Compile Include="GiftCard_Tests.cs" />
+    <Compile Include="InventoryItem_Tests.cs" />
+    <Compile Include="InventoryLevel_Tests.cs" />
+    <Compile Include="Location_Tests.cs" />
+    <Compile Include="MetaField_Tests.cs" />
+    <Compile Include="NullToZeroConverter_Tests.cs" />
+    <Compile Include="OrderRisk_Tests.cs" />
+    <Compile Include="Order_Tests.cs" />
+    <Compile Include="Page_Tests.cs" />
+    <Compile Include="Policy_Tests.cs" />
+    <Compile Include="PriceRule_Tests.cs" />
+    <Compile Include="ProductImage_Tests.cs" />
+    <Compile Include="ProductVariant_Tests.cs" />
+    <Compile Include="Product_Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecurringCharge_Tests.cs" />
+    <Compile Include="Redirect_Tests.cs" />
+    <Compile Include="ScriptTag_Tests.cs" />
+    <Compile Include="ShippingZone_Tests.cs" />
+    <Compile Include="ShopifyException_Tests.cs" />
+    <Compile Include="ShopifyService_Tests.cs" />
+    <Compile Include="Shop_Tests.cs" />
+    <Compile Include="SmartCollection_Tests.cs" />
+    <Compile Include="Theme_Tests.cs" />
+    <Compile Include="Transaction_Tests.cs" />
+    <Compile Include="UsageCharge_Tests.cs" />
+    <Compile Include="User_Tests.cs" />
     <Compile Include="Utils.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -136,7 +204,7 @@
     <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.1.0\build\net20\xunit.runner.visualstudio.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)packages\xunit.runner.console.2.1.0\tools\xunit.console.x86.exe $(TargetPath)  -html $(TargetDir)test-results.html</PostBuildEvent>
+    <PostBuildEvent>REM $(SolutionDir)packages\xunit.runner.console.2.1.0\tools\xunit.console.x86.exe $(TargetPath)  -html $(TargetDir)test-results.html</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

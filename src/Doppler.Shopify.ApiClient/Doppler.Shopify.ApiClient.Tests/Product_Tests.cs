@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Product")]
     public class Product_Tests : IClassFixture<Product_Tests_Fixture>
     {
-        private Product_Tests_Fixture Fixture { get; private set; }
+        private Product_Tests_Fixture Fixture { get; set; }
 
         public Product_Tests(Product_Tests_Fixture fixture)
         {
@@ -45,7 +45,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Products)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Products failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -93,7 +93,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         [Fact]
         public void Updates_Products()
         {
-            string title = "ShopifySharp Updated Test Product";
+            string title = "Doppler.Shopify.ApiClient Updated Test Product";
             var created = Fixture.Create();
             long id = created.Id.Value;
 
@@ -133,19 +133,44 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class Product_Tests_Fixture : IAsyncLifetime
+    public class Product_Tests_Fixture : IDisposable
     {
-        public ProductService Service { get; private set; } = new ProductService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public ProductService Service { get { return _service; } private set { _service = value; } }
+        public List<Product> Created { get { return _created; } private set { _created = value; } }
+        public string Title
+        {
+            get
+            {
+                return "Doppler.Shopify.ApiClient Test Product";
+            }
+        }
 
-        public List<Product> Created { get; private set; } = new List<Product>();
+        private string vendor = "Auntie Dot";
+        private ProductService _service = new ProductService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<Product> _created = new List<Product>();
 
-        public string Title => "ShopifySharp Test Product";
+        public string BodyHtml
+        {
+            get
+            {
+                return "<strong>This product was created while testing Doppler.Shopify.ApiClient!</strong>";
+            }
+        }
 
-        public string Vendor = "Auntie Dot";
+        public string ProductType
+        {
+            get
+            {
+                return "Foobars";
+            }
+        }
 
-        public string BodyHtml => "<strong>This product was created while testing ShopifySharp!</strong>";
+        public string Vendor { get { return vendor; } set { vendor = value; } }
 
-        public string ProductType => "Foobars";
+        public Product_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -165,16 +190,16 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Product with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Product with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
-        } 
+        }
 
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<Product> Create(bool skipAddToCreateList = false, ProductCreateOptions options = null)
+        public Product Create(bool skipAddToCreateList = false, ProductCreateOptions options = null)
         {
             var obj = Service.Create(new Product()
             {
@@ -192,7 +217,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 },
             }, options);
 
-            if (! skipAddToCreateList)
+            if (!skipAddToCreateList)
             {
                 Created.Add(obj);
             }

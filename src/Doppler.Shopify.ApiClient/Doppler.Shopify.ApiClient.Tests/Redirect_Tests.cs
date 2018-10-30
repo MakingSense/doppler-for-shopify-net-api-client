@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Redirect")]
     public class Redirect_Tests : IClassFixture<Redirect_Tests_Fixture>
     {
-        private Redirect_Tests_Fixture Fixture { get; private set; }
+        private Redirect_Tests_Fixture Fixture { get; set; }
 
         public Redirect_Tests(Redirect_Tests_Fixture fixture)
         {
@@ -46,7 +46,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Redirects)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Redirects failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -96,13 +96,25 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class Redirect_Tests_Fixture : IAsyncLifetime
+    public class Redirect_Tests_Fixture : IDisposable
     {
-        public RedirectService Service { get; private set; } = new RedirectService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private RedirectService _service = new RedirectService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<Redirect> _created = new List<Redirect>();
 
-        public List<Redirect> Created { get; private set; } = new List<Redirect>();
+        public RedirectService Service { get { return _service; } private set { _service = value; } }
+        public List<Redirect> Created { get { return _created; } private set { _created = value; } }
+        public string Target
+        {
+            get
+            {
+                return "https://www.example.com/";
+            }
+        }
 
-        public string Target => "https://www.example.com/";
+        public Redirect_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -122,7 +134,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Redirect with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Redirect with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -131,7 +143,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<Redirect> Create(bool skipAddToCreatedList = false)
+        public Redirect Create(bool skipAddToCreatedList = false)
         {
             var obj = Service.Create(new Redirect()
             {
@@ -139,7 +151,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 Target = Target,
             });
 
-            if (! skipAddToCreatedList)
+            if (!skipAddToCreatedList)
             {
                 Created.Add(obj);
             }

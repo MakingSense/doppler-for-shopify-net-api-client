@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "ScriptTag")]
     public class ScriptTag_Tests : IClassFixture<ScriptTag_Tests_Fixture>
     {
-        private ScriptTag_Tests_Fixture Fixture { get; private set; }
+        private ScriptTag_Tests_Fixture Fixture { get; set; }
 
         public ScriptTag_Tests(ScriptTag_Tests_Fixture fixture)
         {
@@ -45,7 +45,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_ScriptTags)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_ScriptTags failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -96,17 +96,41 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class ScriptTag_Tests_Fixture : IAsyncLifetime
+    public class ScriptTag_Tests_Fixture : IDisposable
     {
-        public ScriptTagService Service { get; private set; } = new ScriptTagService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private ScriptTagService _service = new ScriptTagService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<ScriptTag> _created = new List<ScriptTag>();
 
-        public List<ScriptTag> Created { get; private set; } = new List<ScriptTag>();
+        public ScriptTagService Service { get { return _service; } private set { _service = value; } }
+        public List<ScriptTag> Created { get { return _created; } private set { _created = value; } }
+        public string Event
+        {
+            get
+            {
+                return "onload";
+            }
+        }
 
-        public string Event => "onload";
+        public string Src
+        {
+            get
+            {
+                return "https://unpkg.com/davenport@2.1.0/bin/browser.js";
+            }
+        }
 
-        public string Src => "https://unpkg.com/davenport@2.1.0/bin/browser.js";
+        public string Scope
+        {
+            get
+            {
+                return "online_store";
+            }
+        }
 
-        public string Scope => "online_store";
+        public ScriptTag_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -126,7 +150,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created ScriptTag with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created ScriptTag with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -135,7 +159,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<ScriptTag> Create(bool skipAddToCreatedList = false)
+        public ScriptTag Create(bool skipAddToCreatedList = false)
         {
             var obj = Service.Create(new ScriptTag()
             {
@@ -144,7 +168,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 DisplayScope = Scope,
             });
 
-            if (! skipAddToCreatedList)
+            if (!skipAddToCreatedList)
             {
                 Created.Add(obj);
             }

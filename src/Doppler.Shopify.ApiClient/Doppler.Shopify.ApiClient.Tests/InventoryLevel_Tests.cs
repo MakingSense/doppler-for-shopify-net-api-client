@@ -1,4 +1,4 @@
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +9,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "InventoryLevel")]
     public class InventoryLevel_Tests : IClassFixture<InventoryLevel_Tests_Fixture>
     {
-        private InventoryLevel_Tests_Fixture Fixture { get; private set; }
+        private InventoryLevel_Tests_Fixture Fixture { get; set; }
 
         public InventoryLevel_Tests(InventoryLevel_Tests_Fixture fixture)
         {
@@ -67,7 +67,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_InventoryLevel)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_InventoryLevel failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -78,17 +78,23 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class InventoryLevel_Tests_Fixture : IAsyncLifetime
+    public class InventoryLevel_Tests_Fixture : IDisposable
     {
-        public InventoryLevelService Service { get; private set; } = new InventoryLevelService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private InventoryLevelService _service = new InventoryLevelService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private Product_Tests_Fixture _productTest = new Product_Tests_Fixture();
+        private ProductVariant_Tests_Fixture _variantTest = new ProductVariant_Tests_Fixture();
+        private FulfillmentService_Tests_Fixture _fulfillmentServiceServTest = new FulfillmentService_Tests_Fixture();
 
-        public Product_Tests_Fixture ProductTest { get; private set; } = new Product_Tests_Fixture();
-
-        public ProductVariant_Tests_Fixture VariantTest { get; private set; } = new ProductVariant_Tests_Fixture();
-
-        public FulfillmentService_Tests_Fixture FulfillmentServiceServTest { get; private set; } = new FulfillmentService_Tests_Fixture();
-
+        public InventoryLevelService Service { get { return _service; } private set { _service = value; } }
+        public Product_Tests_Fixture ProductTest { get { return _productTest; } private set { _productTest = value; } }
+        public ProductVariant_Tests_Fixture VariantTest { get { return _variantTest; } private set { _variantTest = value; } }
+        public FulfillmentService_Tests_Fixture FulfillmentServiceServTest { get { return _fulfillmentServiceServTest; } private set { _fulfillmentServiceServTest = value; } }
         public long InventoryItemId { get; set; }
+
+        public InventoryLevel_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -112,7 +118,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<InventoryLevel> Create(bool skipAddToCreateList = false)
+        public InventoryLevel Create(bool skipAddToCreateList = false)
         {
             var locId = (FulfillmentServiceServTest.Create(skipAddToCreateList)).LocationId.Value;
             return Service.Connect(InventoryItemId, locId, true);

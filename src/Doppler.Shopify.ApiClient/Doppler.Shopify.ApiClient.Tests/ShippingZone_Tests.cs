@@ -10,7 +10,9 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "ShippingZone")]
     public class ShippingZone_Tests
     {
-        private ShippingZoneService _Service { get; private set; } = new ShippingZoneService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private ShippingZoneService _service = new ShippingZoneService(Utils.MyShopifyUrl, Utils.AccessToken);
+
+        private ShippingZoneService _Service { get { return _service; } set { _service = value; } }
 
         [Fact]
         public void Lists_ShippingZones()
@@ -19,7 +21,7 @@ namespace Doppler.Shopify.ApiClient.Tests
 
             Assert.NotNull(shippingZones);
 
-            foreach(var shippingZone in shippingZones)
+            foreach (var shippingZone in shippingZones)
             {
                 Assert.NotNull(shippingZone.Name);
             }

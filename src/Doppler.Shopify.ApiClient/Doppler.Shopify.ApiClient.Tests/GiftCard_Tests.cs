@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     public class GiftCard_Tests : IClassFixture<GiftCard_Tests_Fixture>
     {
         public static decimal GiftCardValue = 100;
-        private GiftCard_Tests_Fixture Fixture { get; private set; }
+        private GiftCard_Tests_Fixture Fixture { get; set; }
 
         public GiftCard_Tests(GiftCard_Tests_Fixture fixture)
         {
@@ -126,12 +126,24 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class GiftCard_Tests_Fixture : IAsyncLifetime
+    public class GiftCard_Tests_Fixture : IDisposable
     {
-        public GiftCardService Service => new GiftCardService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<GiftCard> _created = new List<GiftCard>();
 
+        public GiftCardService Service
+        {
+            get
+            {
+                return new GiftCardService(Utils.MyShopifyUrl, Utils.AccessToken);
+            }
+        }
 
-        public List<GiftCard> Created { get; private set; } = new List<GiftCard>();
+        public List<GiftCard> Created { get { return _created; } private set { _created = value; } }
+
+        public GiftCard_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -149,11 +161,11 @@ namespace Doppler.Shopify.ApiClient.Tests
                 }
                 catch (ShopifyException ex)
                 {
-                    Console.WriteLine(string.Format("Failed to delete gift card with id {obj.Id.Value}. {ex.Message}");
+                    Console.WriteLine(string.Format("Failed to delete gift card with id {0}. {1}", obj.Id.Value, ex.Message));
                 }
             }
         }
-        public async Task<GiftCard> Create(decimal value, string code = null)
+        public GiftCard Create(decimal value, string code = null)
         {
             var giftCardRequest = new GiftCard() { InitialValue = value };
             if (!string.IsNullOrEmpty(code))

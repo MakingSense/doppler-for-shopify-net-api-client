@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 using EmptyAssert = Doppler.Shopify.ApiClient.Tests.Extensions.EmptyExtensions;
 
@@ -12,7 +12,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "InventoryItem")]
     public class InventoryItem_Tests : IClassFixture<InventoryItem_Tests_Fixture>
     {
-        private InventoryItem_Tests_Fixture Fixture { get; private set; }
+        private InventoryItem_Tests_Fixture Fixture { get; set; }
 
         public InventoryItem_Tests(InventoryItem_Tests_Fixture fixture)
         {
@@ -49,17 +49,29 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class InventoryItem_Tests_Fixture : IAsyncLifetime
+    public class InventoryItem_Tests_Fixture : IDisposable
     {
-        public InventoryItemService Service { get; private set; } = new InventoryItemService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private InventoryItemService _service = new InventoryItemService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private ProductVariantService _variantService = new ProductVariantService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<ProductVariant> _created = new List<ProductVariant>();
 
-        public ProductVariantService VariantService { get; private set; } = new ProductVariantService(Utils.MyShopifyUrl, Utils.AccessToken);
-
-        public List<ProductVariant> Created { get; private set; } = new List<ProductVariant>();
-
-        public decimal Price => 123.45m;
+        public InventoryItemService Service { get { return _service; } private set { _service = value; } }
+        public ProductVariantService VariantService { get { return _variantService; } private set { _variantService = value; } }
+        public List<ProductVariant> Created { get { return _created; } private set { _created = value; } }
+        public decimal Price
+        {
+            get
+            {
+                return 123.45m;
+            }
+        }
 
         public long ProductId { get; set; }
+
+        public InventoryItem_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -77,9 +89,9 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             foreach (var obj in Created)
             {
-                if (! obj.Id.HasValue) 
+                if (!obj.Id.HasValue)
                 {
-                    continue; 
+                    continue;
                 }
 
                 try
@@ -90,7 +102,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created ProductVariant with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created ProductVariant with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -99,7 +111,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<ProductVariant> Create(string option1 = null, bool skipAddToCreatedList = false)
+        public ProductVariant Create(string option1 = null, bool skipAddToCreatedList = false)
         {
             var obj = VariantService.Create(ProductId, new ProductVariant()
             {
@@ -109,7 +121,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 SKU = "Some sku"
             });
 
-            if (! skipAddToCreatedList)
+            if (!skipAddToCreatedList)
             {
                 Created.Add(obj);
             }

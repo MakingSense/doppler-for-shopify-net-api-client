@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "SmartCollection")]
     public class SmartCollection_Tests : IClassFixture<SmartCollection_Tests_Fixture>
     {
-        private SmartCollection_Tests_Fixture Fixture { get; private set; }
+        private SmartCollection_Tests_Fixture Fixture { get; set; }
 
         public SmartCollection_Tests(SmartCollection_Tests_Fixture fixture)
         {
@@ -46,7 +46,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_SmartCollections)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_SmartCollections failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -136,7 +136,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.Null(updated.PublishedAt);
         }
 
-        [Fact(Skip = "This test has a bit of a time delay that ShopifySharp isn't equipped to handle yet (Retry-After header).")]
+        [Fact(Skip = "This test has a bit of a time delay that Doppler.Shopify.ApiClient isn't equipped to handle yet (Retry-After header).")]
         public void Updates_SmartCollection_Products_Order()
         {
             //generate a unique tag
@@ -191,22 +191,46 @@ namespace Doppler.Shopify.ApiClient.Tests
 
             //delete the objects
             Fixture.Service.Delete(collection.Id.Value);
-            products.ForEach(async x => productService.Delete(x.Id.Value));
+            products.ForEach(x => productService.Delete(x.Id.Value));
 
         }
     }
 
-    public class SmartCollection_Tests_Fixture : IAsyncLifetime
+    public class SmartCollection_Tests_Fixture : IDisposable
     {
-        public SmartCollectionService Service { get; private set; } = new SmartCollectionService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private SmartCollectionService _service = new SmartCollectionService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<SmartCollection> _created = new List<SmartCollection>();
 
-        public List<SmartCollection> Created { get; private set; } = new List<SmartCollection>();
+        public SmartCollectionService Service { get { return _service; } private set { _service = value; } }
+        public List<SmartCollection> Created { get { return _created; } private set { _created = value; } }
+        public string BodyHtml
+        {
+            get
+            {
+                return "<h1>Hello world!</h1>";
+            }
+        }
 
-        public string BodyHtml => "<h1>Hello world!</h1>";
+        public string Handle
+        {
+            get
+            {
+                return "Doppler.Shopify.ApiClient-Handle";
+            }
+        }
 
-        public string Handle => "ShopifySharp-Handle";
+        public string Title
+        {
+            get
+            {
+                return "Doppler.Shopify.ApiClient Test Smart Collection";
+            }
+        }
 
-        public string Title => "ShopifySharp Test Smart Collection";
+        public SmartCollection_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -226,7 +250,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created SmartCollection with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created SmartCollection with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -235,7 +259,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<SmartCollection> Create(bool published = true, bool skipAddToCreatedList = false)
+        public SmartCollection Create(bool published = true, bool skipAddToCreatedList = false)
         {
             var obj = Service.Create(new SmartCollection()
             {

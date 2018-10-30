@@ -1,5 +1,5 @@
 using Newtonsoft.Json;
-using ShopifySharp.Converters;
+using Doppler.Shopify.ApiClient.Converters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests

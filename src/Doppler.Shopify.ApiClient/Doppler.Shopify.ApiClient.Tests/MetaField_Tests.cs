@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "MetaField")]
     public class MetaField_Tests : IClassFixture<MetaField_Tests_Fixture>
     {
-        private MetaField_Tests_Fixture Fixture { get; private set; }
+        private MetaField_Tests_Fixture Fixture { get; set; }
 
         public MetaField_Tests(MetaField_Tests_Fixture fixture)
         {
@@ -45,8 +45,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         [Fact]
         public void Lists_Metafields()
         {
-            var list = Fixture.Service.List();
-            list = list.Where(i=>i.Namespace == Fixture.Namespace && i.Description == Fixture.Description);
+            var list = Fixture.Service.List().Where(i=>i.Namespace == Fixture.Namespace && i.Description == Fixture.Description);
 
             Assert.True(list.Count() > 0);
         }
@@ -54,8 +53,8 @@ namespace Doppler.Shopify.ApiClient.Tests
         [Fact]
         public void Lists_Metafields_On_Resources()
         {
-            var list = Fixture.Service.List(Fixture.ResourceId, Fixture.ResourceType);
-            list = list.Where(i=>i.Namespace == Fixture.Namespace && i.Description == Fixture.Description);
+            var list = Fixture.Service.List(Fixture.ResourceId, Fixture.ResourceType)
+                .Where(i=>i.Namespace == Fixture.Namespace && i.Description == Fixture.Description);
 
             Assert.True(list.Count() > 0);
         }
@@ -63,8 +62,8 @@ namespace Doppler.Shopify.ApiClient.Tests
         [Fact]
         public void Lists_Metafields_On_Resources_And_Parent()
         {
-            var list = Fixture.Service.List(Fixture.ChildResourceId, Fixture.ChildResourceType, Fixture.ResourceId, Fixture.ResourceType);
-            list = list.Where(i=>i.Namespace == Fixture.Namespace && i.Description == Fixture.Description);
+            var list = Fixture.Service.List(Fixture.ChildResourceId, Fixture.ChildResourceType, Fixture.ResourceId, Fixture.ResourceType)
+                .Where(i=>i.Namespace == Fixture.Namespace && i.Description == Fixture.Description);
             
             Assert.True(list.Count() > 0);
         }
@@ -81,7 +80,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Metafields)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Metafields failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -202,21 +201,52 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class MetaField_Tests_Fixture : IAsyncLifetime
+    public class MetaField_Tests_Fixture : IDisposable
     {
-        public MetaFieldService Service { get; private set; } = new MetaFieldService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private MetaFieldService _service = new MetaFieldService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<MetaField> _created = new List<Doppler.Shopify.ApiClient.MetaField>();
 
-        public List<ShopifySharp.MetaField> Created { get; private set; } = new List<ShopifySharp.MetaField>();
+        public MetaFieldService Service { get { return _service; } private set { _service = value; } }
+        public List<Doppler.Shopify.ApiClient.MetaField> Created { get { return _created; } private set { _created = value; } }
+        public string Namespace
+        {
+            get
+            {
+                return "testing";
+            }
+        }
 
-        public string Namespace => "testing";
+        public string Description
+        {
+            get
+            {
+                return "This is a test meta field. It is an integer value.";
+            }
+        }
 
-        public string Description => "This is a test meta field. It is an integer value.";
+        public string ResourceType
+        {
+            get
+            {
+                return "products";
+            }
+        }
 
-        public string ResourceType => "products";
-        public string ChildResourceType => "variants";
+        public string ChildResourceType
+        {
+            get
+            {
+                return "variants";
+            }
+        }
 
         public long ResourceId { get; set; }
         public long ChildResourceId { get; set; }
+
+        public MetaField_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -243,7 +273,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created MetaField with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created MetaField with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -252,7 +282,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<MetaField> Create(bool skipAddToCreatedList = false)
+        public MetaField Create(bool skipAddToCreatedList = false)
         {
             var obj = Service.Create(new MetaField()
             {
@@ -263,7 +293,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 Description = Description,
             });
 
-            if (! skipAddToCreatedList)
+            if (!skipAddToCreatedList)
             {
                 Created.Add(obj);
             }
@@ -274,7 +304,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<MetaField> Create(long targetId, string resourceType, bool skipAddToCreatedList = false)
+        public MetaField Create(long targetId, string resourceType, bool skipAddToCreatedList = false)
         {
             var obj = Service.Create(new MetaField()
             {
@@ -296,7 +326,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<MetaField> Create(long targetId, string resourceType, long parentTargetId, string parentResourceType, bool skipAddToCreatedList = false)
+        public MetaField Create(long targetId, string resourceType, long parentTargetId, string parentResourceType, bool skipAddToCreatedList = false)
         {
             var obj = Service.Create(new MetaField()
             {

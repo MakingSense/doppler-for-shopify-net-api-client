@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using ShopifySharp.Filters;
+using Doppler.Shopify.ApiClient.Filters;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -11,7 +11,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "OrderRisk")]
     public class OrderRisk_Tests : IClassFixture<OrderRisk_Tests_Fixture>
     {
-        private OrderRisk_Tests_Fixture Fixture { get; private set; }
+        private OrderRisk_Tests_Fixture Fixture { get; set; }
 
         public OrderRisk_Tests(OrderRisk_Tests_Fixture fixture)
         {
@@ -38,7 +38,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Risks)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Risks failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -96,25 +96,67 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class OrderRisk_Tests_Fixture : IAsyncLifetime
+    public class OrderRisk_Tests_Fixture : IDisposable
     {
-        public OrderRiskService Service { get; private set; } = new OrderRiskService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private OrderRiskService _service = new OrderRiskService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<OrderRisk> _created = new List<OrderRisk>();
 
-        public List<OrderRisk> Created { get; private set; } = new List<OrderRisk>();
+        public OrderRiskService Service { get { return _service; } private set { _service = value; } }
+        public List<OrderRisk> Created { get { return _created; } private set { _created = value; } }
+        public string Message
+        {
+            get
+            {
+                return "This looks risky!";
+            }
+        }
 
-        public string Message => "This looks risky!";
+        public decimal Score
+        {
+            get
+            {
+                return (decimal)0.85;
+            }
+        }
 
-        public decimal Score => (decimal)0.85;
+        public string Recommendation
+        {
+            get
+            {
+                return "cancel";
+            }
+        }
 
-        public string Recommendation => "cancel";
+        public string Source
+        {
+            get
+            {
+                return "External";
+            }
+        }
 
-        public string Source => "External";
+        public bool CauseCancel
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-        public bool CauseCancel => false;
-
-        public bool Display => true;
+        public bool Display
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         public long OrderId { get; set; }
+
+        public OrderRisk_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -122,7 +164,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             {
                 Limit = 1
             })).First().Id.Value;
-            
+
             // Create a risk for count, list, get, etc. tests.
             Create(OrderId);
         }
@@ -139,7 +181,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created OrderRisk with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created OrderRisk with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -148,7 +190,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<OrderRisk> Create(long orderId, bool skipAddToCreatedList = false)
+        public OrderRisk Create(long orderId, bool skipAddToCreatedList = false)
         {
             var obj = Service.Create(orderId, new OrderRisk()
             {
@@ -160,7 +202,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 Display = Display,
             });
 
-            if (! skipAddToCreatedList)
+            if (!skipAddToCreatedList)
             {
                 Created.Add(obj);
             }

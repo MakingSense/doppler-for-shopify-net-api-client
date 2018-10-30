@@ -16,7 +16,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             Int64 shopId = 654321;
             var shopDomain = "example.myshopify.com";
-            string json = string.Format("{{'shop_id':'{shopId}','shop_domain':'{shopDomain}'}}";
+            string json = string.Format("{{'shop_id':'{0}','shop_domain':'{1}'}}", shopId, shopDomain);
 
             var deserialized = JsonConvert.DeserializeObject<ShopRedactedWebhook>(json);
 
@@ -29,7 +29,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             Int64 shopId = 654321;
             var shopDomain = "example.myshopify.com";
-            string json = string.Format("{{'shop_id':{shopId},'shop_domain':'{shopDomain}'}}";
+            string json = string.Format("{{'shop_id':'{0}','shop_domain':'{1}'}}", shopId, shopDomain);
 
             var deserialized = JsonConvert.DeserializeObject<ShopRedactedWebhook>(json);
 
@@ -44,15 +44,15 @@ namespace Doppler.Shopify.ApiClient.Tests
             var email = "hello@example.com";
             var phone = "555-555-5555";
 
-            var json = $@"{{
+            var json = string.Format(@"{{
                 'shop_id': 654321,
                 'shop_domain': 'example.myshopify.com',
                 'customer': {{
-                    'id': '{customerId}',
-                    'email': '{email}',
-                    'phone': '{phone}'
+                    'id': '{0}',
+                    'email': '{1}',
+                    'phone': '{2}'
                 }},
-                'orders_to_redact': ['987654321']}}";
+                'orders_to_redact': ['987654321']}}", customerId, email, phone);
             var deserialized = JsonConvert.DeserializeObject<CustomerRedactedWebhook>(json);
 
             Assert.NotNull(deserialized.Customer);
@@ -69,15 +69,15 @@ namespace Doppler.Shopify.ApiClient.Tests
             var email = "hello@example.com";
             var phone = "555-555-5555";
 
-            var json = $@"{{
+            var json = string.Format(@"{{
                 'shop_id': 654321,
                 'shop_domain': 'example.myshopify.com',
                 'customer': {{
-                    'id': {customerId},
-                    'email': '{email}',
-                    'phone': '{phone}'
+                    'id': {0},
+                    'email': '{1}',
+                    'phone': '{2}'
                 }},
-                'orders_to_redact': ['987654321']}}";
+                'orders_to_redact': ['987654321']}}", customerId, email, phone);
             var deserialized = JsonConvert.DeserializeObject<CustomerRedactedWebhook>(json);
 
             Assert.NotNull(deserialized.Customer);
@@ -92,13 +92,13 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             var email = "hello@example.com";
 
-            var json = $@"{{
+            var json = string.Format(@"{{
                 'shop_id': 654321,
                 'shop_domain': 'example.myshopify.com',
                 'customer': {{
-                    'email': '{email}',
+                    'email': '{0}',
                 }},
-                'orders_to_redact': ['987654321']}}";
+                'orders_to_redact': ['987654321']}}", email);
             var deserialized = JsonConvert.DeserializeObject<CustomerRedactedWebhook>(json);
 
             Assert.NotNull(deserialized.Customer);
@@ -111,7 +111,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             Int64 orderId = 987654321;
 
-            var json = $@"{{
+            var json = string.Format(@"{{
                 'shop_id': 654321,
                 'shop_domain': 'example.myshopify.com',
                 'customer': {{
@@ -119,7 +119,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                     'email': 'hello@example.com',
                     'phone': '555-555-5555'
                 }},
-                'orders_to_redact': ['{orderId}']}}";
+                'orders_to_redact': ['{0}']}}", orderId);
             var deserialized = JsonConvert.DeserializeObject<CustomerRedactedWebhook>(json);
 
             Assert.NotNull(deserialized.OrdersToRedact);
@@ -136,7 +136,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             Int64 orderId = 987654321;
 
-            var json = $@"{{
+            var json = string.Format(@"{{
                 'shop_id': 654321,
                 'shop_domain': 'example.myshopify.com',
                 'customer': {{
@@ -144,7 +144,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                     'email': 'hello@example.com',
                     'phone': '555-555-5555'
                 }},
-                'orders_to_redact': [{orderId}]}}";
+                'orders_to_redact': [{0}]}}", orderId);
             var deserialized = JsonConvert.DeserializeObject<CustomerRedactedWebhook>(json);
 
             Assert.NotNull(deserialized.OrdersToRedact);
@@ -163,15 +163,15 @@ namespace Doppler.Shopify.ApiClient.Tests
             var email = "hello@example.com";
             var phone = "555-555-5555";
 
-            var json = $@"{{
+            var json = string.Format(@"{{
                 'shop_id': 654321,
                 'shop_domain': 'example.myshopify.com',
                 'customer': {{
-                    'id': '{customerId}',
-                    'email': '{email}',
-                    'phone': '{phone}'
+                    'id': '{0}',
+                    'email': '{1}',
+                    'phone': '{2}'
                 }},
-                'orders_requested': ['987654321']}}";
+                'orders_requested': ['987654321']}}", customerId, email, phone);
             var deserialized = JsonConvert.DeserializeObject<CustomerDataRequestWebhook>(json);
 
             Assert.NotNull(deserialized.Customer);
@@ -188,15 +188,15 @@ namespace Doppler.Shopify.ApiClient.Tests
             var email = "hello@example.com";
             var phone = "555-555-5555";
 
-            var json = $@"{{
+            var json = string.Format(@"{{
                 'shop_id': 654321,
                 'shop_domain': 'example.myshopify.com',
                 'customer': {{
-                    'id': {customerId},
-                    'email': '{email}',
-                    'phone': '{phone}'
+                    'id': {0},
+                    'email': '{1}',
+                    'phone': '{2}'
                 }},
-                'orders_requested': ['987654321']}}";
+                'orders_requested': ['987654321']}}", customerId, email, phone);
             var deserialized = JsonConvert.DeserializeObject<CustomerDataRequestWebhook>(json);
 
             Assert.NotNull(deserialized.Customer);
@@ -211,13 +211,13 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             var email = "hello@example.com";
 
-            var json = $@"{{
+            var json = string.Format(@"{{
                 'shop_id': 654321,
                 'shop_domain': 'example.myshopify.com',
                 'customer': {{
-                    'email': '{email}',
+                    'email': '{0}',
                 }},
-                'orders_requested': ['987654321']}}";
+                'orders_requested': ['987654321']}}", email);
             var deserialized = JsonConvert.DeserializeObject<CustomerDataRequestWebhook>(json);
 
             Assert.NotNull(deserialized.Customer);
@@ -230,7 +230,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             Int64 orderId = 987654321;
 
-            var json = $@"{{
+            var json = string.Format(@"{{
                 'shop_id': 654321,
                 'shop_domain': 'example.myshopify.com',
                 'customer': {{
@@ -238,7 +238,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                     'email': 'hello@example.com',
                     'phone': '555-555-5555'
                 }},
-                'orders_requested': ['{orderId}']}}";
+                'orders_requested': ['{0}']}}", orderId);
             var deserialized = JsonConvert.DeserializeObject<CustomerDataRequestWebhook>(json);
 
             Assert.NotNull(deserialized.OrdersRequested);
@@ -255,7 +255,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         {
             Int64 orderId = 987654321;
 
-            var json = $@"{{
+            var json = string.Format(@"{{
                 'shop_id': 654321,
                 'shop_domain': 'example.myshopify.com',
                 'customer': {{
@@ -263,7 +263,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                     'email': 'hello@example.com',
                     'phone': '555-555-5555'
                 }},
-                'orders_requested': [{orderId}]}}";
+                'orders_requested': [{0}]}}", orderId);
             var deserialized = JsonConvert.DeserializeObject<CustomerDataRequestWebhook>(json);
 
             Assert.NotNull(deserialized.OrdersRequested);

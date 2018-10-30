@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "PriceRule")]
     public class PriceRule_Tests : IClassFixture<PriceRule_Tests_Fixture>
     {
-        private PriceRule_Tests_Fixture Fixture { get; private set; }
+        private PriceRule_Tests_Fixture Fixture { get; set; }
 
         public PriceRule_Tests(PriceRule_Tests_Fixture fixture)
         {
@@ -38,7 +38,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_PriceRules)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_PriceRules failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -95,28 +95,81 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class PriceRule_Tests_Fixture : IAsyncLifetime
+    public class PriceRule_Tests_Fixture : IDisposable
     {
-        public PriceRuleService Service { get; private set; } = new PriceRuleService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private PriceRuleService _service = new PriceRuleService(Utils.MyShopifyUrl, Utils.AccessToken);
+        private List<PriceRule> _created = new List<PriceRule>();
 
-        public List<PriceRule> Created { get; private set; } = new List<PriceRule>();
+        public PriceRuleService Service { get { return _service; } private set { _service = value; } }
+        public List<PriceRule> Created { get { return _created; } private set { _created = value; } }
+        public string TitlePrefix
+        {
+            get
+            {
+                return "Doppler.Shopify.ApiClient PriceRule ";
+            }
+        }
 
-        public string TitlePrefix => "ShopifySharp PriceRule ";
+        public string ValueType
+        {
+            get
+            {
+                return "percentage";
+            }
+        }
 
-        public string ValueType => "percentage";
+        public string TargetType
+        {
+            get
+            {
+                return "line_item";
+            }
+        }
 
-        public string TargetType => "line_item";
+        public string TargetSelection
+        {
+            get
+            {
+                return "all";
+            }
+        }
 
-        public string TargetSelection => "all";
+        public string AllocationMethod
+        {
+            get
+            {
+                return "across";
+            }
+        }
 
-        public string AllocationMethod => "across";
+        public decimal Value
+        {
+            get
+            {
+                return -10.0m;
+            }
+        }
 
-        public decimal Value => -10.0m;
+        public string CustomerSelection
+        {
+            get
+            {
+                return "all";
+            }
+        }
 
-        public string CustomerSelection => "all";
+        public bool OncePerCustomer
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-        public bool OncePerCustomer => false;
-
+        public PriceRule_Tests_Fixture()
+        {
+            Initialize();
+        }
 
         public void Initialize()
         {
@@ -136,7 +189,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Page with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Page with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -145,9 +198,9 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<PriceRule> Create(string titleGuid, bool skipAddToCreatedList = false)
+        public PriceRule Create(string titleGuid, bool skipAddToCreatedList = false)
         {
-            var obj = Service.Create(new ShopifySharp.PriceRule()
+            var obj = Service.Create(new Doppler.Shopify.ApiClient.PriceRule()
             {
                 Title = this.TitlePrefix + titleGuid,
                 ValueType = this.ValueType,
