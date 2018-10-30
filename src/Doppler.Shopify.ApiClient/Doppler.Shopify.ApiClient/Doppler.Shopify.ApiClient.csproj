@@ -187,6 +187,7 @@
     <Compile Include="Services\Customer\CustomerUpdateOptions.cs" />
     <Compile Include="Services\DiscountCode\DiscountCodeService.cs" />
     <Compile Include="Services\Discount\DiscountService.cs" />
+    <Compile Include="Services\DopplerIntegration\DopplerIntegrationService.cs" />
     <Compile Include="Services\DraftOrder\DraftOrderService.cs" />
     <Compile Include="Services\Event\EventService.cs" />
     <Compile Include="Services\FulfillmentEvent\FulfillmentEventService.cs" />
@@ -225,9 +226,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\DopplerIntegration\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(ProjectDir)..\packages\ILMerge.3.0.18\tools\net452\ILMerge.exe" /targetplatform:"v4,C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /internalize /log:"$(TargetDir)Merge\log.txt" "$(TargetPath)" "$(TargetDir)Newtonsoft.Json.dll" "$(TargetDir)System.Net.Http.dll" /OUT:"$(TargetDir)Merge\Doppler.Shopify.ApiClient.dll"</PostBuildEvent>

@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 using Doppler.Shopify.ApiClient.Infrastructure;
+using System.Threading;
 
 namespace Doppler.Shopify.ApiClient
 {
