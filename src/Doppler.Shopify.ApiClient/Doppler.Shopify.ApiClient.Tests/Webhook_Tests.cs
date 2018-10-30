@@ -10,7 +10,7 @@ namespace Doppler.Shopify.ApiClient.Tests
     [Trait("Category", "Webhook")]
     public class Webhook_Tests : IClassFixture<Webhook_Tests_Fixture>
     {
-        private Webhook_Tests_Fixture Fixture { get; private set; }
+        private Webhook_Tests_Fixture Fixture { get; set; }
 
         public Webhook_Tests(Webhook_Tests_Fixture fixture)
         {
@@ -45,7 +45,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             }
             catch (ShopifyException ex)
             {
-                Console.WriteLine(string.Format("{nameof(Deletes_Webhooks)} failed. {ex.Message}");
+                Console.WriteLine(string.Format("Deletes_Webhooks failed. {0}", ex.Message));
 
                 threw = true;
             }
@@ -94,15 +94,21 @@ namespace Doppler.Shopify.ApiClient.Tests
         }
     }
 
-    public class Webhook_Tests_Fixture : IAsyncLifetime
+    public class Webhook_Tests_Fixture : IDisposable
     {
-        public WebhookService Service { get; private set; } = new WebhookService(Utils.MyShopifyUrl, Utils.AccessToken);
+        public WebhookService Service { get; private set; }
 
-        public List<Webhook> Created { get; private set; } = new List<Webhook>();
+        public List<Webhook> Created { get; private set; }
 
-        public string UrlPrefix => "https://requestb.in/";
+        public string UrlPrefix { get { return "https://requestb.in/"; } }
 
-        public string Format => "json";
+        public string Format { get { return "json"; } }
+
+        public Webhook_Tests_Fixture()
+        {
+             Service = new WebhookService(Utils.MyShopifyUrl, Utils.AccessToken);
+            Created = new List<Webhook>();
+        }
 
         public void Initialize()
         {
@@ -122,7 +128,7 @@ namespace Doppler.Shopify.ApiClient.Tests
                 {
                     if (ex.HttpStatusCode != HttpStatusCode.NotFound)
                     {
-                        Console.WriteLine(string.Format("Failed to delete created Webhook with id {obj.Id.Value}. {ex.Message}");
+                        Console.WriteLine(string.Format("Failed to delete created Webhook with id {0}. {1}", obj.Id.Value, ex.Message));
                     }
                 }
             }
@@ -131,7 +137,7 @@ namespace Doppler.Shopify.ApiClient.Tests
         /// <summary>
         /// Convenience function for running tests. Creates an object and automatically adds it to the queue for deleting after tests finish.
         /// </summary>
-        public async Task<Webhook> Create(bool skipAddToCreatedList = false, string topic = "orders/create")
+        public Webhook Create(bool skipAddToCreatedList = false, string topic = "orders/create")
         {
             var obj = Service.Create(new Webhook()
             {
