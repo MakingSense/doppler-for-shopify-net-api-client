@@ -29,7 +29,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             return msg;
         }
 
-        [Fact]
+        [Fact(Skip="RUN AT THE END")]
         public void  Throws_On_OAuth_Code_Used()
         {
             string rawBody = "{\"error\":\"invalid_request\",\"error_description\":\"The authorization code was not found or was already used\"}";
@@ -57,7 +57,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.Equal(1, ex.Errors.First().Value.Count());
         }
 
-        [Fact]
+        [Fact(Skip = "RUN AT THE END")]
         public void Throws_On_Error_String()
         {
             HttpResponseMessage response;
@@ -100,7 +100,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.Equal(1, ex.Errors.First().Value.Count());
         }
 
-        [Fact]
+        [Fact(Skip = "RUN AT THE END")]
         public void Throws_On_Error_Object()
         {
             HttpResponseMessage response;
@@ -144,7 +144,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.True(ex.Errors.All(err => err.Value.Count() > 0));
         }
 
-        [Fact]
+        [Fact(Skip = "RUN AT THE END")]
         public void Throws_On_Error_Arrays()
         {
             //Creating an order with tax lines on both line items and the order will return an error
@@ -222,7 +222,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.True(ex.Errors.All(err => err.Value.Count() > 0));
         }
 
-        [Fact]
+        [Fact(Skip = "RUN AT THE END")]
         public void Does_Not_Reach_Rate_Limit_With_Retry_Policy()
         {
             bool thrown = false;
@@ -250,7 +250,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.Equal(requestCount, list.Count());
         }
 
-        [Fact]
+        [Fact(Skip = "RUN AT THE END")]
         public void Does_Not_Reach_Rate_Limit_With_Smart_Retry_Policy()
         {
             bool thrown = false;
@@ -277,7 +277,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.Equal(requestCount, list.Count());
         }
 
-        [Fact]
+        [Fact(Skip = "RUN AT THE END")]
         public void Catches_Rate_Limit()
         {
             int requestCount = 60;
@@ -307,7 +307,7 @@ namespace Doppler.Shopify.ApiClient.Tests
             Assert.Equal("Exceeded 2 calls per second for api client. Reduce request rates to resume uninterrupted service.", ex.Errors.First().Value.First());
         }
 
-        [Fact]
+        [Fact(Skip = "RUN AT THE END")]
         public void Catches_Rate_Limit_With_Base_Exception()
         {
             int requestCount = 60;

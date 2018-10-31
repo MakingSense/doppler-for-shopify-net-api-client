@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -8,12 +9,18 @@ namespace Doppler.Shopify.ApiClient.Infrastructure
 {
     public class CloneableRequestMessage : HttpRequestMessage
     {
+        private SecurityProtocolType _restoreSecurityProtocol;
+            
         public CloneableRequestMessage(Uri url, HttpMethod method, HttpContent content = null) : base(method, url)
         {
+            _restoreSecurityProtocol = ServicePointManager.SecurityProtocol;
+
             if (content != null)
             {
                 this.Content = content;
             }
+
+            ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
         }
 
         public CloneableRequestMessage Clone()
@@ -34,6 +41,12 @@ namespace Doppler.Shopify.ApiClient.Infrastructure
             }
 
             return cloned;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            ServicePointManager.SecurityProtocol = _restoreSecurityProtocol;
         }
     }
 }
