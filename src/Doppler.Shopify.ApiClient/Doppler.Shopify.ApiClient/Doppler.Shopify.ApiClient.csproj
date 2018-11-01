@@ -188,6 +188,7 @@
     <Compile Include="Services\DiscountCode\DiscountCodeService.cs" />
     <Compile Include="Services\Discount\DiscountService.cs" />
     <Compile Include="Services\DopplerIntegration\DopplerIntegrationService.cs" />
+    <Compile Include="Services\DopplerIntegration\DopplerIntegrationShopResult.cs" />
     <Compile Include="Services\DraftOrder\DraftOrderService.cs" />
     <Compile Include="Services\Event\EventService.cs" />
     <Compile Include="Services\FulfillmentEvent\FulfillmentEventService.cs" />

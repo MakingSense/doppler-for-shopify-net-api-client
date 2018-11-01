@@ -108,6 +108,7 @@
     <Compile Include="Collect_Tests.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DopplerIntegration_Tests.cs" />
     <Compile Include="CustomCollection_Tests.cs">
       <SubType>Code</SubType>
     </Compile>
