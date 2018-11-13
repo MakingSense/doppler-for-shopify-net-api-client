@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-namespace Doppler.Shopify.ApiClient.Services.DopplerIntegration
+
+namespace Doppler.Shopify.ApiClient
 {
     public class DopplerIntegrationService
     {
         private static JsonSerializer _serializer = new JsonSerializer { DateParseHandling = DateParseHandling.DateTime };
-        private readonly string _dopplerForShopifyBaseUrl = "https://ssfy.fromdoppler.com";
+        private readonly string _dopplerForShopifyBaseUrl = "https://sfy.fromdoppler.com";
 
         public DopplerIntegrationService()
         {

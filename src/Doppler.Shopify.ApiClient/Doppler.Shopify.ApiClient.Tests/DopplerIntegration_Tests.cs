@@ -1,4 +1,3 @@
-using Doppler.Shopify.ApiClient.Services.DopplerIntegration;
 using Xunit;
 
 namespace Doppler.Shopify.ApiClient.Tests
@@ -10,7 +9,7 @@ namespace Doppler.Shopify.ApiClient.Tests
 
         public DopplerIntegration_Tests()
         {
-            _service = new DopplerIntegrationService("http://localhost:3000");
+            _service = new DopplerIntegrationService();
         }
 
         [Fact]
