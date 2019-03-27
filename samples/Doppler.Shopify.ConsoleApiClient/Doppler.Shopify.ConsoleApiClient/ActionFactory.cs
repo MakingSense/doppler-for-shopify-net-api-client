@@ -7,6 +7,11 @@ namespace Doppler.Shopify.ConsoleApiClient
     {
         public static IAction CreateAction(IOptions options)
         {
+            if (options is SynchronizeCustomersOptions synchronizeCustomersOptions)
+            {
+                return new SynchronizeCustomersAction(synchronizeCustomersOptions.DopplerApiKey, synchronizeCustomersOptions.DopplerForShopifyUrl, synchronizeCustomersOptions.Shop);
+            }
+
             if (options is ShopsOptions shopOptions)
             {
                 return new ShopsAction(shopOptions.DopplerApiKey, shopOptions.DopplerForShopifyUrl);

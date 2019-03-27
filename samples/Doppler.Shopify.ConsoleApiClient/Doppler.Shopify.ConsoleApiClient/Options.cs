@@ -40,6 +40,30 @@ namespace Doppler.Shopify.ConsoleApiClient
         public string DopplerForShopifyUrl { get; set; }
     }
 
+    [Verb("sync", HelpText = "Run the  customer <-> subscriber synchronization process")]
+    class SynchronizeCustomersOptions : IOptions
+    {
+        [Option(
+          's',
+          "shop",
+          Required = true,
+          HelpText = "The shop domain")]
+        public string Shop { get; set; }
+
+        [Option(
+          'k',
+          "dopplerApiKey",
+          Required = true,
+          HelpText = "The Doppler API Key to get the associated shops")]
+        public string DopplerApiKey { get; set; }
+
+        [Option(
+          Required = false,
+          Default = "https://sfy.fromdoppler.com:4433", // TODO: use production
+          HelpText = "The Url to use when retrieving shops")]
+        public string DopplerForShopifyUrl { get; set; }
+    }
+
     [Verb("checkouts", HelpText = "Returns all the abandoned checkouts for a given shop")]
     class CheckoutsOptions : ShopifyApiOptions
     {

@@ -8,7 +8,7 @@ namespace Doppler.Shopify.ConsoleApiClient
     {
         static void Main(string[] args)
         {
-            var result = Parser.Default.ParseArguments<ShopsOptions, CheckoutsOptions, ProductsOptions>(args)
+            var result = Parser.Default.ParseArguments<ShopsOptions, CheckoutsOptions, ProductsOptions, SynchronizeCustomersOptions>(args)
                 .WithParsed<IOptions>(opts => PrintResultAsJson(ActionFactory.CreateAction(opts).Execute()));
         }
 

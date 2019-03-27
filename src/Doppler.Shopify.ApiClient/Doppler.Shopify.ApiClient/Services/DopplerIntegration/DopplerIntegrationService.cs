@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Text;
+using Newtonsoft;
 
 namespace Doppler.Shopify.ApiClient
 {
@@ -40,6 +42,27 @@ namespace Doppler.Shopify.ApiClient
                     var reader = new JsonTextReader(new StringReader(rawResult));
 
                     return _serializer.Deserialize<List<DopplerIntegrationShopResult>>(reader);
+                }
+            }
+        }
+
+        public void SynchronizeCustomers(string dopplerApiKey, string shop)
+        {
+            using (var client = new HttpClient())
+            {
+                var uri = new Uri(_dopplerForShopifyBaseUrl + "/me/synchronize-customers");
+                client.DefaultRequestHeaders.Add("Authorization", string.Format("token {0}", dopplerApiKey));
+
+                using (var msg = new HttpRequestMessage(HttpMethod.Post, uri))
+                {
+                    msg.Content = new StringContent(JsonConvert.SerializeObject(new { shop }), Encoding.UTF8, "application/json");
+                    var response = client.SendAsync(msg).Result;
+                    var rawResult = response.Content.ReadAsStringAsync().Result;
+
+                    if (response.StatusCode != System.Net.HttpStatusCode.Created)
+                    {
+                        throw new ApplicationException(rawResult);
+                    }
                 }
             }
         }
