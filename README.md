@@ -46,6 +46,12 @@ You will get a response like this:
 ```
 The most important field here is **ShopifyAccessToken** that will be used in the other services provided by this library like getting the abandoned carts or products for a given shop.
 
+## Synchronize customers
+```csharp
+var dopplerIntegrationService = new DopplerIntegrationService(_dopplerForShopifyUrl);
+dopplerIntegrationService.SynchronizeCustomers(_dopplerApiKey, _shop);
+```
+
 ## List the abandoned carts
 
 ```csharp
